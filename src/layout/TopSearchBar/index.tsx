@@ -23,6 +23,7 @@ import RtcCallModal from "@/pages/common/RtcCallModal";
 import { InviteData } from "@/pages/common/RtcCallModal/data";
 import UserCardModal, { CardInfo } from "@/pages/common/UserCardModal";
 import { useContactStore, useUserStore } from "@/store";
+import { isSameID } from "@/utils/common";
 import emitter, { OpenUserCardParams } from "@/utils/events";
 
 import { IMSDK } from "../MainContentWrap";
@@ -129,7 +130,7 @@ const TopSearchBar = () => {
     setUserCardState({
       userID: cardInfo.userID,
       cardInfo,
-      isSelf: cardInfo.userID === useUserStore.getState().selfInfo.userID,
+      isSelf: isSameID(cardInfo.userID, useUserStore.getState().selfInfo.userID),
     });
     userCardRef.current?.openOverlay();
   }, []);
@@ -138,7 +139,7 @@ const TopSearchBar = () => {
     searchModalRef.current?.closeOverlay();
     const inGroup = useContactStore
       .getState()
-      .groupList.some((g) => g.groupID === group.groupID);
+      .groupList.some((g) => isSameID(g.groupID, group.groupID));
     setGroupCardData({ ...group, inGroup });
     groupCardRef.current?.openOverlay();
   }, []);

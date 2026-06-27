@@ -1,8 +1,8 @@
-import { RightOutlined } from "@ant-design/icons";
+import { BellOutlined, RightOutlined } from "@ant-design/icons";
 import { Badge, Divider, Layout, Popover, Upload } from "antd";
 import clsx from "clsx";
 import i18n, { t } from "i18next";
-import React, { memo, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import ImageResizer from "react-image-file-resizer";
 import { UNSAFE_NavigationContext, useResolvedPath } from "react-router-dom";
 
@@ -14,15 +14,23 @@ import message_icon from "@/assets/images/nav/nav_bar_message.png";
 import message_icon_active from "@/assets/images/nav/nav_bar_message_active.png";
 import change_avatar from "@/assets/images/profile/change_avatar.png";
 import OIMAvatar from "@/components/OIMAvatar";
+import { IMSDK } from "@/layout/MainContentWrap";
 import { useContactStore, useConversationStore, useUserStore } from "@/store";
 import { feedbackToast } from "@/utils/common";
 import { emit } from "@/utils/events";
 import { uploadFile } from "@/utils/imCommon";
+import {
+  getCurrentAccountKey,
+  getSavedAccounts,
+  switchIMProfile,
+  WebSavedAccount,
+} from "@/utils/storage";
 
 import { OverlayVisibleHandle } from "../../hooks/useOverlayVisible";
 import About from "./About";
 import styles from "./left-nav-bar.module.scss";
 import PersonalSettings from "./PersonalSettings";
+import SystemAnnouncements from "./SystemAnnouncements";
 
 const { Sider } = Layout;
 
@@ -64,6 +72,27 @@ const resizeFile = (file: File): Promise<File> =>
 
 type NavItemType = (typeof NavList)[0];
 
+const requestNavData = (path: string) => {
+  const conversationStore = useConversationStore.getState();
+  const contactStore = useContactStore.getState();
+
+  if (path === "/chat") {
+    void Promise.all([
+      conversationStore.getConversationListByReq(false),
+      conversationStore.getUnReadCountByReq(),
+    ]).catch((error) => console.error("refresh chat nav data failed", error));
+    return;
+  }
+
+  if (path === "/contact") {
+    void Promise.all([
+      contactStore.ensureFriendListLoaded(true),
+      contactStore.ensureFriendApplicationsLoaded(true),
+      contactStore.ensureGroupApplicationsLoaded(true),
+    ]).catch((error) => console.error("refresh contact nav data failed", error));
+  }
+};
+
 const NavItem = ({ nav: { icon, icon_active, title, path } }: { nav: NavItemType }) => {
   const resolvedPath = useResolvedPath(path);
   const { navigator } = React.useContext(UNSAFE_NavigationContext);
@@ -88,6 +117,8 @@ const NavItem = ({ nav: { icon, icon_active, title, path } }: { nav: NavItemType
   );
 
   const tryNavigate = () => {
+    requestNavData(path);
+
     if (isActive) {
       return;
     }
@@ -159,10 +190,31 @@ i18n.on("languageChanged", () => {
 const LeftNavBar = memo(() => {
   const aboutRef = useRef<OverlayVisibleHandle>(null);
   const personalSettingsRef = useRef<OverlayVisibleHandle>(null);
+  const systemAnnouncementsRef = useRef<OverlayVisibleHandle>(null);
   const [showProfile, setShowProfile] = useState(false);
+  const [savedAccounts, setSavedAccounts] = useState<WebSavedAccount[]>([]);
+  const [currentAccountKey, setCurrentAccountKey] = useState<string>();
+  const [switchingAccountKey, setSwitchingAccountKey] = useState<string>();
+  const [announcementUnreadCount, setAnnouncementUnreadCount] = useState(0);
   const selfInfo = useUserStore((state) => state.selfInfo);
   const userLogout = useUserStore((state) => state.userLogout);
   const updateSelfInfo = useUserStore((state) => state.updateSelfInfo);
+  const clearUserRuntimeState = useUserStore((state) => state.clearUserRuntimeState);
+
+  const refreshSavedAccounts = useCallback(async () => {
+    const [accounts, accountKey] = await Promise.all([
+      getSavedAccounts(),
+      getCurrentAccountKey(),
+    ]);
+    setSavedAccounts(accounts);
+    setCurrentAccountKey(accountKey ?? undefined);
+  }, []);
+
+  useEffect(() => {
+    if (showProfile) {
+      refreshSavedAccounts();
+    }
+  }, [refreshSavedAccounts, selfInfo.userID, showProfile]);
 
   const profileMenuClick = (idx: number) => {
     switch (idx) {
@@ -201,25 +253,53 @@ const LeftNavBar = memo(() => {
     });
   };
 
-  const customUpload = async ({ file }: { file: File }) => {
-    const resizedFile = await resizeFile(file);
-    const filePath = await window.electronAPI?.saveFileToDisk({
-      sync: true,
-      file,
-    });
-
-    try {
-      const {
-        data: { url },
-      } = await uploadFile(resizedFile, filePath);
-      const newInfo = {
-        faceURL: url,
-      };
-      await updateBusinessUserInfo(newInfo);
-      updateSelfInfo(newInfo);
-    } catch (error) {
-      feedbackToast({ error: t("toast.updateAvatarFailed") });
+  const trySwitchAccount = async (account: WebSavedAccount) => {
+    if (account.accountKey === currentAccountKey || switchingAccountKey) {
+      return;
     }
+
+    setSwitchingAccountKey(account.accountKey);
+    try {
+      await IMSDK.logout().catch(() => undefined);
+      await switchIMProfile(account.accountKey);
+      clearUserRuntimeState();
+      useContactStore.getState().clearContactStore();
+      useConversationStore.getState().clearConversationStore();
+      setShowProfile(false);
+      window.location.hash = "#/chat";
+      window.location.reload();
+    } catch (error) {
+      feedbackToast({ error });
+    } finally {
+      setSwitchingAccountKey(undefined);
+    }
+  };
+
+  const customUpload = ({ file }: { file: File }) => {
+    modal.confirm({
+      title: t("placeholder.upload"),
+      content: t("placeholder.confirmUploadFile"),
+      onOk: async () => {
+        const resizedFile = await resizeFile(file);
+        const filePath = await window.electronAPI?.saveFileToDisk({
+          sync: true,
+          file,
+        });
+
+        try {
+          const {
+            data: { url },
+          } = await uploadFile(resizedFile, filePath);
+          const newInfo = {
+            faceURL: url,
+          };
+          await updateBusinessUserInfo(newInfo);
+          updateSelfInfo(newInfo);
+        } catch (error) {
+          feedbackToast({ error: t("toast.updateAvatarFailed") });
+        }
+      },
+    });
   };
 
   const ProfileContent = (
@@ -241,6 +321,58 @@ const LeftNavBar = memo(() => {
           <div className="mb-1 truncate text-base font-medium">{selfInfo.nickname}</div>
         </div>
       </div>
+      {savedAccounts.length > 0 && (
+        <div className="mb-2 px-3">
+          <div className="mb-2 text-xs text-gray-400">
+            {t("placeholder.switchAccount")}
+          </div>
+          <div className="max-h-36 overflow-y-auto">
+            {savedAccounts.map((account) => {
+              const isCurrent = account.accountKey === currentAccountKey;
+              const title =
+                account.nickname ||
+                account.account ||
+                account.phoneNumber ||
+                account.email ||
+                account.userID;
+
+              return (
+                <button
+                  key={account.accountKey}
+                  data-account-key={account.accountKey}
+                  data-testid="saved-account-switch"
+                  className={clsx(
+                    "mb-1 flex w-full items-center rounded-md px-2 py-2 text-left hover:bg-[var(--primary-active)]",
+                    {
+                      "bg-[var(--primary-active)]": isCurrent,
+                      "cursor-default": isCurrent,
+                    },
+                  )}
+                  disabled={isCurrent || Boolean(switchingAccountKey)}
+                  onClick={() => trySwitchAccount(account)}
+                >
+                  <OIMAvatar
+                    size={32}
+                    src={account.faceURL}
+                    text={account.nickname || account.account}
+                  />
+                  <div className="ml-2 min-w-0 flex-1">
+                    <div className="truncate text-sm">{title}</div>
+                    <div className="truncate text-xs text-gray-400">
+                      {account.userID}
+                    </div>
+                  </div>
+                  <span className="ml-2 text-xs text-[var(--primary)]">
+                    {isCurrent
+                      ? t("placeholder.currentAccount")
+                      : t("placeholder.switch")}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
       {profileMenuList.map((menu) => (
         <div key={menu.idx}>
           <div
@@ -278,11 +410,24 @@ const LeftNavBar = memo(() => {
           onOpenChange={(vis) => setShowProfile(vis)}
         >
           <OIMAvatar
+            data-testid="profile-menu-trigger"
             className="mb-6 cursor-pointer"
             src={selfInfo.faceURL}
             text={selfInfo.nickname}
           />
         </Popover>
+
+        <Badge size="small" count={announcementUnreadCount}>
+          <button
+            type="button"
+            aria-label={t("placeholder.systemAnnouncements")}
+            className="mb-3 flex h-[52px] w-12 cursor-pointer flex-col items-center justify-center rounded-md border-0 bg-transparent p-0 text-gray-500 hover:bg-[#e9e9eb]"
+            title={t("placeholder.systemAnnouncements")}
+            onClick={() => systemAnnouncementsRef.current?.openOverlay()}
+          >
+            <BellOutlined rev={undefined} className="text-xl" />
+          </button>
+        </Badge>
 
         {NavList.map((nav) => (
           <NavItem nav={nav} key={nav.path} />
@@ -290,6 +435,10 @@ const LeftNavBar = memo(() => {
       </div>
       <PersonalSettings ref={personalSettingsRef} />
       <About ref={aboutRef} />
+      <SystemAnnouncements
+        ref={systemAnnouncementsRef}
+        onUnreadCountChange={setAnnouncementUnreadCount}
+      />
     </Sider>
   );
 });

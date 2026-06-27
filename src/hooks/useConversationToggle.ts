@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 import { IMSDK } from "@/layout/MainContentWrap";
 import { useConversationStore } from "@/store";
-import { feedbackToast } from "@/utils/common";
+import { feedbackToast, isSameID } from "@/utils/common";
+import { isGroupSession } from "@/utils/imCommon";
 
 export type ToSpecifiedConversationParams = {
   sourceID: string;
@@ -27,10 +28,15 @@ export function useConversationToggle() {
     sourceID: string;
     sessionType: SessionType;
   }): Promise<ConversationItem | undefined> => {
+    const isTargetGroup = isGroupSession(sessionType);
     let conversation = useConversationStore
       .getState()
       .conversationList.find(
-        (item) => item.userID === sourceID || item.groupID === sourceID,
+        (item) =>
+          item.conversationType === sessionType &&
+          (isTargetGroup
+            ? isSameID(item.groupID, sourceID)
+            : isSameID(item.userID, sourceID)),
       );
     if (!conversation) {
       try {

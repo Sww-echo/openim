@@ -3,6 +3,7 @@ import "@livekit/components-styles";
 import { LiveKitRoom } from "@livekit/components-react";
 import { t } from "i18next";
 import {
+  type ElementType,
   forwardRef,
   ForwardRefRenderFunction,
   useCallback,
@@ -20,6 +21,8 @@ import { feedbackToast } from "@/utils/common";
 
 import { AuthData, InviteData } from "./data";
 import { RtcLayout } from "./RtcLayout";
+
+const LiveKitRoomComponent = LiveKitRoom as ElementType;
 
 interface IRtcCallModalProps {
   inviteData: InviteData;
@@ -131,7 +134,7 @@ const RtcCallModal: ForwardRefRenderFunction<
     >
       <div>
         {isOverlayOpen && (
-          <LiveKitRoom
+          <LiveKitRoomComponent
             serverUrl={authData.serverUrl}
             token={authData.token}
             video={invitation?.mediaType === "video"}
@@ -159,7 +162,7 @@ const RtcCallModal: ForwardRefRenderFunction<
               connectRtc={connectRtc}
               closeOverlay={closeOverlayAndClearTimer}
             />
-          </LiveKitRoom>
+          </LiveKitRoomComponent>
         )}
       </div>
     </DraggableModalWrap>

@@ -12,6 +12,7 @@
   },
   "scripts": {
     "dev": "vite --force --host",
+    "dev:web": "vite --config vite.web.config.ts --host 127.0.0.1 --port 7777",
     "build": "vite build",
     "preview": "vite preview",
     "pree2e": "vite build --mode=test",
@@ -19,6 +20,13 @@
     "format": "prettier --write .",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
     "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx --fix --quiet src",
+    "verify:web-api-behavior": "node scripts/verify-web-api-behavior.mjs",
+    "verify:web-api-contract": "node scripts/verify-web-api-contract.mjs",
+    "verify:web-api-coverage": "node scripts/verify-web-api-coverage.mjs",
+    "verify:web-api-e2e": "node scripts/verify-web-api-e2e.mjs",
+    "verify:web-api-lint": "eslint --quiet \"scripts/verify-web-api-coverage.mjs\" \"scripts/verify-web-api-contract.mjs\" \"scripts/verify-web-api-behavior.mjs\" \"scripts/verify-web-api-e2e.mjs\"",
+    "verify:web-api-local": "npm run verify:web-api-lint && npm run verify:web-api-coverage && npm run verify:web-api-contract && npm run verify:web-api-behavior && npm run verify:web-api-e2e && npm run verify:web-api-ui && tsc --noEmit --pretty false && npm run build -- --config vite.web.config.ts",
+    "verify:web-api-ui": "playwright test e2e/web-api-ui.spec.ts",
     "prepare": "husky install",
     "postinstall": "patch-package"
   },

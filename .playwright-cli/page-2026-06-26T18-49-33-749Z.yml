@@ -1,0 +1,103 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e89]:
+      - complementary [ref=e90]:
+        - generic [ref=e92]:
+          - generic [ref=e94] [cursor=pointer]: test-user
+          - button "系统公告" [ref=e96] [cursor=pointer]:
+            - img "bell" [ref=e97]:
+              - img [ref=e98]
+          - generic [ref=e100]:
+            - generic [ref=e102] [cursor=pointer]: 消息
+            - superscript [ref=e123]:
+              - generic [ref=e125]: "2"
+          - generic [ref=e105] [cursor=pointer]: 通讯录
+      - generic [ref=e214]:
+        - generic [ref=e215]:
+          - complementary
+        - generic [ref=e216]:
+          - banner [ref=e217]:
+            - generic [ref=e218]:
+              - generic [ref=e219]:
+                - img [ref=e221]
+                - generic [ref=e222]:
+                  - generic [ref=e223]: codex-api-realign-1782496629149
+                  - generic [ref=e224]:
+                    - img "member" [ref=e225]
+                    - generic [ref=e226]: "1"
+              - generic [ref=e227]:
+                - img "search" [ref=e228] [cursor=pointer]:
+                  - img [ref=e229]
+                - img "folder-open" [ref=e231] [cursor=pointer]:
+                  - img [ref=e232]
+          - generic [ref=e234]:
+            - main [ref=e236]:
+              - generic [ref=e272]:
+                - generic [ref=e275]:
+                  - generic [ref=e277]: test-user
+                  - generic [ref=e278]:
+                    - generic [ref=e279]:
+                      - generic "test-user" [ref=e280]
+                      - generic [ref=e281]: 02:14
+                    - generic [ref=e283]: "[暂未支持的消息类型]"
+                - generic [ref=e286]:
+                  - generic [ref=e288]: test-user
+                  - generic [ref=e289]:
+                    - generic [ref=e290]:
+                      - generic "test-user" [ref=e291]
+                      - generic [ref=e292]: 02:14
+                    - generic [ref=e294]: "[暂未支持的消息类型]"
+                - generic [ref=e297]:
+                  - generic [ref=e299]: test-user
+                  - generic [ref=e300]:
+                    - generic [ref=e301]:
+                      - generic "test-user" [ref=e302]
+                      - generic [ref=e303]: 02:14
+                    - generic [ref=e305]: "[暂未支持的消息类型]"
+                - generic [ref=e308]:
+                  - generic [ref=e310]: test-user
+                  - generic [ref=e311]:
+                    - generic [ref=e312]:
+                      - generic "test-user" [ref=e313]
+                      - generic [ref=e314]: 02:23
+                    - generic [ref=e316]: "[暂未支持的消息类型]"
+                - generic [ref=e319]:
+                  - generic [ref=e321]: test-user
+                  - generic [ref=e322]:
+                    - generic [ref=e323]:
+                      - generic "test-user" [ref=e324]
+                      - generic [ref=e325]: 02:23
+                    - generic [ref=e327]: "[暂未支持的消息类型]"
+                - generic [ref=e346]:
+                  - generic [ref=e348]: test-user
+                  - generic [ref=e349]:
+                    - generic [ref=e350]:
+                      - generic "test-user" [ref=e351]
+                      - generic [ref=e352]: 02:49
+                    - generic [ref=e354]: review流程测试消息
+            - separator
+            - contentinfo [ref=e245]:
+              - generic [ref=e246]:
+                - generic [ref=e247]:
+                  - button "图片" [ref=e250] [cursor=pointer]:
+                    - img "图片" [ref=e252]
+                  - button "视频" [ref=e255] [cursor=pointer]:
+                    - img "视频" [ref=e257]
+                  - button "文件" [ref=e260] [cursor=pointer]:
+                    - img "文件" [ref=e262]
+                - generic [ref=e263]:
+                  - application "Rich Text Editor" [ref=e264]:
+                    - 'textbox "Rich Text Editor. Editing area: main. Press Alt+0 for help." [ref=e265]':
+                      - paragraph [ref=e266]
+                  - button "发送" [active] [ref=e268] [cursor=pointer]:
+                    - generic [ref=e269]: 发送
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+  - generic:
+    - application:
+      - generic:
+        - generic:
+          - list
+        - generic:
+          - list

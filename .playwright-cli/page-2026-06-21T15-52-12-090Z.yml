@@ -1,0 +1,95 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e181]:
+      - complementary [ref=e182]:
+        - generic [ref=e184]:
+          - generic [ref=e186] [cursor=pointer]: qqq
+          - generic [ref=e187]:
+            - button "系统公告" [ref=e188] [cursor=pointer]:
+              - img "bell" [ref=e189]:
+                - img [ref=e190]
+            - superscript [ref=e192]:
+              - generic [ref=e194]: "7"
+          - generic [ref=e197] [cursor=pointer]: 消息
+          - generic [ref=e200] [cursor=pointer]: 通讯录
+      - generic [ref=e201]:
+        - generic [ref=e202]:
+          - complementary
+        - generic [ref=e203]:
+          - banner [ref=e204]:
+            - generic [ref=e205]:
+              - generic [ref=e206]:
+                - generic [ref=e208]: www
+                - generic [ref=e210]: www
+              - generic [ref=e211]:
+                - img "search" [ref=e212] [cursor=pointer]:
+                  - img [ref=e213]
+                - img "folder-open" [ref=e215] [cursor=pointer]:
+                  - img [ref=e216]
+          - generic [ref=e218]:
+            - main [ref=e220]:
+              - generic [ref=e226]:
+                - generic [ref=e228]: 橙子皮
+                - generic [ref=e229]:
+                  - generic [ref=e230]:
+                    - generic "橙子皮" [ref=e231]
+                    - generic [ref=e232]: 星期五 14:43
+                  - generic [ref=e234]: 你是谁
+            - separator
+            - contentinfo [ref=e236]:
+              - generic [ref=e237]:
+                - generic [ref=e238]:
+                  - button "图片" [ref=e241] [cursor=pointer]:
+                    - img "图片" [ref=e243]
+                  - button "视频" [ref=e246] [cursor=pointer]:
+                    - img "视频" [ref=e248]
+                  - button "文件" [ref=e251] [cursor=pointer]:
+                    - img "文件" [ref=e253]
+                  - img "通话" [ref=e255] [cursor=pointer]
+                - generic [ref=e256]:
+                  - application "Rich Text Editor" [ref=e257]:
+                    - 'textbox "Rich Text Editor. Editing area: main. Press Alt+0 for help." [ref=e258]':
+                      - paragraph [ref=e259]
+                  - button "发送" [ref=e261] [cursor=pointer]:
+                    - generic [ref=e262]: 发送
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+  - generic:
+    - application:
+      - generic:
+        - generic:
+          - list
+        - generic:
+          - list
+  - generic [ref=e263]:
+    - dialog "聊天资源":
+      - generic [ref=e264]:
+        - button "Close" [ref=e265] [cursor=pointer]:
+          - img "close" [ref=e267]:
+            - img [ref=e268]
+        - generic [ref=e271]: 聊天资源
+        - generic [ref=e272]:
+          - button "合并上下文" [ref=e325] [cursor=pointer]:
+            - generic [ref=e275]: 合并上下文
+          - generic [ref=e276]:
+            - tablist [ref=e277]:
+              - generic [ref=e279]:
+                - tab "收藏消息" [ref=e281] [cursor=pointer]
+                - tab "已保存合并消息" [selected] [ref=e283] [cursor=pointer]
+                - tab "文件资源" [ref=e285] [cursor=pointer]
+            - tabpanel "已保存合并消息" [ref=e326]:
+              - generic [ref=e333]:
+                - img [ref=e335]
+                - generic [ref=e347]: 未搜索到相关结果
+  - generic [ref=e348]:
+    - dialog:
+      - generic [ref=e351]:
+        - generic [ref=e352]:
+          - img "info-circle" [ref=e353]:
+            - img [ref=e354]
+          - generic [ref=e356]:
+            - generic [ref=e357]: 合并上下文
+            - generic [ref=e359]: "{ \"currentTime\": 1782057131135, \"data\": { \"mergeForwardSupported\": true, \"mergeSaveSupported\": true, \"sdkSendRequired\": true, \"serverSendsMessage\": false, \"maxMergeCount\": 50, \"defaultPreviewCount\": 6, \"savedCount\": 0, \"pageMetas\": { \"key\": \"message_merge\", \"title\": \"合并转发\", \"description\": \"基于当前用户可见的审计消息构建合并消息预览和 SDK payload。\" }, \"fieldMetas\": [ { \"key\": \"auditIds\", \"title\": \"消息审计 ID\", \"required\": true, \"placeholder\": \"多个搜索结果 items[].id 用英文逗号分隔，最多 50 条\" }, { \"key\": \"title\", \"title\": \"合并标题\", \"required\": false, \"placeholder\": \"不填时自动生成\" }, { \"key\": \"targetType\", \"title\": \"转发目标类型\", \"required\": false, \"placeholder\": \"single/group，由前端会话选择结果决定\" }, { \"key\": \"targetId\", \"title\": \"转发目标 ID\", \"required\": false, \"placeholder\": \"OpenIM userID 或 groupID，由前端 SDK 使用\" }, { \"key\": \"note\", \"title\": \"备注\", \"required\": false, \"placeholder\": \"只保存到后端，不影响发送内容\" }, { \"key\": \"tags\", \"title\": \"标签\", \"required\": false, \"placeholder\": \"保存合并消息时可选\" } ], \"contentTypeMetas\": [ { \"contentType\": 106, \"contentTypeText\": \"合并消息\", \"description\": \"前端使用 mergePayload 调用 OpenIM SDK 发送的合并消息内容。\" } ], \"actionApis\": { \"context\": \"/message/merge/context\", \"preview\": \"/message/merge/preview\", \"forwardBefore\": \"/message/merge/forward-before\", \"save\": \"/message/merge/save\", \"saved\": \"/message/merge/saved\", \"detail\": \"/message/merge/detail\", \"delete\": \"/message/merge/delete\", \"roomSearch\": \"/room/openim/messages/search\", \"singleSearch\": \"/friend/openim/messages/search\", \"favoriteMerge\": \"/message/favorites/merge\" }, \"emptyState\": { \"show\": true, \"title\": \"暂无合并消息\", \"description\": \"可先通过单聊或群聊聊天记录搜索选择消息，再生成合并转发预览或保存合并消息。 \" } }, \"resultCode\": 1 }"
+        - button "知道了" [active] [ref=e361] [cursor=pointer]:
+          - generic [ref=e362]: 知道了

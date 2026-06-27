@@ -1,0 +1,107 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e1209]:
+      - complementary [ref=e1210]:
+        - generic [ref=e1212]:
+          - generic [ref=e1214] [cursor=pointer]: qqq
+          - generic [ref=e1215]:
+            - button "系统公告" [ref=e1216] [cursor=pointer]:
+              - img "bell" [ref=e1217]:
+                - img [ref=e1218]
+            - superscript [ref=e1220]:
+              - generic [ref=e1222]: "7"
+          - generic [ref=e1225] [cursor=pointer]: 消息
+          - generic [ref=e1228] [cursor=pointer]: 通讯录
+      - generic [ref=e1229]:
+        - complementary [ref=e1230]:
+          - generic [ref=e1232]:
+            - generic [ref=e1233]: 通讯录
+            - list [ref=e1234]:
+              - listitem [ref=e1235] [cursor=pointer]:
+                - img "新的好友" [ref=e1237]
+                - generic [ref=e1238]: 新的好友
+              - listitem [ref=e1239] [cursor=pointer]:
+                - img "群通知" [ref=e1241]
+                - generic [ref=e1242]: 群通知
+              - listitem [ref=e1243] [cursor=pointer]:
+                - img "我的好友" [ref=e1245]
+                - generic [ref=e1246]: 我的好友
+              - listitem [ref=e1247] [cursor=pointer]:
+                - img "我的群组" [ref=e1249]
+                - generic [ref=e1250]: 我的群组
+        - generic [ref=e1252]:
+          - generic [ref=e1253]:
+            - paragraph [ref=e1254]: 我的群组
+            - generic [ref=e1255] [cursor=pointer]:
+              - generic [ref=e1256]:
+                - combobox [ref=e1258]
+                - generic "我创建的" [ref=e1259]
+              - generic:
+                - img:
+                  - img
+          - generic [ref=e1263]:
+            - generic [ref=e1265]:
+              - img [ref=e1267]
+              - generic [ref=e1268]:
+                - paragraph [ref=e1269]: 啊啊i
+                - paragraph [ref=e1270]: "3"
+            - generic [ref=e1272]:
+              - img [ref=e1274]
+              - generic [ref=e1275]:
+                - paragraph [ref=e1276]: 橙子皮、橙子皮1、橙子皮4
+                - paragraph [ref=e1277]: "3"
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e72] [cursor=pointer]:
+        - img [ref=e73]
+  - generic [ref=e1356]:
+    - dialog:
+      - generic [ref=e1359]:
+        - generic [ref=e1360]:
+          - generic [ref=e1361]: 账号设置
+          - img "close" [ref=e1362] [cursor=pointer]:
+            - img [ref=e1363]
+        - generic [ref=e1365]:
+          - generic [ref=e1367]:
+            - generic [ref=e1368]: 个人设置
+            - generic [ref=e1369]:
+              - generic [ref=e1370]: 选择语言
+              - generic [ref=e1371]:
+                - generic [ref=e1372] [cursor=pointer]:
+                  - checkbox "简体中文" [checked] [ref=e1374]
+                  - generic [ref=e1376]: 简体中文
+                - generic [ref=e1377] [cursor=pointer]:
+                  - checkbox "English" [ref=e1379]
+                  - generic [ref=e1381]: English
+            - generic [ref=e1382]:
+              - generic [ref=e1383]: 消息提示
+              - generic [ref=e1384]:
+                - generic [ref=e1385]:
+                  - generic [ref=e1386]: 群公告通知
+                  - switch [checked] [ref=e1387] [cursor=pointer]
+                - generic [ref=e1390]:
+                  - generic [ref=e1391]: "@我通知"
+                  - switch [checked] [ref=e1392] [cursor=pointer]
+                - generic [ref=e1395]:
+                  - generic [ref=e1396]: 机器人回复通知
+                  - switch [checked] [ref=e1397] [cursor=pointer]
+          - separator [ref=e1400]
+          - generic [ref=e1401] [cursor=pointer]:
+            - generic [ref=e1402]: 修改密码
+            - img "right" [ref=e1403]:
+              - img [ref=e1404]
+          - separator [ref=e1406]
+          - generic [ref=e1407] [cursor=pointer]:
+            - generic [ref=e1408]: 通讯录黑名单
+            - img "right" [ref=e1409]:
+              - img [ref=e1410]
+          - separator [ref=e1412]
+  - generic [ref=e1413]:
+    - dialog:
+      - generic [ref=e1416]:
+        - generic [ref=e1417]:
+          - generic [ref=e1418]: 通讯录黑名单
+          - img "close" [ref=e1419] [cursor=pointer]:
+            - img [ref=e1420]
+        - generic [ref=e1423]:
+          - img [ref=e1425]
+          - generic [ref=e1437]: 暂无数据

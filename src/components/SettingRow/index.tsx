@@ -8,7 +8,7 @@ interface ISettingRowProps {
   hidden?: boolean;
   className?: string;
   children?: ReactNode;
-  tryChange?: (checked: boolean) => Promise<void>;
+  tryChange?: (checked: boolean) => void | Promise<void>;
   rowClick?: () => void;
 }
 

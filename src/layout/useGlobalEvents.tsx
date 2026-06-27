@@ -18,6 +18,7 @@ import { t } from "i18next";
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { normalizeOpenIMTokenProfile, refreshOpenIMToken } from "@/api/login";
 import { CustomType } from "@/constants";
 import {
   pushNewMessage,
@@ -25,15 +26,78 @@ import {
 } from "@/pages/chat/queryChat/useHistoryMessageList";
 import { useConversationStore, useUserStore } from "@/store";
 import { useContactStore } from "@/store/contact";
-import { feedbackToast } from "@/utils/common";
+import { feedbackToast, isSameID } from "@/utils/common";
 import { initStore } from "@/utils/imCommon";
-import { clearIMProfile, getIMToken, getIMUserID } from "@/utils/storage";
+import {
+  clearIMProfile,
+  getIMToken,
+  getIMUserID,
+  updateCurrentIMToken,
+} from "@/utils/storage";
 
 import { IMSDK } from "./MainContentWrap";
+
+let sdkLoginPromise: Promise<void> | undefined;
+let sdkLoginKey = "";
+let sdkLoggedInKey = "";
+
+const loginOpenIMSDKOnce = (userID: string, token: string) => {
+  const nextLoginKey = `${userID}:${token}`;
+
+  if (sdkLoggedInKey === nextLoginKey) {
+    return Promise.resolve();
+  }
+
+  if (sdkLoginPromise && sdkLoginKey === nextLoginKey) {
+    return sdkLoginPromise;
+  }
+
+  sdkLoginKey = nextLoginKey;
+  sdkLoginPromise = (async () => {
+    const apiAddr = import.meta.env.VITE_API_URL;
+    const wsAddr = import.meta.env.VITE_WS_URL;
+
+    if (window.electronAPI) {
+      await IMSDK.initSDK({
+        platformID: window.electronAPI?.getPlatform() ?? 5,
+        apiAddr,
+        wsAddr,
+        dataDir: window.electronAPI.getDataPath("sdkResources") || "./",
+        logFilePath: window.electronAPI.getDataPath("logsPath") || "./",
+        logLevel: LogLevel.Debug,
+        isLogStandardOutput: false,
+        systemType: "electron",
+      });
+      await IMSDK.login({
+        userID,
+        token,
+      });
+      sdkLoggedInKey = nextLoginKey;
+      return;
+    }
+
+    await IMSDK.login({
+      userID,
+      token,
+      platformID: 5,
+      apiAddr,
+      wsAddr,
+      logLevel: LogLevel.Debug,
+    });
+    sdkLoggedInKey = nextLoginKey;
+  })().finally(() => {
+    if (sdkLoginKey === nextLoginKey) {
+      sdkLoginPromise = undefined;
+    }
+  });
+
+  return sdkLoginPromise;
+};
 
 export function useGlobalEvent() {
   const navigate = useNavigate();
   const resume = useRef(false);
+  const refreshingIMToken = useRef(false);
 
   // user
   const updateSyncState = useUserStore((state) => state.updateSyncState);
@@ -70,8 +134,6 @@ export function useGlobalEvent() {
     (state) => state.getUnReadCountByReq,
   );
   // contact
-  const getFriendListByReq = useContactStore((state) => state.getFriendListByReq);
-  const getGroupListByReq = useContactStore((state) => state.getGroupListByReq);
   const updateFriend = useContactStore((state) => state.updateFriend);
   const pushNewFriend = useContactStore((state) => state.pushNewFriend);
   const updateBlack = useContactStore((state) => state.updateBlack);
@@ -111,7 +173,8 @@ export function useGlobalEvent() {
     const IMToken = (await getIMToken()) as string;
     const IMUserID = (await getIMUserID()) as string;
     if (!IMToken || !IMUserID) {
-      clearIMProfile();
+      await clearIMProfile();
+      updateIsLogining(false);
       navigate("/login");
       return;
     }
@@ -123,39 +186,17 @@ export function useGlobalEvent() {
     const IMToken = (await getIMToken()) as string;
     const IMUserID = (await getIMUserID()) as string;
     try {
-      const apiAddr = import.meta.env.VITE_API_URL;
-      const wsAddr = import.meta.env.VITE_WS_URL;
-      if (window.electronAPI) {
-        await IMSDK.initSDK({
-          platformID: window.electronAPI?.getPlatform() ?? 5,
-          apiAddr,
-          wsAddr,
-          dataDir: window.electronAPI.getDataPath("sdkResources") || "./",
-          logFilePath: window.electronAPI.getDataPath("logsPath") || "./",
-          logLevel: LogLevel.Debug,
-          isLogStandardOutput: false,
-          systemType: "electron",
-        });
-        await IMSDK.login({
-          userID: IMUserID,
-          token: IMToken,
-        });
-      } else {
-        await IMSDK.login({
-          userID: IMUserID,
-          token: IMToken,
-          platformID: 5,
-          apiAddr,
-          wsAddr,
-          logLevel: LogLevel.Debug,
-        });
-      }
+      await loginOpenIMSDKOnce(IMUserID, IMToken);
       initStore();
     } catch (error) {
-      console.error(error);
-      if ((error as WsResponse).errCode !== 10102) {
-        navigate("/login");
+      if ((error as WsResponse).errCode === 10102) {
+        sdkLoggedInKey = `${IMUserID}:${IMToken}`;
+        initStore();
+        updateIsLogining(false);
+        return;
       }
+      console.error(error);
+      navigate("/login");
     }
     updateIsLogining(false);
   };
@@ -217,7 +258,7 @@ export function useGlobalEvent() {
     console.error("connectFailedHandler", errCode, errMsg);
 
     if (errCode === 705) {
-      tryOut(t("toast.loginExpiration"));
+      expiredHandler();
     }
   };
   const connectSuccessHandler = () => {
@@ -225,16 +266,47 @@ export function useGlobalEvent() {
     console.log("connect success...");
   };
   const kickHandler = () => tryOut(t("toast.accountKicked"));
-  const expiredHandler = () => tryOut(t("toast.loginExpiration"));
+  const expiredHandler = () => {
+    void refreshOpenIMTokenAndRetry();
+  };
 
   const tryOut = (msg: string) =>
     feedbackToast({
       msg,
       error: msg,
       onClose: () => {
+        sdkLoggedInKey = "";
+        sdkLoginPromise = undefined;
+        sdkLoginKey = "";
         userLogout(true);
       },
     });
+
+  async function refreshOpenIMTokenAndRetry() {
+    if (refreshingIMToken.current) {
+      return;
+    }
+
+    refreshingIMToken.current = true;
+    try {
+      const currentUserID = ((await getIMUserID()) as string) ?? "";
+      const response = await refreshOpenIMToken();
+      const responsePayload = (response as { data?: unknown }).data ?? response;
+      const tokenProfile = normalizeOpenIMTokenProfile(responsePayload, currentUserID);
+
+      await updateCurrentIMToken(tokenProfile.imToken, tokenProfile.userID);
+      sdkLoggedInKey = "";
+      sdkLoginPromise = undefined;
+      sdkLoginKey = "";
+      await IMSDK.logout().catch(() => undefined);
+      await tryLogin();
+    } catch (error) {
+      console.error("refreshOpenIMTokenAndRetry failed", error);
+      tryOut(t("toast.loginExpiration"));
+    } finally {
+      refreshingIMToken.current = false;
+    }
+  }
 
   // sync
   const syncStartHandler = ({ data }: WSEvent<boolean>) => {
@@ -246,8 +318,6 @@ export function useGlobalEvent() {
   };
   const syncFinishHandler = () => {
     updateSyncState("success");
-    getFriendListByReq();
-    getGroupListByReq();
     getConversationListByReq(false);
     getUnReadCountByReq();
   };
@@ -298,22 +368,26 @@ export function useGlobalEvent() {
     switch (newServerMsg.sessionType) {
       case SessionType.Single:
         return (
-          newServerMsg.sendID ===
-            useConversationStore.getState().currentConversation?.userID ||
-          (newServerMsg.sendID === useUserStore.getState().selfInfo.userID &&
-            newServerMsg.recvID ===
-              useConversationStore.getState().currentConversation?.userID)
+          isSameID(
+            newServerMsg.sendID,
+            useConversationStore.getState().currentConversation?.userID,
+          ) ||
+          (isSameID(newServerMsg.sendID, useUserStore.getState().selfInfo.userID) &&
+            isSameID(
+              newServerMsg.recvID,
+              useConversationStore.getState().currentConversation?.userID,
+            ))
         );
       case SessionType.Group:
       case SessionType.WorkingGroup:
-        return (
-          newServerMsg.groupID ===
-          useConversationStore.getState().currentConversation?.groupID
+        return isSameID(
+          newServerMsg.groupID,
+          useConversationStore.getState().currentConversation?.groupID,
         );
       case SessionType.Notification:
-        return (
-          newServerMsg.sendID ===
-          useConversationStore.getState().currentConversation?.userID
+        return isSameID(
+          newServerMsg.sendID,
+          useConversationStore.getState().currentConversation?.userID,
         );
       default:
         return false;
@@ -360,48 +434,79 @@ export function useGlobalEvent() {
 
   // group
   const joinedGroupAddedHandler = ({ data }: WSEvent<GroupItem>) => {
-    if (data.groupID === useConversationStore.getState().currentConversation?.groupID) {
+    if (
+      isSameID(
+        data.groupID,
+        useConversationStore.getState().currentConversation?.groupID,
+      )
+    ) {
       updateCurrentGroupInfo(data);
       getCurrentMemberInGroupByReq(data.groupID);
     }
     pushNewGroup(data);
   };
   const joinedGroupDeletedHandler = ({ data }: WSEvent<GroupItem>) => {
-    if (data.groupID === useConversationStore.getState().currentConversation?.groupID) {
+    if (
+      isSameID(
+        data.groupID,
+        useConversationStore.getState().currentConversation?.groupID,
+      )
+    ) {
       getCurrentGroupInfoByReq(data.groupID);
       setCurrentMemberInGroup();
     }
     updateGroup(data, true);
   };
   const joinedGroupDismissHandler = ({ data }: WSEvent<GroupItem>) => {
-    if (data.groupID === useConversationStore.getState().currentConversation?.groupID) {
+    if (
+      isSameID(
+        data.groupID,
+        useConversationStore.getState().currentConversation?.groupID,
+      )
+    ) {
       getCurrentMemberInGroupByReq(data.groupID);
     }
   };
   const groupInfoChangedHandler = ({ data }: WSEvent<GroupItem>) => {
     updateGroup(data);
-    if (data.groupID === useConversationStore.getState().currentConversation?.groupID) {
+    if (
+      isSameID(
+        data.groupID,
+        useConversationStore.getState().currentConversation?.groupID,
+      )
+    ) {
       updateCurrentGroupInfo(data);
     }
   };
   const groupMemberAddedHandler = ({ data }: WSEvent<GroupMemberItem>) => {
     if (
-      data.groupID === useConversationStore.getState().currentConversation?.groupID &&
-      data.userID === useUserStore.getState().selfInfo.userID
+      isSameID(
+        data.groupID,
+        useConversationStore.getState().currentConversation?.groupID,
+      ) &&
+      isSameID(data.userID, useUserStore.getState().selfInfo.userID)
     ) {
       getCurrentMemberInGroupByReq(data.groupID);
     }
   };
   const groupMemberDeletedHandler = ({ data }: WSEvent<GroupMemberItem>) => {
     if (
-      data.groupID === useConversationStore.getState().currentConversation?.groupID &&
-      data.userID === useUserStore.getState().selfInfo.userID
+      isSameID(
+        data.groupID,
+        useConversationStore.getState().currentConversation?.groupID,
+      ) &&
+      isSameID(data.userID, useUserStore.getState().selfInfo.userID)
     ) {
       getCurrentMemberInGroupByReq(data.groupID);
     }
   };
   const groupMemberInfoChangedHandler = ({ data }: WSEvent<GroupMemberItem>) => {
-    if (data.groupID === useConversationStore.getState().currentConversation?.groupID) {
+    if (
+      isSameID(
+        data.groupID,
+        useConversationStore.getState().currentConversation?.groupID,
+      )
+    ) {
       tryUpdateCurrentMemberInGroup(data);
     }
   };
@@ -410,7 +515,7 @@ export function useGlobalEvent() {
   const friendApplicationProcessedHandler = ({
     data,
   }: WSEvent<FriendApplicationItem>) => {
-    const isRecv = data.toUserID === useUserStore.getState().selfInfo.userID;
+    const isRecv = isSameID(data.toUserID, useUserStore.getState().selfInfo.userID);
     if (isRecv) {
       updateRecvFriendApplication(data);
     } else {
@@ -420,7 +525,7 @@ export function useGlobalEvent() {
   const groupApplicationProcessedHandler = ({
     data,
   }: WSEvent<GroupApplicationItem>) => {
-    const isRecv = data.userID !== useUserStore.getState().selfInfo.userID;
+    const isRecv = !isSameID(data.userID, useUserStore.getState().selfInfo.userID);
     if (isRecv) {
       updateRecvGroupApplication(data);
     } else {

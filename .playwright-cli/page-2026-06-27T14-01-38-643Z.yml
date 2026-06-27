@@ -1,0 +1,56 @@
+- generic [ref=e2]:
+  - generic [ref=e11]:
+    - generic [ref=e13]:
+      - generic [ref=e15]:
+        - generic [ref=e16]: 在线化办公
+        - text: 多人协作，打造高效办公方式
+        - img "login_bg" [ref=e17]
+      - generic [ref=e75]:
+        - generic [ref=e76] [cursor=pointer]:
+          - img "left" [ref=e77]:
+            - img [ref=e78]
+          - text: 返回
+        - generic [ref=e80]: 新用户注册
+        - generic [ref=e81]:
+          - generic [ref=e83]:
+            - generic "手机号" [ref=e85]
+            - generic [ref=e89]:
+              - generic [ref=e90] [cursor=pointer]:
+                - generic [ref=e91]:
+                  - combobox [ref=e93]
+                  - generic "+86" [ref=e94]
+                - generic:
+                  - img:
+                    - img
+              - textbox "请输入手机号" [ref=e96]
+          - generic [ref=e99]:
+            - generic "企业号" [ref=e101]
+            - textbox "企业号" [disabled] [ref=e105]:
+              - /placeholder: 请输入企业号
+              - text: LOCALTEST001
+          - generic [ref=e107]:
+            - generic "昵称" [ref=e109]: "* 昵称"
+            - textbox "* 昵称" [ref=e114]:
+              - /placeholder: 请输入昵称
+          - generic [ref=e117]:
+            - generic "密码" [ref=e119]: "* 密码"
+            - generic [ref=e123]:
+              - textbox "* 密码" [ref=e124]:
+                - /placeholder: 请输入您的密码
+              - img "eye-invisible" [ref=e126] [cursor=pointer]:
+                - img [ref=e127]
+          - generic [ref=e131]:
+            - generic "确认密码:" [ref=e133]: "* 确认密码:"
+            - generic [ref=e137]:
+              - textbox "* 确认密码:" [ref=e138]:
+                - /placeholder: 请再次确认您的密码
+              - img "eye-invisible" [ref=e140] [cursor=pointer]:
+                - img [ref=e141]
+          - button "确认" [ref=e149] [cursor=pointer]:
+            - generic [ref=e150]: 确认
+    - generic [ref=e72] [cursor=pointer]:
+      - generic [ref=e73]: OpenCorp-Base v3.8.3
+      - generic [ref=e74]: SDK(ffi) v3.8.3
+  - complementary "React Query Devtools":
+    - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+      - img [ref=e5]

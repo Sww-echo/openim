@@ -1,0 +1,53 @@
+- generic [ref=e2]:
+  - generic [ref=e94]:
+    - complementary [ref=e95]:
+      - generic [ref=e97]:
+        - generic [ref=e99] [cursor=pointer]: qqq
+        - generic [ref=e100]:
+          - button "系统公告" [ref=e101] [cursor=pointer]:
+            - img "bell" [ref=e102]:
+              - img [ref=e103]
+          - superscript [ref=e105]:
+            - generic [ref=e107]: "7"
+        - generic [ref=e110] [cursor=pointer]: 消息
+        - generic [ref=e113] [cursor=pointer]: 通讯录
+    - generic [ref=e114]:
+      - complementary [ref=e116]:
+        - generic [ref=e120]:
+          - generic [ref=e122]:
+            - img [ref=e125]
+            - generic [ref=e126]:
+              - generic [ref=e127]:
+                - generic [ref=e128]: 橙子皮、橙子皮1、橙子皮4
+                - generic [ref=e129]: 星期五 17:39
+              - generic [ref=e132]: 橙子皮1：在不在
+          - generic [ref=e134]:
+            - generic [ref=e137]: www
+            - generic [ref=e138]:
+              - generic [ref=e139]:
+                - generic [ref=e140]: www
+                - generic [ref=e141]: 星期五 14:43
+              - generic [ref=e144]: 你是谁
+          - generic [ref=e146]:
+            - generic [ref=e149]: 橙子皮4
+            - generic [ref=e150]:
+              - generic [ref=e151]:
+                - generic [ref=e152]: 橙子皮4
+                - generic [ref=e153]: 2026年6月14日 20:23
+              - generic [ref=e156]: "11"
+          - generic [ref=e158]:
+            - generic [ref=e161]: 橙子皮1
+            - generic [ref=e162]:
+              - generic [ref=e163]:
+                - generic [ref=e164]: 橙子皮1
+                - generic [ref=e165]: 2026年6月8日 15:24
+              - generic [ref=e168]: qq
+      - generic [ref=e171]:
+        - generic [ref=e172]:
+          - generic [ref=e173]: 创建群聊
+          - generic [ref=e174]: 创建群组，立即开启在线化办公
+        - button "立即创建" [ref=e176] [cursor=pointer]:
+          - generic [ref=e177]: 立即创建
+  - complementary "React Query Devtools":
+    - button "Open React Query Devtools" [ref=e72] [cursor=pointer]:
+      - img [ref=e73]

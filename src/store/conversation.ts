@@ -1,20 +1,68 @@
-import {
+import type {
   ConversationItem,
   GroupItem,
   GroupMemberItem,
-  MessageItem,
 } from "@openim/wasm-client-sdk/lib/types/entity";
 import { t } from "i18next";
 import { create } from "zustand";
 
+import { getOpenIMGroupDetail, getOpenIMGroupMembers } from "@/api/group";
 import { IMSDK } from "@/layout/MainContentWrap";
-import { feedbackToast } from "@/utils/common";
+import {
+  getBusinessListPayload,
+  pickExplicitBusinessRoomId,
+  pickBusinessText,
+  type BusinessRecord,
+} from "@/utils/businessPayload";
+import { feedbackToast, isSameID } from "@/utils/common";
+import { normalizeBusinessGroupMemberRoleLevel } from "@/utils/groupMember";
 import { conversationSort, isGroupSession } from "@/utils/imCommon";
 
 import { ConversationListUpdateType, ConversationStore } from "./type";
 import { useUserStore } from "./user";
 
 const CONVERSATION_SPLIT_COUNT = 500;
+
+const asRecord = (value: unknown) =>
+  value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+
+const unwrapBusinessData = (response: unknown): Record<string, unknown> => {
+  const data = asRecord(response).data ?? response;
+  const record = asRecord(data);
+  return asRecord(record.room ?? record.group ?? record.detail ?? data);
+};
+
+const normalizeBusinessGroupMember = (
+  record: BusinessRecord,
+  fallbackGroupID: string,
+): Partial<GroupMemberItem> => ({
+  ...record,
+  userID: pickBusinessText(record, [
+    "userID",
+    "userId",
+    "user_id",
+    "openIMUserID",
+    "openIMUserId",
+  ]),
+  groupID:
+    pickBusinessText(record, ["groupID", "groupId", "roomId", "roomID"]) ||
+    fallbackGroupID,
+  nickname: pickBusinessText(record, [
+    "nickname",
+    "nickName",
+    "name",
+    "userName",
+    "account",
+  ]),
+  faceURL: pickBusinessText(record, [
+    "faceURL",
+    "faceUrl",
+    "avatar",
+    "avatarUrl",
+    "userFaceURL",
+  ]),
+  roleLevel: normalizeBusinessGroupMemberRoleLevel(record),
+});
 
 export const useConversationStore = create<ConversationStore>()((set, get) => ({
   conversationList: [],
@@ -70,7 +118,7 @@ export const useConversationStore = create<ConversationStore>()((set, get) => ({
   },
   updateCurrentConversation: async (
     conversation?: ConversationItem,
-    isJump?: boolean,
+    _isJump?: boolean,
   ) => {
     if (!conversation) {
       set(() => ({
@@ -85,11 +133,25 @@ export const useConversationStore = create<ConversationStore>()((set, get) => ({
 
     const toggleNewConversation =
       conversation.conversationID !== prevConversation?.conversationID;
+    set(() => ({
+      currentConversation: { ...conversation },
+      ...(toggleNewConversation || !isGroupSession(conversation.conversationType)
+        ? {
+            currentGroupInfo: undefined,
+            currentMemberInGroup: undefined,
+          }
+        : {}),
+    }));
+
     if (toggleNewConversation && isGroupSession(conversation.conversationType)) {
-      get().getCurrentGroupInfoByReq(conversation.groupID);
-      await get().getCurrentMemberInGroupByReq(conversation.groupID);
+      const businessRoomId =
+        pickExplicitBusinessRoomId(
+          conversation as unknown as BusinessRecord,
+          conversation.groupID,
+        ) || conversation.groupID;
+      get().getCurrentGroupInfoByReq(conversation.groupID, businessRoomId);
+      await get().getCurrentMemberInGroupByReq(conversation.groupID, businessRoomId);
     }
-    set(() => ({ currentConversation: { ...conversation } }));
   },
   getUnReadCountByReq: async () => {
     try {
@@ -104,11 +166,28 @@ export const useConversationStore = create<ConversationStore>()((set, get) => ({
   updateUnReadCount: (count: number) => {
     set(() => ({ unReadCount: count }));
   },
-  getCurrentGroupInfoByReq: async (groupID: string) => {
+  getCurrentGroupInfoByReq: async (groupID: string, businessRoomId?: string) => {
     let groupInfo: GroupItem;
     try {
       const { data } = await IMSDK.getSpecifiedGroupsInfo([groupID]);
       groupInfo = data[0];
+      const resolvedBusinessRoomId =
+        businessRoomId ||
+        pickExplicitBusinessRoomId(groupInfo as unknown as BusinessRecord, groupID) ||
+        groupID;
+      if (resolvedBusinessRoomId) {
+        try {
+          const response = await getOpenIMGroupDetail({
+            roomId: resolvedBusinessRoomId,
+          });
+          groupInfo = {
+            ...groupInfo,
+            ...unwrapBusinessData(response),
+          };
+        } catch (error) {
+          console.debug("getOpenIMGroupDetail failed", error);
+        }
+      }
     } catch (error) {
       feedbackToast({ error, msg: t("toast.getGroupInfoFailed") });
       return;
@@ -118,7 +197,7 @@ export const useConversationStore = create<ConversationStore>()((set, get) => ({
   updateCurrentGroupInfo: (groupInfo: GroupItem) => {
     set(() => ({ currentGroupInfo: { ...groupInfo } }));
   },
-  getCurrentMemberInGroupByReq: async (groupID: string) => {
+  getCurrentMemberInGroupByReq: async (groupID: string, businessRoomId?: string) => {
     let memberInfo: GroupMemberItem;
     const selfID = useUserStore.getState().selfInfo.userID;
     try {
@@ -127,6 +206,34 @@ export const useConversationStore = create<ConversationStore>()((set, get) => ({
         userIDList: [selfID],
       });
       memberInfo = data[0];
+      const resolvedBusinessRoomId = businessRoomId || groupID;
+      if (resolvedBusinessRoomId) {
+        try {
+          const businessResponse = await getOpenIMGroupMembers({
+            roomId: resolvedBusinessRoomId,
+            keyword: selfID,
+            pageIndex: 0,
+            pageSize: 100,
+          });
+          const businessMember = getBusinessListPayload(businessResponse)
+            .map((record) => normalizeBusinessGroupMember(record, groupID))
+            .find((record) => isSameID(record.userID, selfID));
+
+          if (businessMember) {
+            const compactBusinessMember = Object.fromEntries(
+              Object.entries(businessMember).filter(
+                ([, value]) => value !== undefined && value !== "",
+              ),
+            ) as Partial<GroupMemberItem>;
+            memberInfo = {
+              ...memberInfo,
+              ...compactBusinessMember,
+            };
+          }
+        } catch (error) {
+          console.debug("getOpenIMGroupMembers current member failed", error);
+        }
+      }
     } catch (error) {
       set(() => ({ currentMemberInGroup: undefined }));
       feedbackToast({ error, msg: t("toast.getGroupMemberFailed") });
@@ -140,8 +247,8 @@ export const useConversationStore = create<ConversationStore>()((set, get) => ({
   tryUpdateCurrentMemberInGroup: (member: GroupMemberItem) => {
     const currentMemberInGroup = get().currentMemberInGroup;
     if (
-      member.groupID === currentMemberInGroup?.groupID &&
-      member.userID === currentMemberInGroup?.userID
+      isSameID(member.groupID, currentMemberInGroup?.groupID) &&
+      isSameID(member.userID, currentMemberInGroup?.userID)
     ) {
       set(() => ({ currentMemberInGroup: { ...member } }));
     }

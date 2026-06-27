@@ -1,0 +1,38 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e190]:
+      - complementary [ref=e191]:
+        - generic [ref=e193]:
+          - generic [ref=e195] [cursor=pointer]: e2e-flow-user
+          - button "系统公告" [ref=e197] [cursor=pointer]:
+            - img "bell" [ref=e198]:
+              - img [ref=e199]
+          - generic [ref=e203] [cursor=pointer]: 消息
+          - generic [ref=e206] [cursor=pointer]: 通讯录
+      - generic [ref=e207]:
+        - complementary [ref=e209]
+        - generic [ref=e215]:
+          - generic [ref=e216]:
+            - generic [ref=e217]: 创建群聊
+            - generic [ref=e218]: 创建群组，立即开启在线化办公
+          - button "立即创建" [ref=e220] [cursor=pointer]:
+            - generic [ref=e221]: 立即创建
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+  - generic [ref=e236]:
+    - dialog:
+      - generic [ref=e238]:
+        - generic [ref=e239]:
+          - generic [ref=e240]: 添加好友
+          - img "close" [ref=e241] [cursor=pointer]:
+            - img [ref=e242]
+        - generic [ref=e244]:
+          - textbox "请输入" [ref=e248]: "18296687666"
+          - generic [ref=e249]:
+            - button "loading 确认" [active] [ref=e254]:
+              - img "loading" [ref=e256]:
+                - img [ref=e257]
+              - generic [ref=e253]: 确认
+            - button "取消" [ref=e251] [cursor=pointer]:
+              - generic [ref=e252]: 取消

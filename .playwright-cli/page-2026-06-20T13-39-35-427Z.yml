@@ -1,0 +1,88 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e17]:
+      - complementary [ref=e18]:
+        - generic [ref=e20]:
+          - generic [ref=e22] [cursor=pointer]: qqq
+          - generic [ref=e23]:
+            - button "系统公告" [ref=e24] [cursor=pointer]:
+              - img "bell" [ref=e25]:
+                - img [ref=e26]
+            - superscript [ref=e28]:
+              - generic [ref=e30]: "7"
+          - generic [ref=e33] [cursor=pointer]: 消息
+          - generic [ref=e36] [cursor=pointer]: 通讯录
+      - generic [ref=e37]:
+        - complementary [ref=e39]:
+          - generic [ref=e43]:
+            - generic [ref=e45]:
+              - img [ref=e48]
+              - generic [ref=e49]:
+                - generic [ref=e50]:
+                  - generic [ref=e51]: 橙子皮、橙子皮1、橙子皮4
+                  - generic [ref=e52]: 昨天 17:39
+                - generic [ref=e55]: 橙子皮1：在不在
+            - generic [ref=e57]:
+              - generic [ref=e60]: www
+              - generic [ref=e61]:
+                - generic [ref=e62]:
+                  - generic [ref=e63]: www
+                  - generic [ref=e64]: 昨天 14:43
+                - generic [ref=e67]: 你是谁
+            - generic [ref=e69]:
+              - generic [ref=e72]: 橙子皮4
+              - generic [ref=e73]:
+                - generic [ref=e74]:
+                  - generic [ref=e75]: 橙子皮4
+                  - generic [ref=e76]: 星期日 20:23
+                - generic [ref=e79]: "11"
+            - generic [ref=e81]:
+              - generic [ref=e84]: 橙子皮1
+              - generic [ref=e85]:
+                - generic [ref=e86]:
+                  - generic [ref=e87]: 橙子皮1
+                  - generic [ref=e88]: 2026年6月8日 15:24
+                - generic [ref=e91]: qq
+        - generic [ref=e94]:
+          - generic [ref=e95]:
+            - generic [ref=e96]: 创建群聊
+            - generic [ref=e97]: 创建群组，立即开启在线化办公
+          - button "立即创建" [ref=e99] [cursor=pointer]:
+            - generic [ref=e100]: 立即创建
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+  - tooltip "qqq qqq 切换账号 qqq qqq 10000003 当前 我的信息 right 账号设置 right 关于我们 right 退出登录 right" [ref=e103]:
+    - generic [ref=e105]:
+      - generic [ref=e106]:
+        - button "qqq" [ref=e109] [cursor=pointer]:
+          - generic [ref=e112]: qqq
+        - generic [ref=e115]: qqq
+      - generic [ref=e116]:
+        - generic [ref=e117]: 切换账号
+        - button "qqq qqq 10000003 当前" [disabled] [ref=e119]:
+          - generic [ref=e121]: qqq
+          - generic [ref=e122]:
+            - generic [ref=e123]: qqq
+            - generic [ref=e124]: "10000003"
+          - generic [ref=e125]: 当前
+      - generic [ref=e126]:
+        - generic [ref=e127] [cursor=pointer]:
+          - generic [ref=e128]: 我的信息
+          - img "right" [ref=e129]:
+            - img [ref=e130]
+        - separator [ref=e133]
+      - generic [ref=e134]:
+        - generic [ref=e135] [cursor=pointer]:
+          - generic [ref=e136]: 账号设置
+          - img "right" [ref=e137]:
+            - img [ref=e138]
+        - separator [ref=e141]
+      - generic [ref=e143] [cursor=pointer]:
+        - generic [ref=e144]: 关于我们
+        - img "right" [ref=e145]:
+          - img [ref=e146]
+      - generic [ref=e149] [cursor=pointer]:
+        - generic [ref=e150]: 退出登录
+        - img "right" [ref=e151]:
+          - img [ref=e152]

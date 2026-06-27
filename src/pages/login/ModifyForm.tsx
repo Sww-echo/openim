@@ -5,12 +5,17 @@ import md5 from "md5";
 import { useEffect, useState } from "react";
 
 import { useReset, useSendSms, useVerifyCode } from "@/api/login";
+import {
+  isBusinessRecord,
+  pickBusinessText,
+  unwrapBusinessPayload,
+} from "@/utils/businessPayload";
 
 import { areaCode } from "./areaCode";
 import type { FormType } from "./index";
+import { getPhoneNumberRules } from "./rules";
 
 type ModifyFormProps = {
-  loginMethod: "phone" | "email";
   setFormType: (type: FormType) => void;
 };
 
@@ -22,12 +27,13 @@ type FormFields = {
   password2: string;
 };
 
-const ModifyForm = ({ loginMethod, setFormType }: ModifyFormProps) => {
+const ModifyForm = ({ setFormType }: ModifyFormProps) => {
   const { message } = App.useApp();
   const [form] = Form.useForm<FormFields>();
   const [countdown, setCountdown] = useState(0);
   const [isConfirm, setIsConfirm] = useState(false);
-  const { mutate: sendSms } = useSendSms();
+  const [resetSerial, setResetSerial] = useState("");
+  const { mutate: sendSms, isLoading: sendSmsLoading } = useSendSms();
   const { mutate: reset } = useReset();
   const { mutate: verifyCode } = useVerifyCode();
 
@@ -46,7 +52,6 @@ const ModifyForm = ({ loginMethod, setFormType }: ModifyFormProps) => {
   }, [countdown]);
 
   const onFinish = (fields: FormFields) => {
-    if (!fields.verifyCode) return;
     if (!isConfirm) {
       verifyCode(
         {
@@ -54,14 +59,30 @@ const ModifyForm = ({ loginMethod, setFormType }: ModifyFormProps) => {
           usedFor: 2,
         },
         {
-          onSuccess() {
+          onSuccess(response) {
+            const payload = unwrapBusinessPayload(response);
+            const serial = isBusinessRecord(payload)
+              ? pickBusinessText(payload, [
+                  "serial",
+                  "deviceSerial",
+                  "deviceID",
+                  "deviceId",
+                ])
+              : "";
+
+            if (!serial) {
+              message.error(t("toast.missingPasswordResetSerial"));
+              return;
+            }
+
+            setResetSerial(serial);
             setIsConfirm(true);
           },
         },
       );
     } else {
       reset(
-        { ...fields, password: md5(fields.password) },
+        { ...fields, password: md5(fields.password), serial: resetSerial },
         {
           onSuccess() {
             message.success(t("toast.updatePasswordSuccess"));
@@ -73,23 +94,34 @@ const ModifyForm = ({ loginMethod, setFormType }: ModifyFormProps) => {
   };
 
   const sendSmsHandle = () => {
-    sendSms(
-      {
-        phoneNumber: form.getFieldValue("phoneNumber") as string,
-        email: form.getFieldValue("email") as string,
-        areaCode: form.getFieldValue("areaCode") as string,
-        usedFor: 3,
-      },
-      {
-        onSuccess() {
-          setCountdown(60);
-        },
-      },
-    );
+    if (countdown > 0 || sendSmsLoading) {
+      return;
+    }
+
+    form
+      .validateFields(["areaCode", "phoneNumber"])
+      .then(({ areaCode, phoneNumber }: Pick<FormFields, "areaCode" | "phoneNumber">) => {
+        sendSms(
+          {
+            phoneNumber,
+            areaCode,
+            usedFor: 2,
+          },
+          {
+            onSuccess() {
+              setCountdown(60);
+            },
+          },
+        );
+      })
+      .catch(() => {
+        // AntD has already rendered field-level validation feedback.
+      });
   };
 
   const back = () => {
     setFormType(0);
+    setResetSerial("");
     form.resetFields();
   };
 
@@ -136,7 +168,7 @@ const ModifyForm = ({ loginMethod, setFormType }: ModifyFormProps) => {
               rules={[
                 {
                   required: true,
-                  message: "Please confirm your password",
+                  message: t("toast.reconfirmPassword"),
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
@@ -153,42 +185,49 @@ const ModifyForm = ({ loginMethod, setFormType }: ModifyFormProps) => {
             </Form.Item>
           </>
         )}
-        {loginMethod === "phone" ? (
-          <Form.Item label={t("placeholder.phoneNumber")} required hidden={isConfirm}>
-            <Space.Compact className="w-full">
-              <Form.Item name="areaCode" noStyle>
-                <Select options={areaCode} className="!w-28" />
-              </Form.Item>
-              <Form.Item name="phoneNumber" noStyle>
-                <Input allowClear placeholder={t("toast.inputPhoneNumber")} />
-              </Form.Item>
-            </Space.Compact>
-          </Form.Item>
-        ) : (
-          <Form.Item
-            required
-            hidden={isConfirm}
-            label={t("placeholder.email")}
-            name="email"
-            rules={[{ type: "email", message: t("toast.inputCorrectEmail") }]}
-          >
-            <Input allowClear placeholder={t("toast.inputEmail")} />
-          </Form.Item>
-        )}
+        <Form.Item label={t("placeholder.phoneNumber")} required hidden={isConfirm}>
+          <Space.Compact className="w-full">
+            <Form.Item name="areaCode" noStyle>
+              <Select options={areaCode} className="!w-28" />
+            </Form.Item>
+            <Form.Item
+              name="phoneNumber"
+              noStyle
+              rules={getPhoneNumberRules()}
+            >
+              <Input allowClear placeholder={t("toast.inputPhoneNumber")} />
+            </Form.Item>
+          </Space.Compact>
+        </Form.Item>
 
         <Form.Item
           label={t("placeholder.verifyCode")}
-          name="verifyCode"
           hidden={isConfirm}
           required
         >
           <Space.Compact className="w-full">
-            <Input
-              allowClear
-              placeholder={t("toast.inputVerifyCode")}
-              className="w-full"
-            />
-            <Button type="primary" onClick={sendSmsHandle} loading={countdown > 0}>
+            <Form.Item
+              name="verifyCode"
+              noStyle
+              rules={[
+                {
+                  required: true,
+                  message: t("toast.inputVerifyCode"),
+                },
+              ]}
+            >
+              <Input
+                allowClear
+                placeholder={t("toast.inputVerifyCode")}
+                className="w-full"
+              />
+            </Form.Item>
+            <Button
+              type="primary"
+              onClick={sendSmsHandle}
+              loading={sendSmsLoading || countdown > 0}
+              disabled={countdown > 0}
+            >
               {countdown > 0
                 ? t("date.second", { num: countdown })
                 : t("placeholder.sendVerifyCode")}

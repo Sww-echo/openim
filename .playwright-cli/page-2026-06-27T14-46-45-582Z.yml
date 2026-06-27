@@ -1,0 +1,31 @@
+- generic [ref=e2]:
+  - generic [ref=e10]:
+    - complementary [ref=e11]:
+      - generic [ref=e13]:
+        - generic [ref=e15] [cursor=pointer]: e2e-friend-b
+        - button "系统公告" [ref=e17] [cursor=pointer]:
+          - img "bell" [ref=e18]:
+            - img [ref=e19]
+        - generic [ref=e23] [cursor=pointer]: 消息
+        - generic [ref=e26] [cursor=pointer]: 通讯录
+    - generic [ref=e27]:
+      - complementary [ref=e28]:
+        - generic [ref=e30]:
+          - generic [ref=e31]: 通讯录
+          - list [ref=e32]:
+            - listitem [ref=e33] [cursor=pointer]:
+              - img "新的好友" [ref=e35]
+              - generic [ref=e36]: 新的好友
+            - listitem [ref=e37] [cursor=pointer]:
+              - img "群通知" [ref=e39]
+              - generic [ref=e40]: 群通知
+            - listitem [ref=e41] [cursor=pointer]:
+              - img "我的好友" [ref=e43]
+              - generic [ref=e44]: 我的好友
+            - listitem [ref=e45] [cursor=pointer]:
+              - img "我的群组" [ref=e47]
+              - generic [ref=e48]: 我的群组
+      - paragraph [ref=e51]: 新的好友
+  - complementary "React Query Devtools":
+    - button "Open React Query Devtools" [ref=e55] [cursor=pointer]:
+      - img [ref=e56]

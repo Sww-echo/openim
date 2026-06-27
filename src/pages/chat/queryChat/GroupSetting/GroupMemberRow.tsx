@@ -7,16 +7,25 @@ import invite from "@/assets/images/chatSetting/invite.png";
 import kick from "@/assets/images/chatSetting/kick.png";
 import OIMAvatar from "@/components/OIMAvatar";
 import useGroupMembers from "@/hooks/useGroupMembers";
+import type { GroupChooseExtraData } from "@/pages/common/ChooseModal";
+import {
+  BusinessRecord,
+  pickExplicitBusinessRoomId,
+  toBusinessText,
+} from "@/utils/businessPayload";
+import { feedbackToast } from "@/utils/common";
 import { emit } from "@/utils/events";
 
 import styles from "./group-setting.module.scss";
 
 const GroupMemberRow = ({
   currentGroupInfo,
+  canInviteMember,
   isNomal,
   updateTravel,
 }: {
   currentGroupInfo: GroupItem;
+  canInviteMember: boolean;
   isNomal: boolean;
   updateTravel: () => void;
 }) => {
@@ -31,21 +40,44 @@ const GroupMemberRow = ({
     };
   }, [currentGroupInfo?.groupID]);
 
-  const sliceCount = isNomal ? 17 : 16;
+  const groupID = toBusinessText(currentGroupInfo.groupID).trim();
+  const businessRoomId = (
+    pickExplicitBusinessRoomId(
+      currentGroupInfo as unknown as BusinessRecord,
+      groupID,
+    ) || groupID
+  ).trim();
+  const canOpenGroupChoose = Boolean(groupID && businessRoomId);
+  const canShowInviteEntry = canInviteMember && canOpenGroupChoose;
+  const canShowKickEntry = !isNomal && canOpenGroupChoose;
+  const actionCount = (canShowInviteEntry ? 1 : 0) + (canShowKickEntry ? 1 : 0);
+  const sliceCount = 18 - actionCount;
+  const groupChooseExtraData: GroupChooseExtraData = {
+    groupID,
+    roomId: businessRoomId,
+  };
 
   const inviteMember = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
+    if (!canOpenGroupChoose) {
+      feedbackToast({ error: new Error(t("toast.updateGroupInfoFailed")) });
+      return;
+    }
     emit("OPEN_CHOOSE_MODAL", {
       type: "INVITE_TO_GROUP",
-      extraData: currentGroupInfo.groupID,
+      extraData: groupChooseExtraData,
     });
   };
 
   const kickMember = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
+    if (!canOpenGroupChoose) {
+      feedbackToast({ error: new Error(t("toast.updateGroupInfoFailed")) });
+      return;
+    }
     emit("OPEN_CHOOSE_MODAL", {
       type: "KICK_FORM_GROUP",
-      extraData: currentGroupInfo.groupID,
+      extraData: groupChooseExtraData,
     });
   };
 
@@ -69,16 +101,18 @@ const GroupMemberRow = ({
             </div>
           </div>
         ))}
-        <div
-          className={clsx(styles["member-item"], "cursor-pointer")}
-          onClick={inviteMember}
-        >
-          <img width={36} src={invite} alt="invite" />
-          <div className="mt-2 max-w-full truncate text-xs text-[var(--sub-text)]">
-            {t("placeholder.add")}
+        {canShowInviteEntry && (
+          <div
+            className={clsx(styles["member-item"], "cursor-pointer")}
+            onClick={inviteMember}
+          >
+            <img width={36} src={invite} alt="invite" />
+            <div className="mt-2 max-w-full truncate text-xs text-[var(--sub-text)]">
+              {t("placeholder.add")}
+            </div>
           </div>
-        </div>
-        {!isNomal && (
+        )}
+        {canShowKickEntry && (
           <div
             className={clsx(styles["member-item"], "cursor-pointer")}
             onClick={kickMember}

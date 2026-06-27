@@ -1,0 +1,109 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e10]:
+      - complementary [ref=e11]:
+        - generic [ref=e13]:
+          - generic [ref=e15] [cursor=pointer]: 橙子皮
+          - button "系统公告" [ref=e17] [cursor=pointer]:
+            - img "bell" [ref=e18]:
+              - img [ref=e19]
+          - generic [ref=e23] [cursor=pointer]: 消息
+          - generic [ref=e26] [cursor=pointer]: 通讯录
+      - generic [ref=e27]:
+        - complementary [ref=e29]:
+          - generic [ref=e33]:
+            - generic [ref=e35]:
+              - img [ref=e38]
+              - generic [ref=e40]:
+                - generic [ref=e41]: "3"
+                - generic [ref=e42]: 23:21
+            - generic [ref=e46]:
+              - img [ref=e49]
+              - generic [ref=e50]:
+                - generic [ref=e51]:
+                  - generic [ref=e52]: "3"
+                  - generic [ref=e53]: 23:18
+                - generic [ref=e56]: 你解散了群聊
+            - generic [ref=e58]:
+              - img [ref=e61]
+              - generic [ref=e62]:
+                - generic [ref=e63]:
+                  - generic [ref=e64]: "2"
+                  - generic [ref=e65]: 02:10
+                - generic [ref=e68]: 你解散了群聊
+            - generic [ref=e70]:
+              - img [ref=e73]
+              - generic [ref=e75]:
+                - generic [ref=e76]: TestGroup
+                - generic [ref=e77]: 02:05
+            - generic [ref=e81]:
+              - generic [ref=e84]: www
+              - generic [ref=e85]:
+                - generic [ref=e86]:
+                  - generic [ref=e87]: www
+                  - generic [ref=e88]: 01:11
+                - generic [ref=e91]: qq
+            - generic [ref=e93]:
+              - img [ref=e96]
+              - generic [ref=e97]:
+                - generic [ref=e98]:
+                  - generic [ref=e99]: 橙子皮、橙子皮1、橙子皮4
+                  - generic [ref=e100]: 昨天 17:48
+                - generic [ref=e103]: 橙子皮1：
+            - generic [ref=e105]:
+              - generic [ref=e108]: 橙子皮4
+              - generic [ref=e109]:
+                - generic [ref=e110]:
+                  - generic [ref=e111]: 橙子皮4
+                  - generic [ref=e112]: 2026年6月14日 20:23
+                - generic [ref=e115]: "11"
+            - generic [ref=e117]:
+              - generic [ref=e120]: 橙子皮1
+              - generic [ref=e121]:
+                - generic [ref=e122]:
+                  - generic [ref=e123]: 橙子皮1
+                  - generic [ref=e124]: 2026年6月8日 15:24
+                - generic [ref=e127]: qq
+        - generic [ref=e129]:
+          - banner [ref=e130]:
+            - generic [ref=e131]:
+              - generic [ref=e132]:
+                - img [ref=e134]
+                - generic [ref=e135]:
+                  - generic [ref=e136]: 啊啊i
+                  - generic [ref=e137]:
+                    - img "member" [ref=e138]
+                    - generic [ref=e139]: "3"
+              - generic [ref=e140]:
+                - img "search" [ref=e141] [cursor=pointer]:
+                  - img [ref=e142]
+                - img "folder-open" [ref=e144] [cursor=pointer]:
+                  - img [ref=e145]
+          - generic [ref=e147]:
+            - main [ref=e149]
+            - separator
+            - contentinfo [ref=e158]:
+              - generic [ref=e159]:
+                - generic [ref=e160]:
+                  - button "图片" [ref=e163] [cursor=pointer]:
+                    - img "图片" [ref=e165]
+                  - button "视频" [ref=e168] [cursor=pointer]:
+                    - img "视频" [ref=e170]
+                  - button "文件" [ref=e173] [cursor=pointer]:
+                    - img "文件" [ref=e175]
+                - generic [ref=e176]:
+                  - application "Rich Text Editor" [ref=e177]:
+                    - 'textbox "Rich Text Editor. Editing area: main. Press Alt+0 for help." [active] [ref=e178]':
+                      - paragraph [ref=e179]
+                  - button "发送" [ref=e181] [cursor=pointer]:
+                    - generic [ref=e182]: 发送
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e183] [cursor=pointer]:
+        - img [ref=e184]
+  - generic:
+    - application:
+      - generic:
+        - generic:
+          - list
+        - generic:
+          - list

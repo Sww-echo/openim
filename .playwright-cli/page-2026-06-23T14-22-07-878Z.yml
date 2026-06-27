@@ -1,0 +1,101 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e89]:
+      - complementary [ref=e90]:
+        - generic [ref=e92]:
+          - generic [ref=e94] [cursor=pointer]: qqq
+          - generic [ref=e95]:
+            - button "系统公告" [ref=e96] [cursor=pointer]:
+              - img "bell" [ref=e97]:
+                - img [ref=e98]
+            - superscript [ref=e100]:
+              - generic [ref=e102]: "7"
+          - generic [ref=e105] [cursor=pointer]: 消息
+          - generic [ref=e108] [cursor=pointer]: 通讯录
+      - generic [ref=e109]:
+        - complementary [ref=e111]:
+          - generic [ref=e115]:
+            - generic [ref=e117]:
+              - img [ref=e120]
+              - generic [ref=e122]:
+                - generic [ref=e123]: "3"
+                - generic [ref=e124]: 21:53
+            - generic [ref=e128]:
+              - img [ref=e131]
+              - generic [ref=e132]:
+                - generic [ref=e133]:
+                  - generic [ref=e134]: "2"
+                  - generic [ref=e135]: 02:10
+                - generic [ref=e138]: 你解散了群聊
+            - generic [ref=e140]:
+              - img [ref=e143]
+              - generic [ref=e145]:
+                - generic [ref=e146]: TestGroup
+                - generic [ref=e147]: 02:05
+            - generic [ref=e151]:
+              - generic [ref=e154]: www
+              - generic [ref=e155]:
+                - generic [ref=e156]:
+                  - generic [ref=e157]: www
+                  - generic [ref=e158]: 01:11
+                - generic [ref=e161]: qq
+            - generic [ref=e163]:
+              - img [ref=e166]
+              - generic [ref=e167]:
+                - generic [ref=e168]:
+                  - generic [ref=e169]: 橙子皮、橙子皮1、橙子皮4
+                  - generic [ref=e170]: 昨天 17:48
+                - generic [ref=e173]: 橙子皮1：
+            - generic [ref=e175]:
+              - generic [ref=e178]: 橙子皮4
+              - generic [ref=e179]:
+                - generic [ref=e180]:
+                  - generic [ref=e181]: 橙子皮4
+                  - generic [ref=e182]: 2026年6月14日 20:23
+                - generic [ref=e185]: "11"
+            - generic [ref=e187]:
+              - generic [ref=e190]: 橙子皮1
+              - generic [ref=e191]:
+                - generic [ref=e192]:
+                  - generic [ref=e193]: 橙子皮1
+                  - generic [ref=e194]: 2026年6月8日 15:24
+                - generic [ref=e197]: qq
+        - generic [ref=e207]:
+          - banner [ref=e208]:
+            - generic [ref=e209]:
+              - generic [ref=e210]:
+                - img [ref=e212]
+                - generic [ref=e214]: 橙子皮、橙子皮1、橙子皮4
+              - generic [ref=e215]:
+                - img "search" [ref=e216] [cursor=pointer]:
+                  - img [ref=e217]
+                - img "folder-open" [ref=e219] [cursor=pointer]:
+                  - img [ref=e220]
+          - generic [ref=e222]:
+            - main [ref=e224]
+            - separator
+            - contentinfo [ref=e233]:
+              - generic [ref=e234]:
+                - generic [ref=e235]:
+                  - button "图片" [ref=e238] [cursor=pointer]:
+                    - img "图片" [ref=e240]
+                  - button "视频" [ref=e243] [cursor=pointer]:
+                    - img "视频" [ref=e245]
+                  - button "文件" [ref=e248] [cursor=pointer]:
+                    - img "文件" [ref=e250]
+                - generic [ref=e251]:
+                  - application "Rich Text Editor" [ref=e252]:
+                    - 'textbox "Rich Text Editor. Editing area: main. Press Alt+0 for help." [active] [ref=e253]':
+                      - paragraph [ref=e254]
+                  - button "发送" [ref=e256] [cursor=pointer]:
+                    - generic [ref=e257]: 发送
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+  - generic:
+    - application:
+      - generic:
+        - generic:
+          - list
+        - generic:
+          - list

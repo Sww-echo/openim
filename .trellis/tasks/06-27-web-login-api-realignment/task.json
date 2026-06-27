@@ -1,0 +1,75 @@
+{
+  "id": "web-login-api-realignment",
+  "name": "web-login-api-realignment",
+  "title": "Web 登录功能按最新接口文档重新对齐",
+  "description": "基于 docs/openim-frontend-api-doc.json 重新实现需求清单中的登录功能，包括企业号验证、个人账号登录、多账号保存与切换、账号数据隔离、IP 限制提示和宵禁限制提示。",
+  "status": "completed",
+  "dev_type": null,
+  "scope": "web-client",
+  "package": null,
+  "priority": "P1",
+  "creator": "sww",
+  "assignee": "sww",
+  "createdAt": "2026-06-27",
+  "completedAt": "2026-06-27",
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [
+    {
+      "title": "企业号验证对齐 /enterprise/code/validate",
+      "status": "completed"
+    },
+    {
+      "title": "个人账号登录对齐 /account/login",
+      "status": "completed"
+    },
+    {
+      "title": "Web 多账号保存",
+      "status": "completed"
+    },
+    {
+      "title": "多账号一键切换",
+      "status": "completed"
+    },
+    {
+      "title": "不同账号 token/userID 数据隔离",
+      "status": "completed"
+    },
+    {
+      "title": "IP 限制登录提示解析",
+      "status": "completed"
+    },
+    {
+      "title": "宵禁登录限制提示解析",
+      "status": "completed"
+    }
+  ],
+  "children": [],
+  "parent": "06-14-web-client-api-integration",
+  "relatedFiles": [
+    "需求清单.txt",
+    "docs/openim-frontend-api-doc.json",
+    "src/api/login.ts",
+    "src/api/business.ts",
+    "src/utils/request.ts",
+    "src/utils/storage.ts",
+    "src/store/user.ts",
+    "src/pages/login/LoginForm.tsx",
+    "src/pages/login/RegisterForm.tsx",
+    "src/layout/LeftNavBar/index.tsx"
+  ],
+  "notes": "已完成登录功能按最新接口文档重新对齐，统计记录见 2026-06-27-login-api-realignment-summary.md。测试环境数据可随意调用和修改。",
+  "meta": {
+    "client": "web",
+    "featureArea": "login",
+    "apiDoc": "docs/openim-frontend-api-doc.json",
+    "apiDocSource": "openim-swagger.html frontendApiGroups",
+    "requirementSource": "需求清单.txt",
+    "mutationAllowed": true,
+    "summaryRequiredOnCompletion": true,
+    "scopeDeclaration": "web-only"
+  }
+}

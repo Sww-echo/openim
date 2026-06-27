@@ -1,12 +1,15 @@
-import {
-  GroupMemberItem,
-} from "@openim/wasm-client-sdk/lib/types/entity";
+import { GroupMemberRole } from "@openim/wasm-client-sdk";
+import { GroupMemberItem } from "@openim/wasm-client-sdk/lib/types/entity";
 import { useLatest } from "ahooks";
 import { useCallback, useState } from "react";
 
+import { getOpenIMGroupMembers } from "@/api/group";
 import { IMSDK } from "@/layout/MainContentWrap";
 import { useConversationStore } from "@/store";
-import { feedbackToast } from "@/utils/common";
+import { BusinessRecord, pickExplicitBusinessRoomId } from "@/utils/businessPayload";
+import { isSameID } from "@/utils/common";
+import { normalizeBusinessGroupMemberRoleLevel } from "@/utils/groupMember";
+
 export interface FetchStateType {
   offset: number;
   count: number;
@@ -17,10 +20,111 @@ export interface FetchStateType {
 
 interface UseGroupMembersProps {
   groupID?: string;
+  roomId?: string | number;
 }
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
+const unwrapPayload = (value: unknown): unknown => {
+  let current = value;
+  const seen = new Set<unknown>();
+
+  while (isRecord(current) && !seen.has(current)) {
+    seen.add(current);
+    const currentRecord = current;
+    const wrapperKey = ["data", "result", "obj"].find(
+      (key) => currentRecord[key] !== undefined && currentRecord[key] !== null,
+    );
+    if (!wrapperKey) {
+      break;
+    }
+    current = currentRecord[wrapperKey];
+  }
+
+  return current;
+};
+
+const getListPayload = (value: unknown): unknown[] => {
+  const payload = unwrapPayload(value);
+
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+  if (!isRecord(payload)) {
+    return [];
+  }
+
+  const listValue = ["list", "records", "rows", "items", "members"].find((key) =>
+    Array.isArray(payload[key]),
+  );
+
+  return listValue ? (payload[listValue] as unknown[]) : [];
+};
+
+const toStringValue = (value: unknown) =>
+  typeof value === "string" || typeof value === "number" ? String(value) : "";
+
+const normalizeBusinessMember = (
+  value: unknown,
+  fallbackGroupID: string,
+): GroupMemberItem => {
+  const record = isRecord(value) ? value : {};
+  const userID = toStringValue(
+    record.userID ?? record.userId ?? record.user_id ?? record.openIMUserID,
+  );
+  const groupID =
+    toStringValue(record.groupID ?? record.groupId ?? record.roomId) || fallbackGroupID;
+  const nickname = toStringValue(
+    record.nickname ?? record.nickName ?? record.name ?? record.account,
+  );
+  const faceURL = toStringValue(
+    record.faceURL ?? record.faceUrl ?? record.avatar ?? record.avatarUrl,
+  );
+
+  return {
+    ...record,
+    userID,
+    groupID,
+    nickname,
+    faceURL,
+    roleLevel: normalizeBusinessGroupMemberRoleLevel(record, GroupMemberRole.Normal),
+  } as GroupMemberItem;
+};
+
+const getSDKGroupMembers = async (
+  groupID: string,
+  pageIndex: number,
+  count: number,
+) => {
+  const { data } = await IMSDK.getGroupMemberList({
+    groupID,
+    filter: 0,
+    offset: pageIndex * count,
+    count,
+  });
+
+  return data ?? [];
+};
+
+const mergeMembersByUserID = (members: GroupMemberItem[]) => {
+  const memberMap = new Map<string, GroupMemberItem>();
+
+  members.forEach((member) => {
+    if (!member.userID) {
+      return;
+    }
+    memberMap.set(member.userID, {
+      ...memberMap.get(member.userID),
+      ...member,
+    });
+  });
+
+  return [...memberMap.values()];
+};
+
 export default function useGroupMembers(props?: UseGroupMembersProps) {
-  const { groupID } = props ?? {};
+  const { groupID, roomId } = props ?? {};
   const [fetchState, setFetchState] = useState<FetchStateType>({
     offset: 0,
     count: 20,
@@ -32,46 +136,74 @@ export default function useGroupMembers(props?: UseGroupMembersProps) {
 
   const getMemberData = useCallback(
     async (refresh = false) => {
+      const { currentConversation, currentGroupInfo } = useConversationStore.getState();
       const sourceID =
-        groupID ?? useConversationStore.getState().currentConversation?.groupID ?? "";
+        groupID ?? currentConversation?.groupID ?? currentGroupInfo?.groupID ?? "";
       if (!sourceID) return;
+      const explicitBusinessRoomId = pickExplicitBusinessRoomId(
+        currentGroupInfo as BusinessRecord | undefined,
+        roomId ?? groupID ?? currentConversation?.groupID,
+      );
+      const businessRoomId = explicitBusinessRoomId || sourceID;
+      const latestState = latestFetchState.current ?? fetchState;
 
-      if (
-        (latestFetchState.current.loading || !latestFetchState.current.hasMore) &&
-        !refresh
-      )
-        return;
+      if ((latestState.loading || !latestState.hasMore) && !refresh) return;
 
       setFetchState((state) => ({
         ...state,
         loading: true,
       }));
+      const count = 100;
+      const pageIndex = refresh ? 0 : Math.floor(latestState.offset / count);
+      if (businessRoomId) {
+        try {
+          const response = await getOpenIMGroupMembers({
+            roomId: businessRoomId,
+            pageIndex,
+            pageSize: count,
+          });
+          const data = mergeMembersByUserID(
+            getListPayload(response).map((item) =>
+              normalizeBusinessMember(item, sourceID),
+            ),
+          );
+
+          if (data.length > 0 || explicitBusinessRoomId || pageIndex > 0) {
+            setFetchState((state) => ({
+              ...state,
+              groupMemberList: [...(refresh ? [] : state.groupMemberList), ...data],
+              hasMore: data.length === count,
+              offset: refresh ? data.length : state.offset + data.length,
+              loading: false,
+            }));
+            return;
+          }
+        } catch (businessError) {
+          console.debug("Skipped business group members list", businessError);
+        }
+      }
+
       try {
-        const { data } = await IMSDK.getGroupMemberList({
-          groupID: sourceID,
-          offset: refresh ? 0 : latestFetchState.current.offset,
-          count: refresh ? 500 : 100,
-          filter: 0,
-        });
+        const data = await getSDKGroupMembers(sourceID, pageIndex, count);
+
         setFetchState((state) => ({
           ...state,
           groupMemberList: [...(refresh ? [] : state.groupMemberList), ...data],
-          hasMore: data.length === (refresh ? 500 : 100),
-          offset: state.offset + (refresh ? 500 : 100),
+          hasMore: data.length === count,
+          offset: refresh ? data.length : state.offset + data.length,
           loading: false,
         }));
-      } catch (error) {
-        feedbackToast({
-          msg: "getMemberFailed",
-          error,
-        });
+      } catch (sdkError) {
+        console.debug("Skipped SDK group members list", sdkError);
         setFetchState((state) => ({
           ...state,
+          groupMemberList: refresh ? [] : state.groupMemberList,
+          hasMore: false,
           loading: false,
         }));
       }
     },
-    [groupID],
+    [fetchState, groupID, latestFetchState, roomId],
   );
 
   const resetState = () => {
@@ -84,9 +216,22 @@ export default function useGroupMembers(props?: UseGroupMembersProps) {
     });
   };
 
+  const updateMemberInState = (
+    userID: string,
+    patch: Partial<GroupMemberItem> & Record<string, unknown>,
+  ) => {
+    setFetchState((state) => ({
+      ...state,
+      groupMemberList: state.groupMemberList.map((member) =>
+        isSameID(member.userID, userID) ? { ...member, ...patch } : member,
+      ),
+    }));
+  };
+
   return {
     fetchState,
     getMemberData,
     resetState,
+    updateMemberInState,
   };
 }

@@ -7,9 +7,14 @@ import { Button, Spin } from "antd";
 import { t } from "i18next";
 import { memo, useCallback, useState } from "react";
 
+import { modal } from "@/AntdGlobalComp";
+import { getBusinessGroupInfo } from "@/api/group";
 import arrow from "@/assets/images/contact/arrowTopRight.png";
 import OIMAvatar from "@/components/OIMAvatar";
-import { IMSDK } from "@/layout/MainContentWrap";
+import {
+  BusinessRecord,
+  pickExplicitBusinessRoomId,
+} from "@/utils/businessPayload";
 import { emit } from "@/utils/events";
 
 type ApplicationItemSource = FriendApplicationItem & GroupApplicationItem;
@@ -18,6 +23,9 @@ export type AccessFunction = (
   source: Partial<ApplicationItemSource>,
   isRecv: boolean,
 ) => Promise<void>;
+
+const normalizeApplicationId = (value?: string | number | null) =>
+  String(value ?? "").trim();
 
 const ApplicationItem = ({
   currentUserID,
@@ -32,7 +40,7 @@ const ApplicationItem = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const isRecv = source.userID !== currentUserID && source.fromUserID !== currentUserID;
-  const isGroup = Boolean(source.groupID);
+  const isGroup = Boolean(normalizeApplicationId(source.groupID));
   const showActionBtn = source.handleResult === 0 && isRecv;
 
   const getApplicationDesc = () => {
@@ -68,18 +76,58 @@ const ApplicationItem = ({
 
   const loadingWrap = async (isAgree: boolean) => {
     setLoading(true);
-    await (isAgree ? onAccept(source, isRecv) : onReject(source, isRecv));
-    setLoading(false);
+    try {
+      await (isAgree ? onAccept(source, isRecv) : onReject(source, isRecv));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const confirmHandle = (isAgree: boolean) => {
+    modal.confirm({
+      title: isAgree ? t("application.agree") : t("application.refuse"),
+      content: isAgree
+        ? t("application.confirmAgree")
+        : t("application.confirmRefuse"),
+      onOk: () => loadingWrap(isAgree),
+    });
   };
 
   const tryShowCard = useCallback(async () => {
     if (isGroup) {
-      const { data } = await IMSDK.getSpecifiedGroupsInfo([source.groupID!]);
-      emit("OPEN_GROUP_CARD", data[0]);
+      const fallbackGroupID = normalizeApplicationId(source.groupID);
+      const roomId = normalizeApplicationId(
+        pickExplicitBusinessRoomId(source as BusinessRecord, fallbackGroupID) ||
+          fallbackGroupID,
+      );
+      const fallbackGroupInfo = {
+        ...source,
+        groupID: fallbackGroupID || source.groupID,
+        groupName: source.groupName,
+        faceURL: source.groupFaceURL,
+        roomId: roomId || undefined,
+      };
+
+      if (!roomId) {
+        emit("OPEN_GROUP_CARD", fallbackGroupInfo);
+        return;
+      }
+
+      try {
+        const groupInfo = await getBusinessGroupInfo(roomId);
+        emit("OPEN_GROUP_CARD", groupInfo ?? fallbackGroupInfo);
+      } catch (error) {
+        console.debug("getBusinessGroupInfo failed", error);
+        emit("OPEN_GROUP_CARD", fallbackGroupInfo);
+      }
       return;
     }
-    window.userClick(isRecv ? source.fromUserID : source.toUserID);
-  }, []);
+    const targetUserID = normalizeApplicationId(
+      isRecv ? source.fromUserID : source.toUserID,
+    );
+    if (!targetUserID) return;
+    window.userClick(targetUserID);
+  }, [isGroup, isRecv, source]);
 
   return (
     <Spin spinning={loading}>
@@ -114,7 +162,7 @@ const ApplicationItem = ({
               <Button
                 block={true}
                 size="small"
-                onClick={() => loadingWrap(false)}
+                onClick={() => confirmHandle(false)}
                 className="!h-full !rounded-md border-2 border-[#0089FF] text-[#0089FF]"
               >
                 {t("application.refuse")}
@@ -126,7 +174,7 @@ const ApplicationItem = ({
                 size="small"
                 type="primary"
                 className="!h-full !rounded-md bg-[#0289fa]"
-                onClick={() => loadingWrap(true)}
+                onClick={() => confirmHandle(true)}
               >
                 {t("application.agree")}
               </Button>

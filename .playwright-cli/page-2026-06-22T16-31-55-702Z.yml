@@ -1,0 +1,168 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e179]:
+      - complementary [ref=e180]:
+        - generic [ref=e182]:
+          - generic [ref=e184] [cursor=pointer]: qqq
+          - generic [ref=e185]:
+            - button "系统公告" [ref=e186] [cursor=pointer]:
+              - img "bell" [ref=e187]:
+                - img [ref=e188]
+            - superscript [ref=e190]:
+              - generic [ref=e192]: "7"
+          - generic [ref=e195] [cursor=pointer]: 消息
+          - generic [ref=e198] [cursor=pointer]: 通讯录
+      - generic [ref=e199]:
+        - complementary [ref=e201]:
+          - generic [ref=e205]:
+            - generic [ref=e207]:
+              - img [ref=e210]
+              - generic [ref=e211]:
+                - generic [ref=e212]:
+                  - generic [ref=e213]: 橙子皮、橙子皮1、橙子皮4
+                  - generic [ref=e214]: 昨天 17:48
+                - generic [ref=e217]: 橙子皮1：
+            - generic [ref=e219]:
+              - generic [ref=e222]: www
+              - generic [ref=e223]:
+                - generic [ref=e224]:
+                  - generic [ref=e225]: www
+                  - generic [ref=e226]: 星期五 14:43
+                - generic [ref=e229]: 你是谁
+            - generic [ref=e231]:
+              - generic [ref=e234]: 橙子皮4
+              - generic [ref=e235]:
+                - generic [ref=e236]:
+                  - generic [ref=e237]: 橙子皮4
+                  - generic [ref=e238]: 2026年6月14日 20:23
+                - generic [ref=e241]: "11"
+            - generic [ref=e243]:
+              - generic [ref=e246]: 橙子皮1
+              - generic [ref=e247]:
+                - generic [ref=e248]:
+                  - generic [ref=e249]: 橙子皮1
+                  - generic [ref=e250]: 2026年6月8日 15:24
+                - generic [ref=e253]: qq
+        - generic [ref=e255]:
+          - banner [ref=e256]:
+            - generic [ref=e257]:
+              - generic [ref=e258]:
+                - img [ref=e260]
+                - generic [ref=e261]:
+                  - generic [ref=e262]: 橙子皮、橙子皮1、橙子皮4
+                  - generic [ref=e263]:
+                    - img "member" [ref=e264]
+                    - generic [ref=e265]: "3"
+              - generic [ref=e266]:
+                - img "search" [ref=e267] [cursor=pointer]:
+                  - img [ref=e268]
+                - img "folder-open" [ref=e270] [cursor=pointer]:
+                  - img [ref=e271]
+          - generic [ref=e273]:
+            - main [ref=e275]:
+              - generic [ref=e281]:
+                - generic [ref=e283]: 橙子皮1
+                - generic [ref=e284]:
+                  - generic [ref=e285]:
+                    - generic "橙子皮1" [ref=e286]
+                    - generic [ref=e287]: 昨天 17:48
+                  - generic [ref=e289]: "[暂未支持的消息类型]"
+            - separator
+            - contentinfo [ref=e291]:
+              - generic [ref=e292]:
+                - generic [ref=e293]:
+                  - button "图片" [ref=e296] [cursor=pointer]:
+                    - img "图片" [ref=e298]
+                  - button "视频" [ref=e301] [cursor=pointer]:
+                    - img "视频" [ref=e303]
+                  - button "文件" [ref=e306] [cursor=pointer]:
+                    - img "文件" [ref=e308]
+                - generic [ref=e309]:
+                  - application "Rich Text Editor" [ref=e310]:
+                    - 'textbox "Rich Text Editor. Editing area: main. Press Alt+0 for help." [ref=e311]':
+                      - paragraph [ref=e312]
+                  - button "发送" [ref=e314] [cursor=pointer]:
+                    - generic [ref=e315]: 发送
+          - dialog [ref=e317]:
+            - generic [ref=e318]:
+              - generic [ref=e320]:
+                - button "Close" [ref=e321] [cursor=pointer]:
+                  - img "close" [ref=e322]:
+                    - img [ref=e323]
+                - generic [ref=e325]: 设置
+              - generic [ref=e327]:
+                - generic [ref=e329]:
+                  - button [ref=e332]:
+                    - img [ref=e335]
+                  - generic [ref=e337]: 橙子皮、橙子皮1、橙子皮4
+                - separator [ref=e338]
+                - generic [ref=e339]:
+                  - generic [ref=e340]: 群成员3
+                  - generic [ref=e341]:
+                    - generic "橙子皮4" [ref=e342]:
+                      - generic [ref=e344]: 橙子皮4
+                      - generic [ref=e345]: 橙子皮4
+                    - generic "橙子皮" [ref=e346]:
+                      - generic [ref=e348]: 橙子皮
+                      - generic [ref=e349]: 橙子皮
+                    - generic "橙子皮1" [ref=e350]:
+                      - generic [ref=e352]: 橙子皮1
+                      - generic [ref=e353]: 橙子皮1
+                    - generic [ref=e354] [cursor=pointer]:
+                      - img "invite" [ref=e355]
+                      - generic [ref=e356]: 添加
+                  - generic [ref=e357] [cursor=pointer]: 查看更多
+                - separator [ref=e358]
+                - separator [ref=e359]
+                - generic [ref=e360]:
+                  - generic [ref=e361]: 群组ID
+                  - generic [ref=e363]: "3413653759"
+                - generic [ref=e364]:
+                  - generic [ref=e365]: 群类型
+                  - generic [ref=e366]: 工作群
+                - generic [ref=e367] [cursor=pointer]:
+                  - generic [ref=e368]: 群公告
+                  - img "right" [ref=e369]:
+                    - img [ref=e370]
+                - generic [ref=e372] [cursor=pointer]:
+                  - generic [ref=e373]: 群二维码
+                  - img "right" [ref=e374]:
+                    - img [ref=e375]
+                - generic [ref=e377] [cursor=pointer]:
+                  - generic [ref=e378]: 在线成员
+                  - img "right" [ref=e379]:
+                    - img [ref=e380]
+                - separator [ref=e382]
+                - generic [ref=e383]:
+                  - generic [ref=e384]: 群消息免打扰
+                  - switch [ref=e385] [cursor=pointer]
+                - generic [ref=e388]:
+                  - generic [ref=e389]: 群聊置顶
+                  - switch [ref=e390] [cursor=pointer]
+                - generic [ref=e393] [cursor=pointer]:
+                  - generic [ref=e394]: 清空聊天记录
+                  - img "right" [ref=e395]:
+                    - img [ref=e396]
+                - separator [ref=e398]
+                - button "退出群组" [ref=e401] [cursor=pointer]:
+                  - generic [ref=e402]: 退出群组
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+  - generic:
+    - application:
+      - generic:
+        - generic:
+          - list
+        - generic:
+          - list
+  - generic [ref=e403]:
+    - dialog "群公告":
+      - generic [ref=e404]:
+        - button "Close" [ref=e405] [cursor=pointer]:
+          - img "close" [ref=e407]:
+            - img [ref=e408]
+        - generic [ref=e411]: 群公告
+        - generic [ref=e419]:
+          - img [ref=e421]
+          - generic [ref=e433]: 未搜索到相关结果

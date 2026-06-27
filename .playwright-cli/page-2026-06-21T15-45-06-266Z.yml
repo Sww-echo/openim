@@ -1,0 +1,25 @@
+- generic [ref=e2]:
+  - generic [ref=e92]:
+    - complementary [ref=e93]:
+      - generic [ref=e95]:
+        - generic [ref=e97] [cursor=pointer]: qqq
+        - generic [ref=e98]:
+          - button "系统公告" [ref=e99] [cursor=pointer]:
+            - img "bell" [ref=e100]:
+              - img [ref=e101]
+          - superscript [ref=e103]:
+            - generic [ref=e105]: "7"
+        - generic [ref=e108] [cursor=pointer]: 消息
+        - generic [ref=e111] [cursor=pointer]: 通讯录
+    - generic [ref=e112]:
+      - generic [ref=e113]:
+        - complementary
+      - generic [ref=e115]:
+        - generic [ref=e116]:
+          - generic [ref=e117]: 创建群聊
+          - generic [ref=e118]: 创建群组，立即开启在线化办公
+        - button "立即创建" [ref=e120] [cursor=pointer]:
+          - generic [ref=e121]: 立即创建
+  - complementary "React Query Devtools":
+    - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+      - img [ref=e5]

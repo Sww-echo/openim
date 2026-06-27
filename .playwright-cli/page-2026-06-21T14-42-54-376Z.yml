@@ -1,0 +1,34 @@
+- generic [ref=e2]:
+  - generic [ref=e243]:
+    - complementary [ref=e244]:
+      - generic [ref=e246]:
+        - generic [ref=e248] [cursor=pointer]: qqq
+        - generic [ref=e249]:
+          - button "系统公告" [ref=e250] [cursor=pointer]:
+            - img "bell" [ref=e251]:
+              - img [ref=e252]
+          - superscript [ref=e254]:
+            - generic [ref=e256]: "7"
+        - generic [ref=e259] [cursor=pointer]: 消息
+        - generic [ref=e262] [cursor=pointer]: 通讯录
+    - generic [ref=e263]:
+      - complementary [ref=e264]:
+        - generic [ref=e266]:
+          - generic [ref=e267]: 通讯录
+          - list [ref=e268]:
+            - listitem [ref=e269] [cursor=pointer]:
+              - img "新的好友" [ref=e271]
+              - generic [ref=e272]: 新的好友
+            - listitem [ref=e273] [cursor=pointer]:
+              - img "群通知" [ref=e275]
+              - generic [ref=e276]: 群通知
+            - listitem [ref=e277] [cursor=pointer]:
+              - img "我的好友" [ref=e279]
+              - generic [ref=e280]: 我的好友
+            - listitem [ref=e281] [cursor=pointer]:
+              - img "我的群组" [ref=e283]
+              - generic [ref=e284]: 我的群组
+      - paragraph [ref=e287]: 群通知
+  - complementary "React Query Devtools":
+    - button "Open React Query Devtools" [ref=e40] [cursor=pointer]:
+      - img [ref=e41]

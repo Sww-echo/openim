@@ -1,0 +1,83 @@
+{
+  "id": "web-chat-api-realignment",
+  "name": "web-chat-api-realignment",
+  "title": "Web 聊天功能按最新接口文档重新对齐",
+  "description": "基于 docs/openim-frontend-api-doc.json 重新实现需求清单中的聊天功能，包括单聊/群聊列表、群消息收发、文件上传下载、图片视频预览、聊天记录搜索、消息转发复制删除、群设置查看、群成员查看与权限控制。",
+  "status": "completed",
+  "dev_type": null,
+  "scope": "web-client",
+  "package": null,
+  "priority": "P1",
+  "creator": "sww",
+  "assignee": "sww",
+  "createdAt": "2026-06-27",
+  "completedAt": "2026-06-27",
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [
+    {
+      "title": "单聊/群聊列表由 OpenIM SDK 会话列表承担，业务接口按需补详情",
+      "status": "completed"
+    },
+    {
+      "title": "单聊/群聊发送前校验按 GET /friend|room/openim/send-before 对齐",
+      "status": "completed"
+    },
+    {
+      "title": "文件上传、签名下载、预览按 /file/** 最新方法对齐",
+      "status": "completed"
+    },
+    {
+      "title": "图片/视频预览使用最新文件签名与资源结构",
+      "status": "completed"
+    },
+    {
+      "title": "聊天记录搜索按 GET /friend|room/openim/messages/search 对齐",
+      "status": "completed"
+    },
+    {
+      "title": "消息收藏、合并转发、复制删除按 /message/** 对齐",
+      "status": "completed"
+    },
+    {
+      "title": "群设置查看和群成员查看按 /room/openim/** 对齐",
+      "status": "completed"
+    },
+    {
+      "title": "旧聊天接口 /room/sendMsgBefore、/user/collection/list、/room/share/** 移出聊天主流程",
+      "status": "completed"
+    }
+  ],
+  "children": [],
+  "parent": "06-14-web-client-api-integration",
+  "relatedFiles": [
+    "需求清单.txt",
+    "docs/openim-frontend-api-doc.json",
+    "src/api/chat.ts",
+    "src/api/file.ts",
+    "src/api/friend.ts",
+    "src/api/group.ts",
+    "src/store/conversation.ts",
+    "src/store/contact.ts",
+    "src/pages/chat/queryChat/ChatFooter/useSendMessage.ts",
+    "src/pages/chat/queryChat/ChatFooter/SendActionBar/useFileMessage.ts",
+    "src/pages/chat/queryChat/ChatHeader/ChatMessageSearch.tsx",
+    "src/pages/chat/queryChat/ChatHeader/ChatBusinessResources.tsx",
+    "src/pages/chat/queryChat/GroupSetting/GroupMemberList.tsx",
+    "src/pages/chat/queryChat/GroupSetting/GroupSettings.tsx"
+  ],
+  "notes": "测试环境数据可随意调用和修改。已完成聊天功能按最新接口文档重新对齐，统计记录见 2026-06-27-chat-api-realignment-summary.md。",
+  "meta": {
+    "client": "web",
+    "featureArea": "chat",
+    "apiDoc": "docs/openim-frontend-api-doc.json",
+    "apiDocSource": "openim-swagger.html frontendApiGroups",
+    "requirementSource": "需求清单.txt",
+    "mutationAllowed": true,
+    "summaryRequiredOnCompletion": true,
+    "scopeDeclaration": "web-only"
+  }
+}

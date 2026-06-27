@@ -6,7 +6,7 @@ import {
   WSEvent,
 } from "@openim/wasm-client-sdk/lib/types/entity";
 import { useLatest } from "ahooks";
-import { Button, Divider, Spin } from "antd";
+import { Button, Divider, Input, Spin } from "antd";
 import dayjs from "dayjs";
 import { t } from "i18next";
 import {
@@ -22,15 +22,38 @@ import {
 import { useQuery } from "react-query";
 import { useCopyToClipboard } from "react-use";
 
-import { BusinessUserInfo, getBusinessUserInfo } from "@/api/login";
+import { modal } from "@/AntdGlobalComp";
+import {
+  BusinessOnlineStatus,
+  getBusinessUserOnlineStatus,
+  getFriendInfo,
+  updateFriendPhoneRemark,
+  updateFriendRemark,
+} from "@/api/friend";
+import { getLegacyGroupMember, getLegacyGroupMemberInviterInfo } from "@/api/group";
+import {
+  BusinessUserInfo,
+  getBusinessUserBindInfo,
+  getBusinessUserInfo,
+  getBusinessUserInfoV1,
+  getCurrentBusinessUserInfo,
+} from "@/api/login";
+import { reportBusinessTarget, ReportTargetType } from "@/api/report";
 import DraggableModalWrap from "@/components/DraggableModalWrap";
 import EditableContent from "@/components/EditableContent";
 import OIMAvatar from "@/components/OIMAvatar";
 import { useConversationToggle } from "@/hooks/useConversationToggle";
 import { OverlayVisibleHandle, useOverlayVisible } from "@/hooks/useOverlayVisible";
 import { IMSDK } from "@/layout/MainContentWrap";
-import { useContactStore, useUserStore } from "@/store";
-import { feedbackToast } from "@/utils/common";
+import { useContactStore, useConversationStore, useUserStore } from "@/store";
+import {
+  isBusinessRecord,
+  pickBusinessText,
+  pickExplicitBusinessRoomId,
+  toBusinessText,
+  unwrapBusinessPayload,
+} from "@/utils/businessPayload";
+import { feedbackToast, isSameID } from "@/utils/common";
 
 import EditSelfInfo from "./EditSelfInfo";
 import SendRequest from "./SendRequest";
@@ -40,6 +63,7 @@ interface IUserCardModalProps {
   groupID?: string;
   isSelf?: boolean;
   notAdd?: boolean;
+  notSendMessage?: boolean;
   cardInfo?: CardInfo;
 }
 
@@ -50,11 +74,83 @@ const getGender = (gender: number) => {
   return gender === 1 ? t("placeholder.man") : t("placeholder.female");
 };
 
+const getOnlineState = (status?: BusinessOnlineStatus) => {
+  const rawStatus =
+    status?.isOnline ?? status?.online ?? status?.onlineStatus ?? status?.status;
+
+  if (rawStatus === undefined || rawStatus === null || rawStatus === "") {
+    return undefined;
+  }
+
+  if (typeof rawStatus === "boolean") {
+    return rawStatus;
+  }
+
+  if (typeof rawStatus === "number") {
+    return rawStatus === 1;
+  }
+
+  const text = rawStatus.toLowerCase();
+  if (["1", "true", "online"].includes(text)) {
+    return true;
+  }
+  if (["0", "false", "offline"].includes(text)) {
+    return false;
+  }
+
+  return undefined;
+};
+
+const unwrapFriendInfo = (response: unknown) => {
+  const payload = unwrapBusinessPayload(response);
+
+  if (!isBusinessRecord(payload)) {
+    return {};
+  }
+
+  return {
+    ...payload,
+    ...(isBusinessRecord(payload.friend) ? payload.friend : {}),
+    ...(isBusinessRecord(payload.user) ? payload.user : {}),
+    ...(isBusinessRecord(payload.userInfo) ? payload.userInfo : {}),
+  };
+};
+
+const getGroupInviterText = (response: unknown) => {
+  const info = unwrapFriendInfo(response);
+
+  return pickBusinessText(info, [
+    "inviterNickname",
+    "inviterNickName",
+    "inviterName",
+    "inviteUserName",
+    "inviteUserNickname",
+    "operatorNickname",
+    "operatorName",
+    "nickname",
+    "nickName",
+    "name",
+    "inviterId",
+    "inviteUserId",
+    "userId",
+    "userID",
+  ]);
+};
+
+const getPhoneRemark = (info: CardInfo) =>
+  pickBusinessText(info as Record<string, unknown>, [
+    "phoneRemark",
+    "phoneRemarkName",
+    "mobileRemark",
+    "telephoneRemark",
+  ]);
+
 const UserCardModal: ForwardRefRenderFunction<
   OverlayVisibleHandle,
   IUserCardModalProps
 > = (props, ref) => {
-  const { userID, isSelf, notAdd } = props;
+  const { userID, isSelf, notAdd, notSendMessage } = props;
+  const targetUserID = toBusinessText(userID).trim();
 
   const editInfoRef = useRef<OverlayVisibleHandle>(null);
   const [cardInfo, setCardInfo] = useState<CardInfo>();
@@ -62,41 +158,137 @@ const UserCardModal: ForwardRefRenderFunction<
   const [userFields, setUserFields] = useState<FieldRow[]>([]);
 
   const selfInfo = useUserStore((state) => state.selfInfo);
+  const currentGroupInfo = useConversationStore((state) => state.currentGroupInfo);
   const isFriendUser = useContactStore(
-    (state) => state.friendList.findIndex((item) => item.userID === userID) !== -1,
+    (state) =>
+      state.friendList.findIndex((item) => isSameID(item.userID, targetUserID)) !== -1,
   );
 
   const { isOverlayOpen, closeOverlay } = useOverlayVisible(ref);
   const { toSpecifiedConversation } = useConversationToggle();
   const [_, copyToClipboard] = useCopyToClipboard();
+  const businessRoomId =
+    pickExplicitBusinessRoomId(
+      currentGroupInfo as unknown as Record<string, unknown> | undefined,
+      props.groupID,
+    ) || toBusinessText(props.groupID).trim();
 
   const getCardInfo = async (): Promise<{
     cardInfo: CardInfo;
     memberInfo?: GroupMemberItem | null;
   }> => {
     if (isSelf) {
+      let nextSelfInfo: CardInfo = { ...selfInfo };
+      try {
+        nextSelfInfo = {
+          ...nextSelfInfo,
+          ...unwrapFriendInfo(await getCurrentBusinessUserInfo()),
+        };
+      } catch (error) {
+        console.debug("get current business user info failed", selfInfo.userID, error);
+      }
+      try {
+        nextSelfInfo = {
+          ...nextSelfInfo,
+          ...unwrapFriendInfo(await getBusinessUserBindInfo()),
+        };
+      } catch (error) {
+        console.debug("get business user bind info failed", selfInfo.userID, error);
+      }
+      try {
+        const onlineStatus = await getBusinessUserOnlineStatus(selfInfo.userID);
+        nextSelfInfo = { ...nextSelfInfo, businessOnlineStatus: onlineStatus };
+      } catch (error) {
+        console.debug("get business user online status failed", selfInfo.userID, error);
+      }
       return {
-        cardInfo: selfInfo,
+        cardInfo: nextSelfInfo,
       };
     }
     let userInfo: CardInfo | null = null;
     const friendInfo = useContactStore
       .getState()
-      .friendList.find((item) => item.userID === userID);
+      .friendList.find((item) => isSameID(item.userID, targetUserID));
     if (friendInfo) {
       userInfo = { ...friendInfo };
+      try {
+        userInfo = {
+          ...userInfo,
+          ...unwrapFriendInfo(await getFriendInfo(targetUserID)),
+        };
+      } catch (error) {
+        console.debug("get business friend info failed", targetUserID, error);
+      }
     } else {
-      const { data } = await IMSDK.getUsersInfo([userID!]);
+      const { data } = await IMSDK.getUsersInfo([targetUserID]);
       userInfo = { ...(data[0] ?? {}) };
     }
 
     try {
       const {
         data: { users },
-      } = await getBusinessUserInfo([userID!]);
+      } = await getBusinessUserInfo([targetUserID]);
       userInfo = { ...userInfo, ...users[0] };
     } catch (error) {
-      console.error("get business user info failed", userID, error);
+      console.debug("get business user info failed", targetUserID, error);
+    }
+    try {
+      userInfo = {
+        ...userInfo,
+        ...unwrapFriendInfo(await getBusinessUserInfoV1(targetUserID, businessRoomId)),
+      };
+    } catch (error) {
+      console.debug("get business user info v1 failed", {
+        userID: targetUserID,
+        roomId: businessRoomId,
+        error,
+      });
+    }
+    try {
+      const onlineStatus = await getBusinessUserOnlineStatus(targetUserID);
+      userInfo = { ...userInfo, businessOnlineStatus: onlineStatus };
+    } catch (error) {
+      console.debug("get business user online status failed", targetUserID, error);
+    }
+    if (businessRoomId) {
+      try {
+        const memberPayload = unwrapFriendInfo(
+          await getLegacyGroupMember({
+            roomId: businessRoomId,
+            targetUserId: targetUserID,
+          }),
+        );
+        userInfo = {
+          ...userInfo,
+          ...memberPayload,
+        };
+      } catch (error) {
+        console.debug("get legacy business group member failed", {
+          roomId: businessRoomId,
+          userID: targetUserID,
+          error,
+        });
+      }
+      try {
+        const groupInviterInfo = getGroupInviterText(
+          await getLegacyGroupMemberInviterInfo({
+            roomId: businessRoomId,
+            targetUserId: targetUserID,
+          }),
+        );
+        if (groupInviterInfo) {
+          userInfo = {
+            ...userInfo,
+            groupInviterInfo,
+          };
+        }
+      } catch (error) {
+        console.debug("get legacy group member inviter info failed", {
+          roomId: businessRoomId,
+          userID: targetUserID,
+          error,
+        });
+      }
     }
     return {
       cardInfo: userInfo,
@@ -117,8 +309,8 @@ const UserCardModal: ForwardRefRenderFunction<
     data: fullCardInfo,
     isLoading,
     refetch,
-  } = useQuery(["userInfo", userID], getCardInfo, {
-    enabled: isOverlayOpen && Boolean(userID),
+  } = useQuery(["userInfo", targetUserID, businessRoomId], getCardInfo, {
+    enabled: isOverlayOpen && (Boolean(isSelf) || Boolean(targetUserID)),
     onSuccess: refreshData,
   });
 
@@ -127,13 +319,15 @@ const UserCardModal: ForwardRefRenderFunction<
   useEffect(() => {
     if (!isOverlayOpen) return;
     const friendAddedHandler = ({ data }: WSEvent<FriendUserItem>) => {
-      if (data.userID === userID) {
+      if (isSameID(data.userID, targetUserID)) {
         refetch();
       }
     };
     IMSDK.on(CbEvents.OnFriendAdded, friendAddedHandler);
     refreshData(
-      props.cardInfo ? { cardInfo: props.cardInfo } : latestFullCardInfo.current,
+      props.cardInfo
+        ? { cardInfo: props.cardInfo }
+        : latestFullCardInfo.current ?? undefined,
     );
     return () => {
       IMSDK.off(CbEvents.OnFriendAdded, friendAddedHandler);
@@ -149,6 +343,11 @@ const UserCardModal: ForwardRefRenderFunction<
   const updateCardRemark = (remark: string) => {
     setUserInfoRow({ ...cardInfo!, remark });
   };
+
+  const updateCardPhoneRemark = (phoneRemark: string) => {
+    setUserInfoRow({ ...cardInfo!, phoneRemark });
+  };
+
   const setUserInfoRow = (info: CardInfo) => {
     let tmpFields = [] as FieldRow[];
     tmpFields.push({
@@ -165,9 +364,20 @@ const UserCardModal: ForwardRefRenderFunction<
       });
     }
     if (isFriend || isSelf) {
+      const isOnline = getOnlineState(
+        info.businessOnlineStatus as BusinessOnlineStatus | undefined,
+      );
       tmpFields = [
         ...tmpFields,
         ...[
+          ...(isOnline === undefined
+            ? []
+            : [
+                {
+                  title: t("placeholder.onlineStatus"),
+                  value: isOnline ? t("placeholder.online") : t("placeholder.offLine"),
+                },
+              ]),
           {
             title: t("placeholder.gender"),
             value: getGender(info.gender!),
@@ -180,12 +390,28 @@ const UserCardModal: ForwardRefRenderFunction<
             title: t("placeholder.phoneNumber"),
             value: info.phoneNumber || "-",
           },
+          ...(isFriend
+            ? [
+                {
+                  title: t("placeholder.phoneRemark"),
+                  value: getPhoneRemark(info) || "-",
+                  editable: true,
+                  editType: "phoneRemark" as const,
+                },
+              ]
+            : []),
           {
             title: t("placeholder.email"),
             value: info.email || "-",
           },
         ],
       ];
+    }
+    if (info.groupInviterInfo) {
+      tmpFields.push({
+        title: t("placeholder.groupInviter"),
+        value: String(info.groupInviterInfo),
+      });
     }
     setUserFields(tmpFields);
   };
@@ -195,7 +421,55 @@ const UserCardModal: ForwardRefRenderFunction<
   };
 
   const trySendRequest = () => {
+    if (!toBusinessText(cardInfo?.userID ?? targetUserID).trim()) {
+      feedbackToast({ error: new Error(t("toast.sendApplicationFailed")) });
+      return;
+    }
+
     setIsSendRequest(true);
+  };
+
+  const reportUser = () => {
+    if (!cardTargetUserID) {
+      feedbackToast({ error: new Error(t("toast.sendApplicationFailed")) });
+      return;
+    }
+
+    let reason = "";
+    modal.confirm({
+      title: t("placeholder.reportUser"),
+      content: (
+        <Input.TextArea
+          maxLength={200}
+          showCount
+          autoSize={{ minRows: 3, maxRows: 5 }}
+          placeholder={t("placeholder.reportReason")}
+          onChange={(event) => {
+            reason = event.target.value;
+          }}
+        />
+      ),
+      onOk: async () => {
+        const normalizedReason = reason.trim();
+        if (!normalizedReason) {
+          feedbackToast({ error: new Error(t("placeholder.reportReason")) });
+          return Promise.reject();
+        }
+
+        try {
+          await reportBusinessTarget({
+            toUserId: cardTargetUserID,
+            reportType: ReportTargetType.User,
+            reportInfo: props.groupID ? `groupID:${props.groupID}` : undefined,
+            reason: normalizedReason,
+            webUrl: window.location.href,
+          });
+          feedbackToast();
+        } catch (error) {
+          feedbackToast({ error });
+        }
+      },
+    });
   };
 
   const resetState = () => {
@@ -204,7 +478,9 @@ const UserCardModal: ForwardRefRenderFunction<
     setIsSendRequest(false);
   };
 
-  const showAddFriend = !isFriendUser && !isSelf && !notAdd;
+  const cardTargetUserID = toBusinessText(cardInfo?.userID ?? targetUserID).trim();
+  const showAddFriend =
+    Boolean(cardInfo && cardTargetUserID) && !isFriendUser && !isSelf && !notAdd;
 
   return (
     <DraggableModalWrap
@@ -268,36 +544,46 @@ const UserCardModal: ForwardRefRenderFunction<
                   userID={cardInfo?.userID}
                   fieldRows={userFields}
                   updateCardRemark={updateCardRemark}
+                  updateCardPhoneRemark={updateCardPhoneRemark}
                 />
               </div>
             </div>
-            <div className="mx-1 mb-6 mt-3 flex items-center gap-6">
+            <div className="mx-1 mb-6 mt-3 flex items-center gap-2">
               {showAddFriend && (
-                <Button type="primary" className="flex-1" onClick={trySendRequest}>
+                <Button
+                  type="primary"
+                  className="min-w-0 flex-1"
+                  onClick={trySendRequest}
+                >
                   {t("placeholder.addFriends")}
                 </Button>
               )}
               {isSelf && (
                 <Button
                   type="primary"
-                  className="flex-1"
+                  className="min-w-0 flex-1"
                   onClick={() => editInfoRef.current?.openOverlay()}
                 >
                   {t("placeholder.editInfo")}
                 </Button>
               )}
-              {!isSelf && (
+              {!isSelf && !notSendMessage && cardTargetUserID && (
                 <Button
                   type="primary"
-                  className="flex-1"
+                  className="min-w-0 flex-1"
                   onClick={() =>
                     toSpecifiedConversation({
-                      sourceID: userID!,
+                      sourceID: cardTargetUserID,
                       sessionType: SessionType.Single,
                     }).then(closeOverlay)
                   }
                 >
                   {t("placeholder.sendMessage")}
+                </Button>
+              )}
+              {!isSelf && cardTargetUserID && (
+                <Button danger className="min-w-0 flex-1" onClick={reportUser}>
+                  {t("placeholder.report")}
                 </Button>
               )}
             </div>
@@ -317,12 +603,16 @@ interface IUserCardDataGroupProps {
   divider?: boolean;
   fieldRows: FieldRow[];
   updateCardRemark?: (remark: string) => void;
+  updateCardPhoneRemark?: (phoneRemark: string) => void;
 }
+
+type EditableFieldType = "remark" | "phoneRemark";
 
 type FieldRow = {
   title: string;
   value: string;
   editable?: boolean;
+  editType?: EditableFieldType;
 };
 
 const UserCardDataGroup: FC<IUserCardDataGroupProps> = ({
@@ -331,17 +621,44 @@ const UserCardDataGroup: FC<IUserCardDataGroupProps> = ({
   divider,
   fieldRows,
   updateCardRemark,
+  updateCardPhoneRemark,
 }) => {
-  const tryUpdateRemark = async (remark: string) => {
-    try {
-      await IMSDK.updateFriends({
-        friendUserIDs: [userID!],
-        remark,
-      });
-      updateCardRemark?.(remark);
-    } catch (error) {
-      feedbackToast({ error });
+  const tryUpdateField = (fieldRow: FieldRow, value: string) => {
+    const targetUserID = toBusinessText(userID).trim();
+
+    if (!targetUserID) {
+      feedbackToast({ error: new Error(t("toast.sendApplicationFailed")) });
+      return;
     }
+
+    const editType = fieldRow.editType ?? "remark";
+    modal.confirm({
+      title:
+        editType === "phoneRemark"
+          ? t("placeholder.phoneRemark")
+          : t("placeholder.remark"),
+      content:
+        editType === "phoneRemark"
+          ? t("placeholder.confirmUpdateFriendPhoneRemark")
+          : t("placeholder.confirmUpdateFriendRemark"),
+      onOk: async () => {
+        try {
+          if (editType === "phoneRemark") {
+            await updateFriendPhoneRemark(targetUserID, value);
+            updateCardPhoneRemark?.(value);
+          } else {
+            await updateFriendRemark(targetUserID, value);
+            await IMSDK.updateFriends({
+              friendUserIDs: [targetUserID],
+              remark: value,
+            });
+            updateCardRemark?.(value);
+          }
+        } catch (error) {
+          feedbackToast({ error });
+        }
+      },
+    });
   };
   return (
     <div>
@@ -355,7 +672,7 @@ const UserCardDataGroup: FC<IUserCardDataGroupProps> = ({
               textClassName="font-medium"
               value={fieldRow.value}
               editable={true}
-              onChange={tryUpdateRemark}
+              onChange={(value) => tryUpdateField(fieldRow, value)}
             />
           ) : (
             <div className="flex-1 select-text truncate">{fieldRow.value}</div>

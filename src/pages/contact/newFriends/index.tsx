@@ -1,15 +1,18 @@
 import { ApplicationHandleResult } from "@openim/wasm-client-sdk";
 import { FriendApplicationItem } from "@openim/wasm-client-sdk/lib/types/entity";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Virtuoso } from "react-virtuoso";
 
+import { addBusinessFriend } from "@/api/friend";
 import ApplicationItem, { AccessFunction } from "@/components/ApplicationItem";
 import { IMSDK } from "@/layout/MainContentWrap";
 import { useUserStore } from "@/store";
 import { useContactStore } from "@/store/contact";
 import { feedbackToast } from "@/utils/common";
-import { calcApplicationBadge } from "@/utils/imCommon";
+
+const normalizeTargetUserID = (userID?: string | number | null) =>
+  String(userID ?? "").trim();
 
 export const NewFriends = () => {
   const { t } = useTranslation();
@@ -27,6 +30,13 @@ export const NewFriends = () => {
   const updateSendFriendApplication = useContactStore(
     (state) => state.updateSendFriendApplication,
   );
+  const ensureFriendApplicationsLoaded = useContactStore(
+    (state) => state.ensureFriendApplicationsLoaded,
+  );
+
+  useEffect(() => {
+    void ensureFriendApplicationsLoaded(true);
+  }, [ensureFriendApplicationsLoaded]);
 
   const friendApplicationList = sortArray(
     recvFriendApplicationList.concat(sendFriendApplicationList),
@@ -34,11 +44,23 @@ export const NewFriends = () => {
 
   const onAccept = useCallback(
     async (application: FriendApplicationItem, isRecv: boolean) => {
+      const targetUserID = normalizeTargetUserID(application.fromUserID);
+
+      if (!targetUserID) {
+        feedbackToast({ error: new Error(t("toast.sendApplicationFailed")) });
+        return;
+      }
+
       try {
-        await IMSDK.acceptFriendApplication({
-          toUserID: application.fromUserID,
-          handleMsg: "",
-        });
+        await addBusinessFriend(targetUserID);
+        try {
+          await IMSDK.acceptFriendApplication({
+            toUserID: targetUserID,
+            handleMsg: "",
+          });
+        } catch (error) {
+          console.debug("acceptFriendApplication skipped", error);
+        }
         const newApplication = {
           ...application,
           handleResult: ApplicationHandleResult.Agree,
@@ -48,18 +70,26 @@ export const NewFriends = () => {
         } else {
           updateSendFriendApplication(newApplication);
         }
+        await useContactStore.getState().ensureFriendListLoaded(true);
       } catch (error) {
         feedbackToast({ error });
       }
     },
-    [],
+    [t, updateRecvFriendApplication, updateSendFriendApplication],
   );
 
   const onReject = useCallback(
     async (application: FriendApplicationItem, isRecv: boolean) => {
+      const targetUserID = normalizeTargetUserID(application.fromUserID);
+
+      if (!targetUserID) {
+        feedbackToast({ error: new Error(t("toast.sendApplicationFailed")) });
+        return;
+      }
+
       try {
         await IMSDK.refuseFriendApplication({
-          toUserID: application.fromUserID,
+          toUserID: targetUserID,
           handleMsg: "",
         });
         const newApplication = {

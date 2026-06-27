@@ -5,13 +5,17 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
 import { t } from "i18next";
 import default_group from "@/assets/images/contact/my_groups.png";
-import { v4 as uuidv4 } from "uuid";
 
+import {
+  getUploadContext,
+  normalizeBusinessFileResource,
+  uploadFile as uploadBusinessFile,
+} from "@/api/file";
 import { GroupSessionTypes, SystemMessageTypes } from "@/constants/im";
 import { useConversationStore, useUserStore } from "@/store";
 import { useContactStore } from "@/store/contact";
 
-import { generateAvatar, secondsToTime } from "./common";
+import { generateAvatar, isSameID, secondsToTime } from "./common";
 import {
   AtTextElem,
   ConversationItem,
@@ -67,7 +71,7 @@ const linkWrap = ({
 export const notificationMessageFormat = (msg: MessageItem) => {
   const selfID = useUserStore.getState().selfInfo.userID;
   const getName = (user: PublicUserItem) => {
-    return user.userID === selfID ? t("you") : user.nickname;
+    return isSameID(user.userID, selfID) ? t("you") : user.nickname;
   };
   try {
     switch (msg.contentType) {
@@ -237,9 +241,9 @@ export const parseBr = (text: string) => {
 export const formatMessageByType = (message?: MessageItem): string => {
   if (!message) return "";
   const selfUserID = useUserStore.getState().selfInfo.userID;
-  const isSelf = (id: string) => id === selfUserID;
+  const isSelf = (id: string) => isSameID(id, selfUserID);
   const getName = (user: PublicUserItem) => {
-    return user.userID === selfUserID ? t("you") : user.nickname;
+    return isSameID(user.userID, selfUserID) ? t("you") : user.nickname;
   };
   try {
     switch (message.contentType) {
@@ -330,27 +334,21 @@ export const formatMessageByType = (message?: MessageItem): string => {
 };
 
 export const initStore = () => {
-  calcApplicationBadge();
   const { getSelfInfoByReq } = useUserStore.getState();
-  const {
-    getBlackListByReq,
-    getRecvFriendApplicationListByReq,
-    getRecvGroupApplicationListByReq,
-    getSendFriendApplicationListByReq,
-    getSendGroupApplicationListByReq,
-  } = useContactStore.getState();
   const { getConversationListByReq, getUnReadCountByReq } =
     useConversationStore.getState();
+  const { ensureFriendApplicationsLoaded, ensureGroupApplicationsLoaded } =
+    useContactStore.getState();
 
   getUnReadCountByReq();
   getConversationListByReq();
   getSelfInfoByReq();
-  getBlackListByReq();
-  getRecvFriendApplicationListByReq();
-  getRecvGroupApplicationListByReq();
-  getSendFriendApplicationListByReq();
-  getSendGroupApplicationListByReq();
-  getUnReadCountByReq();
+  void Promise.allSettled([
+    ensureFriendApplicationsLoaded(),
+    ensureGroupApplicationsLoaded(),
+  ]).then(() => {
+    calcApplicationBadge();
+  });
 };
 
 export const conversationSort = (
@@ -445,6 +443,30 @@ export const getConversationContent = (message: MessageItem) => {
 };
 
 export const uploadFile = async (file: FileWithPath, path?: string) => {
+  try {
+    const uploadParams = {
+      scene: "image",
+    };
+    await getUploadContext(uploadParams);
+    const businessFile = normalizeBusinessFileResource(
+      await uploadBusinessFile(file, uploadParams),
+      file,
+    );
+    const businessUrl =
+      businessFile.url ?? businessFile.previewUrl ?? businessFile.downloadUrl;
+
+    if (businessUrl) {
+      return {
+        data: {
+          ...businessFile,
+          url: businessUrl,
+        },
+      };
+    }
+  } catch (error) {
+    console.warn("business avatar upload failed, fallback to OpenIM upload", error);
+  }
+
   const params: UploadFileParams = {
     name: file.name,
     contentType: file.type,

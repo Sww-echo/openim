@@ -17,20 +17,21 @@ declare namespace API {
       password: string;
     };
     type DemoRegisterType = {
+      enterpriseCode?: string;
       invitationCode?: string;
-      verifyCode: string;
+      verifyCode?: string;
       deviceID?: string;
       autoLogin?: boolean;
       user: RegisterUserInfo;
     };
     type LoginParams = {
-      email?: string;
-      verifyCode: string;
       deviceID?: string;
-      phoneNumber?: string;
+      phoneNumber: string;
       areaCode: string;
       account?: string;
       password: string;
+      enterpriseCode?: string;
+      invitationCode?: string;
     };
     type ModifyParams = {
       userID: string;
@@ -43,6 +44,7 @@ declare namespace API {
       areaCode: string;
       verifyCode: string;
       password: string;
+      serial?: string;
     };
     type VerifyCodeParams = {
       email?: string;
@@ -50,6 +52,8 @@ declare namespace API {
       areaCode: string;
       verifyCode: string;
       usedFor: UsedFor;
+      enterpriseCode?: string;
+      invitationCode?: string;
     };
     type SendSmsParams = {
       email?: string;
@@ -57,6 +61,7 @@ declare namespace API {
       areaCode: string;
       deviceID?: string;
       usedFor: UsedFor;
+      enterpriseCode?: string;
       invitationCode?: string;
     };
   }

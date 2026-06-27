@@ -1,0 +1,73 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e351]:
+      - complementary [ref=e352]:
+        - generic [ref=e354]:
+          - generic [ref=e356] [cursor=pointer]: qqq
+          - generic [ref=e357]:
+            - button "系统公告" [ref=e358] [cursor=pointer]:
+              - img "bell" [ref=e359]:
+                - img [ref=e360]
+            - superscript [ref=e362]:
+              - generic [ref=e364]: "7"
+          - generic [ref=e367] [cursor=pointer]: 消息
+          - generic [ref=e370] [cursor=pointer]: 通讯录
+      - generic [ref=e371]:
+        - complementary [ref=e372]:
+          - generic [ref=e374]:
+            - generic [ref=e375]: 通讯录
+            - list [ref=e376]:
+              - listitem [ref=e377] [cursor=pointer]:
+                - img "新的好友" [ref=e379]
+                - generic [ref=e380]: 新的好友
+              - listitem [ref=e381] [cursor=pointer]:
+                - img "群通知" [ref=e383]
+                - generic [ref=e384]: 群通知
+              - listitem [ref=e385] [cursor=pointer]:
+                - img "我的好友" [ref=e387]
+                - generic [ref=e388]: 我的好友
+              - listitem [ref=e389] [cursor=pointer]:
+                - img "我的群组" [ref=e391]
+                - generic [ref=e392]: 我的群组
+        - generic [ref=e394]:
+          - generic [ref=e395]:
+            - paragraph [ref=e396]: 我的群组
+            - generic [ref=e397] [cursor=pointer]:
+              - generic [ref=e398]:
+                - combobox [ref=e400]
+                - generic "我创建的" [ref=e401]
+              - generic:
+                - img:
+                  - img
+          - generic [ref=e405]:
+            - generic [ref=e407]:
+              - img [ref=e409]
+              - generic [ref=e410]:
+                - paragraph [ref=e411]: 啊啊i
+                - paragraph [ref=e412]: "3"
+            - generic [ref=e414]:
+              - img [ref=e416]
+              - generic [ref=e417]:
+                - paragraph [ref=e418]: 橙子皮、橙子皮1、橙子皮4
+                - paragraph [ref=e419]: "3"
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e40] [cursor=pointer]:
+        - img [ref=e41]
+  - generic [ref=e430]:
+    - dialog:
+      - generic [ref=e433]:
+        - generic [ref=e434]:
+          - img [ref=e436]
+          - generic [ref=e437]:
+            - generic [ref=e438]: 橙子皮、橙子皮1、橙子皮4
+            - generic [ref=e439]:
+              - generic [ref=e440]: ID：3413653759
+              - generic [ref=e442]: 2026/6/18
+        - generic [ref=e443]:
+          - generic [ref=e444]: 群成员：3
+          - generic [ref=e445]:
+            - generic [ref=e447]: 橙子皮4
+            - generic [ref=e449]: 橙子皮
+            - generic [ref=e451]: 橙子皮1
+          - button "发送消息" [ref=e453] [cursor=pointer]:
+            - generic [ref=e454]: 发送消息

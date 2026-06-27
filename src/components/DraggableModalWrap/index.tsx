@@ -1,5 +1,5 @@
 import { Modal, ModalProps } from "antd";
-import { FC, memo, useRef, useState } from "react";
+import { type ElementType, FC, memo, useRef, useState } from "react";
 import type { DraggableData, DraggableEvent } from "react-draggable";
 import Draggable from "react-draggable";
 
@@ -7,7 +7,10 @@ interface IDraggableModalWrapProps extends ModalProps {
   ignoreClasses?: string;
 }
 
+const DraggableComponent = Draggable as unknown as ElementType;
+
 const DraggableModalWrap: FC<IDraggableModalWrapProps> = (props) => {
+  const { children, ignoreClasses = "", ...modalProps } = props;
   const [bounds, setBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 });
   const draggleRef = useRef<HTMLDivElement>(null);
 
@@ -27,19 +30,19 @@ const DraggableModalWrap: FC<IDraggableModalWrapProps> = (props) => {
 
   return (
     <Modal
-      {...props}
+      {...modalProps}
       modalRender={(modal) => (
-        <Draggable
+        <DraggableComponent
           allowAnyClick
-          cancel={props.ignoreClasses}
+          cancel={ignoreClasses}
           bounds={bounds}
-          onStart={(event, uiData) => onStart(event, uiData)}
+          onStart={onStart}
         >
           <div ref={draggleRef}>{modal}</div>
-        </Draggable>
+        </DraggableComponent>
       )}
     >
-      {props.children}
+      {children}
     </Modal>
   );
 };

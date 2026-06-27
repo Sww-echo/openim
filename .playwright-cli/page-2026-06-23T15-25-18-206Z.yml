@@ -1,0 +1,100 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e634]:
+      - complementary [ref=e635]:
+        - generic [ref=e637]:
+          - generic [ref=e639] [cursor=pointer]: qqq
+          - generic [ref=e640]:
+            - button "系统公告" [ref=e641] [cursor=pointer]:
+              - img "bell" [ref=e642]:
+                - img [ref=e643]
+            - superscript [ref=e645]:
+              - generic [ref=e647]: "7"
+          - generic [ref=e650] [cursor=pointer]: 消息
+          - generic [ref=e653] [cursor=pointer]: 通讯录
+      - generic [ref=e654]:
+        - complementary [ref=e659]:
+          - generic [ref=e663]:
+            - generic [ref=e756]:
+              - img [ref=e759]
+              - generic [ref=e761]:
+                - generic [ref=e762]: "3"
+                - generic [ref=e763]: 23:21
+            - generic [ref=e665]:
+              - img [ref=e766]
+              - generic [ref=e669]:
+                - generic [ref=e670]:
+                  - generic [ref=e671]: "3"
+                  - generic [ref=e672]: 23:18
+                - generic [ref=e767]: 你解散了群聊
+            - generic [ref=e676]:
+              - img [ref=e679]
+              - generic [ref=e680]:
+                - generic [ref=e681]:
+                  - generic [ref=e682]: "2"
+                  - generic [ref=e683]: 02:10
+                - generic [ref=e686]: 你解散了群聊
+            - generic [ref=e688]:
+              - img [ref=e768]
+              - generic [ref=e693]:
+                - generic [ref=e694]: TestGroup
+                - generic [ref=e695]: 02:05
+            - generic [ref=e699]:
+              - generic [ref=e702]: www
+              - generic [ref=e703]:
+                - generic [ref=e704]:
+                  - generic [ref=e705]: www
+                  - generic [ref=e706]: 01:11
+                - generic [ref=e709]: qq
+            - generic [ref=e711]:
+              - img [ref=e714]
+              - generic [ref=e715]:
+                - generic [ref=e716]:
+                  - generic [ref=e717]: 橙子皮、橙子皮1、橙子皮4
+                  - generic [ref=e718]: 昨天 17:48
+                - generic [ref=e721]: 橙子皮1：
+            - generic [ref=e723]:
+              - generic [ref=e726]: 橙子皮4
+              - generic [ref=e727]:
+                - generic [ref=e728]:
+                  - generic [ref=e729]: 橙子皮4
+                  - generic [ref=e730]: 2026年6月14日 20:23
+                - generic [ref=e733]: "11"
+            - generic [ref=e735]:
+              - generic [ref=e738]: 橙子皮1
+              - generic [ref=e739]:
+                - generic [ref=e740]:
+                  - generic [ref=e741]: 橙子皮1
+                  - generic [ref=e742]: 2026年6月8日 15:24
+                - generic [ref=e745]: qq
+        - generic [ref=e769]:
+          - banner [ref=e770]
+          - generic [ref=e776]:
+            - main [ref=e778]
+            - separator
+            - contentinfo [ref=e787]:
+              - generic [ref=e788]:
+                - generic [ref=e789]:
+                  - button "图片" [ref=e792] [cursor=pointer]:
+                    - img "图片" [ref=e794]
+                  - button "视频" [ref=e797] [cursor=pointer]:
+                    - img "视频" [ref=e799]
+                  - button "文件" [ref=e802] [cursor=pointer]:
+                    - img "文件" [ref=e804]
+                  - img "通话" [ref=e806] [cursor=pointer]
+                - generic [ref=e807]:
+                  - application "Rich Text Editor" [ref=e808]:
+                    - 'textbox "Rich Text Editor. Editing area: main. Press Alt+0 for help." [active] [ref=e809]':
+                      - paragraph [ref=e810]
+                  - button "发送" [ref=e812] [cursor=pointer]:
+                    - generic [ref=e813]: 发送
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+  - generic:
+    - application:
+      - generic:
+        - generic:
+          - list
+        - generic:
+          - list

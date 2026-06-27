@@ -1,0 +1,114 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e89]:
+      - complementary [ref=e90]:
+        - generic [ref=e92]:
+          - generic [ref=e115] [cursor=pointer]: test-user
+          - button "系统公告" [ref=e95] [cursor=pointer]:
+            - img "bell" [ref=e96]:
+              - img [ref=e97]
+          - generic [ref=e99]:
+            - generic [ref=e101] [cursor=pointer]: 消息
+            - superscript [ref=e116]:
+              - generic [ref=e118]: "2"
+          - generic [ref=e104] [cursor=pointer]: 通讯录
+      - generic [ref=e207]:
+        - generic [ref=e208]:
+          - complementary
+        - generic [ref=e209]:
+          - banner [ref=e210]:
+            - generic [ref=e211]:
+              - generic [ref=e212]:
+                - img [ref=e214]
+                - generic [ref=e215]:
+                  - generic [ref=e216]: codex-api-realign-1782496629149
+                  - generic [ref=e217]:
+                    - img "member" [ref=e218]
+                    - generic [ref=e219]: "1"
+              - generic [ref=e220]:
+                - img "search" [ref=e221] [cursor=pointer]:
+                  - img [ref=e222]
+                - img "folder-open" [ref=e224] [cursor=pointer]:
+                  - img [ref=e225]
+          - generic [ref=e227]:
+            - main [ref=e229]:
+              - generic [ref=e265]:
+                - generic [ref=e268]:
+                  - generic [ref=e270]: test-user
+                  - generic [ref=e271]:
+                    - generic [ref=e272]:
+                      - generic "test-user" [ref=e273]
+                      - generic [ref=e274]: 02:14
+                    - generic [ref=e276]: "[暂未支持的消息类型]"
+                - generic [ref=e279]:
+                  - generic [ref=e281]: test-user
+                  - generic [ref=e282]:
+                    - generic [ref=e283]:
+                      - generic "test-user" [ref=e284]
+                      - generic [ref=e285]: 02:23
+                    - generic [ref=e287]: "[暂未支持的消息类型]"
+                - generic [ref=e290]:
+                  - generic [ref=e292]: test-user
+                  - generic [ref=e293]:
+                    - generic [ref=e294]:
+                      - generic "test-user" [ref=e295]
+                      - generic [ref=e296]: 02:23
+                    - generic [ref=e298]: "[暂未支持的消息类型]"
+                - generic [ref=e301]:
+                  - generic [ref=e303]: test-user
+                  - generic [ref=e304]:
+                    - generic [ref=e305]:
+                      - generic "test-user" [ref=e306]
+                      - generic [ref=e307]: 02:49
+                    - generic [ref=e309]: review流程测试消息
+                - generic [ref=e312]:
+                  - generic [ref=e314]: test-user
+                  - generic [ref=e315]:
+                    - generic [ref=e316]:
+                      - generic "test-user" [ref=e317]
+                      - generic [ref=e318]: 03:01
+                    - generic [ref=e320]: "[暂未支持的消息类型]"
+                - generic [ref=e339]:
+                  - generic [ref=e341]: test-user
+                  - generic [ref=e342]:
+                    - generic [ref=e343]:
+                      - generic "test-user" [ref=e344]
+                      - generic [ref=e345]: 03:24
+                    - generic [ref=e347]: review完整流程消息-1782501800000
+            - separator
+            - contentinfo [ref=e238]:
+              - generic [ref=e239]:
+                - generic [ref=e240]:
+                  - button "图片" [ref=e243] [cursor=pointer]:
+                    - img "图片" [ref=e245]
+                  - button "视频" [ref=e248] [cursor=pointer]:
+                    - img "视频" [ref=e250]
+                  - button "文件" [ref=e253] [cursor=pointer]:
+                    - img "文件" [ref=e255]
+                - generic [ref=e256]:
+                  - application "Rich Text Editor" [ref=e257]:
+                    - 'textbox "Rich Text Editor. Editing area: main. Press Alt+0 for help." [ref=e258]':
+                      - paragraph [ref=e259]
+                  - button "发送" [ref=e261] [cursor=pointer]:
+                    - generic [ref=e262]: 发送
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+  - generic:
+    - application:
+      - generic:
+        - generic:
+          - list
+        - generic:
+          - list
+  - generic [ref=e421]:
+    - dialog:
+      - generic [ref=e424]:
+        - generic [ref=e425]:
+          - img "info-circle" [ref=e426]:
+            - img [ref=e427]
+          - generic [ref=e429]:
+            - generic [ref=e430]: 消息已读列表
+            - generic [ref=e432]: "{ \"currentTime\": 1782502119122, \"data\": { \"roomId\": \"6a3ebd7789552748667deb62\", \"roomJid\": \"66e441ff632444fa8e97824e968ba118\", \"roomName\": \"codex-api-realign-1782496629149\", \"clientMsgID\": \"126c81894ff7b66f862ed91f804a364a\", \"serverMsgID\": \"84cb10e78c2f91eb283ad777afd7f0f7\", \"seq\": 0, \"supported\": false, \"source\": \"openim-commercial-capability-required\", \"readCount\": 0, \"unreadCount\": 0, \"readUsers\": [], \"unreadUsers\": [], \"errMsg\": \"当前 OpenIM 开源部署未提供稳定的群消息已读成员明细；本接口先返回能力状态，避免伪造已读数据。\", \"openIM\": { \"oldRoomId\": \"6a3ebd7789552748667deb62\", \"mapped\": true, \"oldRoomJid\": \"66e441ff632444fa8e97824e968ba118\", \"roomName\": \"codex-api-realign-1782496629149\", \"ownerUserId\": \"10000004\", \"groupID\": \"2757436928\", \"createTime\": 1782496631, \"lastSyncTime\": 1782500504, \"lastSyncOperation\": \"update\", \"lastSyncSuccess\": true, \"lastSyncError\": \"\", \"autoRepairTried\": false, \"autoRepairResult\": \"mapping_exists\" }, \"auditReadState\": { \"readKnown\": false, \"readUserIds\": [], \"allRead\": false, \"allReadTime\": 0, \"readSource\": \"none\", \"auditFound\": false, \"reasonText\": \"未找到对应审计消息，无法确认已读回调状态。\" }, \"readKnown\": false, \"readUserIds\": [], \"allRead\": false, \"allReadTime\": 0, \"readSource\": \"none\", \"reasonText\": \"未找到对应审计消息，无法确认已读回调状态。\", \"pageMetas\": { \"key\": \"room_message_read_detail\", \"title\": \"消息已读详情\", \"subtitle\": \"查看群消息已读能力状态。\", \"generatedAt\": 1782502119122 }, \"sectionMetas\": [ { \"key\": \"capability\", \"title\": \"能力状态\" }, { \"key\": \"openIM\", \"title\": \"OpenIM 状态\" } ], \"statusMetas\": [ { \"key\": \"normal\", \"text\": \"正常\" }, { \"key\": \"locked\", \"text\": \"已锁定\" }, { \"key\": \"pending\", \"text\": \"待处理\" }, { \"key\": \"unsupported\", \"text\": \"暂不支持\" } ], \"permissionMetas\": [], \"actionApis\": { \"mapping\": \"/room/openim/mapping\", \"status\": \"/room/openim/status\", \"bootstrap\": \"/room/openim/bootstrap\", \"batchStatus\": \"/room/openim/batch-status\", \"failed\": \"/room/openim/failed\", \"detail\": \"/room/openim/detail\", \"members\": \"/room/openim/members\", \"memberDetail\": \"/room/openim/member/detail\", \"onlineMembers\": \"/room/openim/online-members\", \"notices\": \"/room/openim/notices\", \"noticeDetail\": \"/room/openim/notice/detail\", \"noticeAdd\": \"/room/openim/notice/add\", \"noticeUpdate\": \"/room/openim/notice/update\", \"noticeDelete\": \"/room/openim/notice/delete\", \"shares\": \"/room/openim/shares\", \"shareDetail\": \"/room/openim/share/detail\", \"sendBefore\": \"/room/openim/send-before\", \"messageSearch\": \"/room/openim/messages/search\", \"recall\": \"/room/openim/message/recall\", \"readDetail\": \"/room/openim/message/read-detail\", \"qrCreate\": \"/room/openim/qr/create\", \"qrDetail\": \"/room/openim/qr/detail\", \"qrs\": \"/room/openim/qrs\", \"qrDisable\": \"/room/openim/qr/disable\", \"qrResolve\": \"/room/openim/qr/resolve\", \"qrJoin\": \"/room/openim/qr/join\", \"joinRequests\": \"/room/openim/join-requests\", \"joinRequestDetail\": \"/room/openim/join-request/detail\", \"joinRequestHandle\": \"/room/openim/join-requests/handle\", \"resync\": \"/room/openim/resync\", \"resyncBatch\": \"/room/openim/resync-batch\", \"specialMembers\": \"/room/openim/special-members\", \"memberSetSpecialRole\": \"/room/openim/member/set-special-role\", \"memberSetOfflineNoPush\": \"/room/openim/member/set-offline-no-push\", \"memberSetTop\": \"/room/openim/member/set-top\", \"memberClearMessage\": \"/room/openim/member/clear-message\", \"memberRemarkUpdate\": \"/room/openim/member/remark/update\", \"memberRemarkDelete\": \"/room/openim/member/remark/delete\", \"memberMute\": \"/room/openim/member/mute\", \"memberUnmute\": \"/room/openim/member/unmute\", \"copyRoom\": \"/room/openim/copy-room\", \"shareAdd\": \"/room/openim/share/add\", \"shareDelete\": \"/room/openim/share/delete\", \"fileUploadContext\": \"/file/upload/context\", \"fileUpload\": \"/file/upload\", \"fileSign\": \"/file/sign\", \"fileDownload\": \"/file/download\", \"filePreview\": \"/file/preview\" }, \"openIMSummary\": { \"available\": true, \"statusText\": \"已返回 OpenIM 信息\", \"synced\": \"\", \"errCode\": \"\", \"errMsg\": \"\" }, \"emptyState\": { \"show\": true, \"title\": \"暂不支持已读成员明细\", \"description\": \"接口保留能力状态，避免前端展示伪造数据。\" }, \"statusText\": \"暂不支持\", \"operationHint\": \"当前 OpenIM 开源部署未提供稳定的群消息已读成员明细，前端可展示能力不可用提示。\" }, \"resultCode\": 1 }"
+        - button "知道了" [active] [ref=e434] [cursor=pointer]:
+          - generic [ref=e435]: 知道了

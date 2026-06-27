@@ -16,7 +16,7 @@ import {
   ParticipantEvent,
   Track,
 } from "livekit-client";
-import { useEffect, useState } from "react";
+import { type ElementType, useEffect, useState } from "react";
 
 import OIMAvatar from "@/components/OIMAvatar";
 import { CustomType } from "@/constants";
@@ -27,6 +27,7 @@ import { RtcControl } from "./RtcControl";
 const localVideoClasses =
   "absolute right-3 top-3 !w-[100px] !h-[150px] rounded-md z-10";
 const remoteVideoClasses = "absolute top-0 z-0";
+const VideoTrackComponent = VideoTrack as ElementType;
 
 interface IRtcLayoutProps {
   connect: boolean;
@@ -107,7 +108,7 @@ export const RtcLayout = ({
             <TrackRefContext.Consumer>
               {(track) =>
                 track && (
-                  <VideoTrack
+                  <VideoTrackComponent
                     {...track}
                     className={
                       isLocal(track.participant)

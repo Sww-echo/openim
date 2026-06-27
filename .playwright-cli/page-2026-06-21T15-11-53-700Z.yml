@@ -1,0 +1,89 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e351]:
+      - complementary [ref=e352]:
+        - generic [ref=e354]:
+          - generic [ref=e356] [cursor=pointer]: qqq
+          - generic [ref=e357]:
+            - button "系统公告" [ref=e358] [cursor=pointer]:
+              - img "bell" [ref=e359]:
+                - img [ref=e360]
+            - superscript [ref=e362]:
+              - generic [ref=e364]: "7"
+          - generic [ref=e367] [cursor=pointer]: 消息
+          - generic [ref=e370] [cursor=pointer]: 通讯录
+      - generic [ref=e371]:
+        - complementary [ref=e372]:
+          - generic [ref=e374]:
+            - generic [ref=e375]: 通讯录
+            - list [ref=e376]:
+              - listitem [ref=e377] [cursor=pointer]:
+                - img "新的好友" [ref=e379]
+                - generic [ref=e380]: 新的好友
+              - listitem [ref=e381] [cursor=pointer]:
+                - img "群通知" [ref=e383]
+                - generic [ref=e384]: 群通知
+              - listitem [ref=e385] [cursor=pointer]:
+                - img "我的好友" [ref=e387]
+                - generic [ref=e388]: 我的好友
+              - listitem [ref=e389] [cursor=pointer]:
+                - img "我的群组" [ref=e391]
+                - generic [ref=e392]: 我的群组
+        - generic [ref=e394]:
+          - generic [ref=e395]:
+            - paragraph [ref=e396]: 我的群组
+            - generic [ref=e397] [cursor=pointer]:
+              - generic [ref=e398]:
+                - combobox [ref=e400]
+                - generic "我创建的" [ref=e401]
+              - generic:
+                - img:
+                  - img
+          - generic [ref=e405]:
+            - generic [ref=e407]:
+              - img [ref=e409]
+              - generic [ref=e410]:
+                - paragraph [ref=e411]: 啊啊i
+                - paragraph [ref=e412]: "3"
+            - generic [ref=e414]:
+              - img [ref=e416]
+              - generic [ref=e417]:
+                - paragraph [ref=e418]: 橙子皮、橙子皮1、橙子皮4
+                - paragraph [ref=e419]: "3"
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e40] [cursor=pointer]:
+        - img [ref=e41]
+  - tooltip "qqq qqq 切换账号 qqq qqq 10000003 当前 我的信息 right 账号设置 right 关于我们 right 退出登录 right" [ref=e700]:
+    - generic [ref=e702]:
+      - generic [ref=e703]:
+        - button "qqq" [ref=e706] [cursor=pointer]:
+          - generic [ref=e709]: qqq
+        - generic [ref=e712]: qqq
+      - generic [ref=e713]:
+        - generic [ref=e714]: 切换账号
+        - button "qqq qqq 10000003 当前" [disabled] [ref=e716]:
+          - generic [ref=e718]: qqq
+          - generic [ref=e719]:
+            - generic [ref=e720]: qqq
+            - generic [ref=e721]: "10000003"
+          - generic [ref=e722]: 当前
+      - generic [ref=e723]:
+        - generic [ref=e724] [cursor=pointer]:
+          - generic [ref=e725]: 我的信息
+          - img "right" [ref=e726]:
+            - img [ref=e727]
+        - separator [ref=e730]
+      - generic [ref=e731]:
+        - generic [ref=e732] [cursor=pointer]:
+          - generic [ref=e733]: 账号设置
+          - img "right" [ref=e734]:
+            - img [ref=e735]
+        - separator [ref=e738]
+      - generic [ref=e740] [cursor=pointer]:
+        - generic [ref=e741]: 关于我们
+        - img "right" [ref=e742]:
+          - img [ref=e743]
+      - generic [ref=e746] [cursor=pointer]:
+        - generic [ref=e747]: 退出登录
+        - img "right" [ref=e748]:
+          - img [ref=e749]

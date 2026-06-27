@@ -1,0 +1,77 @@
+{
+  "id": "web-group-management-api-realignment",
+  "name": "web-group-management-api-realignment",
+  "title": "Web 群管理功能按最新接口文档重新对齐",
+  "description": "基于 docs/openim-frontend-api-doc.json 重新实现需求清单中的群管理功能，包括群主/管理员入口、群公告、群成员、群权限设置、消息销毁、邀请审核、已读详情和在线成员查看。",
+  "status": "completed",
+  "dev_type": null,
+  "scope": "web-client",
+  "package": null,
+  "priority": "P1",
+  "creator": "sww",
+  "assignee": "sww",
+  "createdAt": "2026-06-27",
+  "completedAt": "2026-06-27",
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [
+    {
+      "title": "群主/管理员入口按当前成员角色和最新群详情字段控制",
+      "status": "completed"
+    },
+    {
+      "title": "群公告列表、新增、编辑、删除按 /room/openim/notice(s) 对齐",
+      "status": "completed"
+    },
+    {
+      "title": "群成员列表、成员详情、备注按 /room/openim/member(s) 对齐",
+      "status": "completed"
+    },
+    {
+      "title": "邀请、踢人、转让、退群、解散、管理员和禁言由 OpenIM SDK 承担",
+      "status": "completed"
+    },
+    {
+      "title": "群权限和消息销毁旧 /room/update 写接口移除，最新文档缺口已记录",
+      "status": "completed"
+    },
+    {
+      "title": "入群审核、已读详情、在线成员、特殊成员按 /room/openim/** 对齐",
+      "status": "completed"
+    },
+    {
+      "title": "群助手、群二维码、群共享入口按 /room/openim/** 对齐",
+      "status": "completed"
+    }
+  ],
+  "children": [],
+  "parent": "06-14-web-client-api-integration",
+  "relatedFiles": [
+    "需求清单.txt",
+    "docs/openim-frontend-api-doc.json",
+    "src/api/group.ts",
+    "src/hooks/useGroupMembers.ts",
+    "src/utils/groupMember.ts",
+    "src/store/conversation.ts",
+    "src/store/contact.ts",
+    "src/pages/chat/queryChat/GroupSetting/GroupSettings.tsx",
+    "src/pages/chat/queryChat/GroupSetting/GroupBusinessEntrances.tsx",
+    "src/pages/chat/queryChat/GroupSetting/GroupMemberList.tsx",
+    "src/pages/chat/queryChat/GroupSetting/GroupHelperPanel.tsx",
+    "src/pages/contact/groupNotifications/index.tsx"
+  ],
+  "notes": "测试环境数据可随意调用和修改。已完成群管理功能按最新接口文档重新对齐，统计记录见 2026-06-27-group-management-api-realignment-summary.md。",
+  "meta": {
+    "client": "web",
+    "featureArea": "group-management",
+    "apiDoc": "docs/openim-frontend-api-doc.json",
+    "apiDocSource": "openim-swagger.html frontendApiGroups",
+    "requirementSource": "需求清单.txt",
+    "mutationAllowed": true,
+    "summaryRequiredOnCompletion": true,
+    "scopeDeclaration": "web-only"
+  }
+}

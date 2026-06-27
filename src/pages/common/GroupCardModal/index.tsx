@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import { t } from "i18next";
 import { forwardRef, ForwardRefRenderFunction, memo, useEffect, useState } from "react";
 
+import { modal } from "@/AntdGlobalComp";
 import clock from "@/assets/images/common/clock.png";
 import member_etc from "@/assets/images/common/member_etc.png";
 import DraggableModalWrap from "@/components/DraggableModalWrap";
@@ -15,11 +16,15 @@ import { useConversationToggle } from "@/hooks/useConversationToggle";
 import useGroupMembers from "@/hooks/useGroupMembers";
 import { OverlayVisibleHandle, useOverlayVisible } from "@/hooks/useOverlayVisible";
 import { IMSDK } from "@/layout/MainContentWrap";
+import { BusinessRecord, pickExplicitBusinessRoomId } from "@/utils/businessPayload";
 import { feedbackToast } from "@/utils/common";
 
 interface IGroupCardModalProps {
   groupData?: GroupItem & { inGroup?: boolean };
 }
+
+const normalizeGroupCardId = (value?: string | number | null) =>
+  String(value ?? "").trim();
 
 const GroupCardModal: ForwardRefRenderFunction<
   OverlayVisibleHandle,
@@ -27,17 +32,33 @@ const GroupCardModal: ForwardRefRenderFunction<
 > = ({ groupData }, ref) => {
   const [reqMsg, setReqMsg] = useState("");
   const [isSendRequest, setIsSendRequest] = useState(false);
+  const fallbackGroupID = normalizeGroupCardId(groupData?.groupID);
+  const businessRoomId = normalizeGroupCardId(
+    pickExplicitBusinessRoomId(
+      groupData as BusinessRecord | undefined,
+      fallbackGroupID,
+    ) || fallbackGroupID,
+  );
 
   const { fetchState, getMemberData, resetState } = useGroupMembers({
-    groupID: groupData?.groupID,
+    groupID: fallbackGroupID || groupData?.groupID,
+    roomId: businessRoomId,
   });
 
   const { toSpecifiedConversation } = useConversationToggle();
   const { isOverlayOpen, closeOverlay } = useOverlayVisible(ref);
 
-  const { runAsync, loading } = useRequest(IMSDK.joinGroup, {
-    manual: true,
-  });
+  const { runAsync, loading } = useRequest(
+    ({ groupID, reqMsg }: { groupID: string; reqMsg: string }) =>
+      IMSDK.joinGroup({
+        groupID,
+        reqMsg,
+        joinSource: GroupJoinSource.Search,
+      }),
+    {
+      manual: true,
+    },
+  );
 
   useEffect(() => {
     if (isOverlayOpen) {
@@ -51,9 +72,9 @@ const GroupCardModal: ForwardRefRenderFunction<
   const renderList = fetchState.groupMemberList.slice(0, sliceNum);
 
   const joinOrSendMessage = () => {
-    if (groupData?.inGroup) {
+    if (groupData?.inGroup && fallbackGroupID) {
       toSpecifiedConversation({
-        sourceID: groupData.groupID,
+        sourceID: fallbackGroupID,
         sessionType: SessionType.WorkingGroup,
       });
       closeOverlay();
@@ -63,18 +84,31 @@ const GroupCardModal: ForwardRefRenderFunction<
     setIsSendRequest(true);
   };
 
-  const sendApplication = async () => {
+  const submitApplication = async () => {
+    const groupID = fallbackGroupID || businessRoomId;
+    if (!groupID) {
+      feedbackToast({ error: new Error(t("toast.sendApplicationFailed")) });
+      return;
+    }
+
     try {
       await runAsync({
-        groupID: groupData!.groupID,
-        reqMsg,
-        joinSource: GroupJoinSource.Search,
+        groupID,
+        reqMsg: reqMsg.trim(),
       });
       feedbackToast({ msg: t("toast.sendJoinGroupRequestSuccess") });
       setIsSendRequest(false);
     } catch (error) {
       feedbackToast({ error, msg: t("toast.sendApplicationFailed") });
     }
+  };
+
+  const sendApplication = () => {
+    modal.confirm({
+      title: t("placeholder.addGroup"),
+      content: t("application.confirmJoinGroup"),
+      onOk: submitApplication,
+    });
   };
 
   return (

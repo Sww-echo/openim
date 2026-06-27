@@ -28,7 +28,7 @@ import useGroupMembers from "@/hooks/useGroupMembers";
 import { IMSDK } from "@/layout/MainContentWrap";
 import { useConversationStore } from "@/store";
 import { useContactStore } from "@/store/contact";
-import { feedbackToast } from "@/utils/common";
+import { feedbackToast, isSameID } from "@/utils/common";
 
 import CheckItem, { CheckListItem } from "./CheckItem";
 import MenuItem from "./MenuItem";
@@ -39,10 +39,16 @@ const menuList = [
     title: t("placeholder.myFriend"),
     icon: friend,
   },
+  {
+    idx: 1,
+    title: t("placeholder.myGroup"),
+    icon: group,
+  },
 ];
 
 i18n.on("languageChanged", () => {
   menuList[0].title = t("placeholder.myFriend");
+  menuList[1].title = t("placeholder.myGroup");
 });
 
 export type ChooseMenuItem = (typeof menuList)[0];
@@ -51,6 +57,7 @@ interface IChooseBoxProps {
   className?: string;
   isCheckInGroup?: boolean;
   showGroupMember?: boolean;
+  showGroupList?: boolean;
   chooseOneOnly?: boolean;
   checkMemberRole?: boolean;
 }
@@ -65,18 +72,27 @@ const ChooseBox: ForwardRefRenderFunction<ChooseBoxHandle, IChooseBoxProps> = (
   props,
   ref,
 ) => {
-  const { className, isCheckInGroup, showGroupMember, chooseOneOnly, checkMemberRole } =
-    props;
+  const {
+    className,
+    isCheckInGroup,
+    showGroupMember,
+    showGroupList,
+    chooseOneOnly,
+    checkMemberRole,
+  } = props;
 
   const [checkedList, setCheckedList] = useState<CheckListItem[]>([]);
   const latestCheckedList = useLatest(checkedList);
 
   const checkClick = useCallback(
     (data: CheckListItem) => {
-      const idx = latestCheckedList.current.findIndex(
+      const checkedItems = latestCheckedList.current ?? [];
+      const idx = checkedItems.findIndex(
         (item) =>
-          (item.userID && item.userID === data.userID) ||
-          (item.groupID && item.groupID === data.groupID && !showGroupMember),
+          (item.userID && isSameID(item.userID, data.userID)) ||
+          (item.groupID &&
+            isSameID(item.groupID, data.groupID) &&
+            !showGroupMember),
       );
       if (idx > -1) {
         setCheckedList((state) => {
@@ -85,7 +101,7 @@ const ChooseBox: ForwardRefRenderFunction<ChooseBoxHandle, IChooseBoxProps> = (
           return newState;
         });
       } else {
-        if (chooseOneOnly && latestCheckedList.current.length > 0) {
+        if (chooseOneOnly && checkedItems.length > 0) {
           feedbackToast({
             msg: t("toast.beyondSelectionLimit"),
             error: t("toast.beyondSelectionLimit"),
@@ -96,15 +112,17 @@ const ChooseBox: ForwardRefRenderFunction<ChooseBoxHandle, IChooseBoxProps> = (
         setCheckedList((state) => [...state, data]);
       }
     },
-    [chooseOneOnly],
+    [chooseOneOnly, latestCheckedList, showGroupMember],
   );
 
   const isChecked = useCallback(
     (data: CheckListItem) =>
       checkedList.some(
         (item) =>
-          (item.userID && item.userID === data.userID) ||
-          (item.groupID && item.groupID === data.groupID && !showGroupMember),
+          (item.userID && isSameID(item.userID, data.userID)) ||
+          (item.groupID &&
+            isSameID(item.groupID, data.groupID) &&
+            !showGroupMember),
       ),
     [checkedList.length, showGroupMember],
   );
@@ -142,6 +160,7 @@ const ChooseBox: ForwardRefRenderFunction<ChooseBoxHandle, IChooseBoxProps> = (
         ) : (
           <ForwardCommonLeft
             isCheckInGroup={isCheckInGroup!}
+            showGroupList={showGroupList}
             isChecked={isChecked}
             checkClick={checkClick}
           />
@@ -170,12 +189,14 @@ export default memo(forwardRef(ChooseBox));
 
 interface ICommonLeftProps {
   isCheckInGroup: boolean;
+  showGroupList?: boolean;
   checkClick: (data: CheckListItem) => void;
   isChecked: (data: CheckListItem) => boolean;
 }
 
 const CommonLeft: FC<ICommonLeftProps> = ({
   isCheckInGroup,
+  showGroupList,
   checkClick,
   isChecked,
 }) => {
@@ -202,7 +223,7 @@ const CommonLeft: FC<ICommonLeftProps> = ({
         userIDList,
       });
       tmpList.map((item) => {
-        item.disabled = data.includes(item.userID!);
+        item.disabled = data.some((userID) => isSameID(userID, item.userID));
       });
     } catch (error) {
       console.error(error);
@@ -231,9 +252,13 @@ const CommonLeft: FC<ICommonLeftProps> = ({
   }, []);
 
   if (breadcrumb.length < 1) {
+    const visibleMenuList = showGroupList
+      ? menuList
+      : menuList.filter((menu) => menu.idx === 0);
+
     return (
       <div className="flex-1 overflow-auto">
-        {menuList.map((menu) => (
+        {visibleMenuList.map((menu) => (
           <MenuItem menu={menu} key={menu.idx} menuClick={menuClick} />
         ))}
       </div>
@@ -307,7 +332,7 @@ const GroupMemberList: FC<IGroupMemberListProps> = ({
   };
 
   const isDisabled = (member: GroupMemberItem) => {
-    if (member.userID === currentMemberInGroup?.userID) return true;
+    if (isSameID(member.userID, currentMemberInGroup?.userID)) return true;
     if (!checkMemberRole) return false;
     return member.roleLevel >= currentRolevel;
   };

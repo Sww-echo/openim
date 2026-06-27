@@ -16,6 +16,8 @@ type EmitterEvents = {
   // message store
   PUSH_NEW_MSG: MessageItem;
   UPDATE_ONE_MSG: MessageItem;
+  DELETE_ONE_MSG: string;
+  CLEAR_MSG_LIST: void;
 
   SELECT_USER: SelectUserParams;
 };
@@ -30,6 +32,7 @@ export type OpenUserCardParams = {
   groupID?: string;
   isSelf?: boolean;
   notAdd?: boolean;
+  notSendMessage?: boolean;
 };
 
 const emitter = mitt<EmitterEvents>();

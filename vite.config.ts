@@ -7,14 +7,25 @@ import { customStart, loadViteEnv } from "vite-electron-plugin/plugin";
 import pkg from "./package.json";
 import legacy from "@vitejs/plugin-legacy";
 import { createRequire } from "node:module";
+import { createBusinessApiProxy } from "./vite.proxy";
+
 const require = createRequire(import.meta.url);
 // import visualizer from "rollup-plugin-visualizer";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command }) => {
+export default defineConfig(({ command, mode }) => {
   rmSync("dist-electron", { recursive: true, force: true });
 
   const sourcemap = command === "serve" || !!process.env.VSCODE_DEBUG;
+  const debugServer = !!process.env.VSCODE_DEBUG
+    ? (() => {
+        const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL);
+        return {
+          host: url.hostname,
+          port: +url.port,
+        };
+      })()
+    : {};
 
   return {
     resolve: {
@@ -39,13 +50,13 @@ export default defineConfig(({ command }) => {
         plugins: [
           ...(!!process.env.VSCODE_DEBUG
             ? [
-              // Will start Electron via VSCode Debug
-              customStart(() =>
-                console.log(
+                // Will start Electron via VSCode Debug
+                customStart(() =>
+                  console.log(
                     /* For `.vscode/.debug.script.mjs` */ "[startup] Electron App",
+                  ),
                 ),
-              ),
-            ]
+              ]
             : []),
           // Allow use `import.meta.env.VITE_SOME_KEY` in Electron-Main
           loadViteEnv(),
@@ -56,15 +67,10 @@ export default defineConfig(({ command }) => {
       // }),
       // visualizer({ open: true }),
     ],
-    server: !!process.env.VSCODE_DEBUG
-      ? (() => {
-        const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL);
-        return {
-          host: url.hostname,
-          port: +url.port,
-        };
-      })()
-      : undefined,
+    server: {
+      ...debugServer,
+      proxy: createBusinessApiProxy(mode),
+    },
     clearScreen: false,
     build: {
       sourcemap: false,
@@ -77,8 +83,7 @@ export default defineConfig(({ command }) => {
         },
       },
       rollupOptions: {
-        output: {
-        },
+        output: {},
       },
     },
   };

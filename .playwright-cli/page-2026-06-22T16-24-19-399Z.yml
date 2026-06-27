@@ -1,0 +1,53 @@
+- generic [ref=e2]:
+  - generic [ref=e89]:
+    - complementary [ref=e90]:
+      - generic [ref=e92]:
+        - generic [ref=e123] [cursor=pointer]: qqq
+        - generic [ref=e94]:
+          - button "系统公告" [ref=e95] [cursor=pointer]:
+            - img "bell" [ref=e96]:
+              - img [ref=e97]
+          - superscript [ref=e99]:
+            - generic [ref=e101]: "7"
+        - generic [ref=e104] [cursor=pointer]: 消息
+        - generic [ref=e107] [cursor=pointer]: 通讯录
+    - generic [ref=e108]:
+      - complementary [ref=e110]:
+        - generic [ref=e124]:
+          - generic [ref=e126]:
+            - img [ref=e129]
+            - generic [ref=e130]:
+              - generic [ref=e131]:
+                - generic [ref=e132]: 橙子皮、橙子皮1、橙子皮4
+                - generic [ref=e133]: 昨天 17:48
+              - generic [ref=e136]: 橙子皮1：
+          - generic [ref=e138]:
+            - generic [ref=e141]: www
+            - generic [ref=e142]:
+              - generic [ref=e143]:
+                - generic [ref=e144]: www
+                - generic [ref=e145]: 星期五 14:43
+              - generic [ref=e148]: 你是谁
+          - generic [ref=e150]:
+            - generic [ref=e153]: 橙子皮4
+            - generic [ref=e154]:
+              - generic [ref=e155]:
+                - generic [ref=e156]: 橙子皮4
+                - generic [ref=e157]: 2026年6月14日 20:23
+              - generic [ref=e160]: "11"
+          - generic [ref=e162]:
+            - generic [ref=e165]: 橙子皮1
+            - generic [ref=e166]:
+              - generic [ref=e167]:
+                - generic [ref=e168]: 橙子皮1
+                - generic [ref=e169]: 2026年6月8日 15:24
+              - generic [ref=e172]: qq
+      - generic [ref=e116]:
+        - generic [ref=e117]:
+          - generic [ref=e118]: 创建群聊
+          - generic [ref=e119]: 创建群组，立即开启在线化办公
+        - button "立即创建" [ref=e121] [cursor=pointer]:
+          - generic [ref=e122]: 立即创建
+  - complementary "React Query Devtools":
+    - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+      - img [ref=e5]

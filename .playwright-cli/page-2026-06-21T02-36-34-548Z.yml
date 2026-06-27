@@ -1,0 +1,56 @@
+- generic [ref=e2]:
+    - generic [ref=e4]:
+        - generic [ref=e6]:
+            - generic [ref=e8]:
+                - generic [ref=e9]: 在线化办公
+                - text: 多人协作，打造高效办公方式
+                - img "login_bg" [ref=e10]
+            - generic [ref=e11]:
+                - generic [ref=e13]: 欢迎使用OpenCorp
+                - generic [ref=e14]:
+                    - generic [ref=e16]:
+                        - generic "手机号" [ref=e18]
+                        - generic [ref=e22]:
+                            - generic [ref=e23] [cursor=pointer]:
+                                - generic [ref=e24]:
+                                    - combobox [ref=e26]
+                                    - generic "+86" [ref=e27]
+                                - generic:
+                                    - img:
+                                        - img
+                            - generic [ref=e28]:
+                                - textbox "请输入手机号" [ref=e29]: "18888888888"
+                                - button "close-circle" [ref=e31] [cursor=pointer]:
+                                    - img "close-circle" [ref=e32]:
+                                        - img [ref=e33]
+                    - generic [ref=e36]:
+                        - generic "密码" [ref=e38]: "* 密码"
+                        - generic [ref=e42]:
+                            - textbox "* 密码" [ref=e43]:
+                                - /placeholder: 请输入您的密码
+                                - text: czp0422+
+                            - generic [ref=e44]:
+                                - button "close-circle" [ref=e79] [cursor=pointer]:
+                                    - img "close-circle" [ref=e80]:
+                                        - img [ref=e81]
+                                - img "eye-invisible" [ref=e45] [cursor=pointer]:
+                                    - img [ref=e46]
+                    - generic [ref=e50]:
+                        - generic "企业号" [ref=e52]
+                        - textbox "企业号" [disabled] [ref=e56]:
+                            - /placeholder: 请输入企业号
+                            - text: LOCALTEST001
+                    - generic [ref=e58] [cursor=pointer]: 忘记密码
+                    - button "loading 登录" [active] [ref=e83]:
+                        - img "loading" [ref=e85]:
+                            - img [ref=e86]
+                        - generic [ref=e65]: 登录
+                    - generic [ref=e66]:
+                        - generic [ref=e67]: 还没有注册？
+                        - generic [ref=e68] [cursor=pointer]: 立即注册
+        - generic [ref=e69] [cursor=pointer]:
+            - generic [ref=e70]: OpenCorp-Base v3.8.3
+            - generic [ref=e71]: SDK(ffi) v3.8.3
+    - complementary "React Query Devtools":
+        - button "Open React Query Devtools" [ref=e72] [cursor=pointer]:
+            - img [ref=e73]

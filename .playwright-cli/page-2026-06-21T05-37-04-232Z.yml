@@ -1,0 +1,169 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e237]:
+      - complementary [ref=e238]:
+        - generic [ref=e240]:
+          - generic [ref=e242] [cursor=pointer]: qqq
+          - generic [ref=e243]:
+            - button "系统公告" [ref=e244] [cursor=pointer]:
+              - img "bell" [ref=e245]:
+                - img [ref=e246]
+            - superscript [ref=e248]:
+              - generic [ref=e250]: "7"
+          - generic [ref=e253] [cursor=pointer]: 消息
+          - generic [ref=e256] [cursor=pointer]: 通讯录
+      - generic [ref=e257]:
+        - complementary [ref=e259]:
+          - generic [ref=e263]:
+            - generic [ref=e265]:
+              - img [ref=e268]
+              - generic [ref=e269]:
+                - generic [ref=e270]:
+                  - generic [ref=e271]: 橙子皮、橙子皮1、橙子皮4
+                  - generic [ref=e272]: 星期五 17:39
+                - generic [ref=e275]: 橙子皮1：在不在
+            - generic [ref=e277]:
+              - generic [ref=e280]: www
+              - generic [ref=e281]:
+                - generic [ref=e282]:
+                  - generic [ref=e283]: www
+                  - generic [ref=e284]: 星期五 14:43
+                - generic [ref=e287]: 你是谁
+            - generic [ref=e289]:
+              - generic [ref=e292]: 橙子皮4
+              - generic [ref=e293]:
+                - generic [ref=e294]:
+                  - generic [ref=e295]: 橙子皮4
+                  - generic [ref=e296]: 2026年6月14日 20:23
+                - generic [ref=e299]: "11"
+            - generic [ref=e301]:
+              - generic [ref=e304]: 橙子皮1
+              - generic [ref=e305]:
+                - generic [ref=e306]:
+                  - generic [ref=e307]: 橙子皮1
+                  - generic [ref=e308]: 2026年6月8日 15:24
+                - generic [ref=e311]: qq
+        - generic [ref=e313]:
+          - banner [ref=e314]:
+            - generic [ref=e315]:
+              - generic [ref=e316]:
+                - generic [ref=e318]: www
+                - generic [ref=e320]: www
+              - generic [ref=e321]:
+                - img "search" [ref=e322] [cursor=pointer]:
+                  - img [ref=e323]
+                - img "folder-open" [ref=e325] [cursor=pointer]:
+                  - img [ref=e326]
+          - generic [ref=e328]:
+            - main [ref=e330]:
+              - generic [ref=e336]:
+                - generic [ref=e338]: 橙子皮
+                - generic [ref=e339]:
+                  - generic [ref=e340]:
+                    - generic "橙子皮" [ref=e341]
+                    - generic [ref=e342]: 星期五 14:43
+                  - generic [ref=e344]: 你是谁
+            - separator
+            - contentinfo [ref=e346]:
+              - generic [ref=e347]:
+                - generic [ref=e348]:
+                  - button "图片" [ref=e351] [cursor=pointer]:
+                    - img "图片" [ref=e353]
+                  - button "视频" [ref=e356] [cursor=pointer]:
+                    - img "视频" [ref=e358]
+                  - button "文件" [ref=e361] [cursor=pointer]:
+                    - img "文件" [ref=e363]
+                  - img "通话" [ref=e365] [cursor=pointer]
+                - generic [ref=e366]:
+                  - application "Rich Text Editor" [ref=e367]:
+                    - 'textbox "Rich Text Editor. Editing area: main. Press Alt+0 for help." [ref=e368]':
+                      - paragraph [ref=e369]
+                  - button "发送" [ref=e371] [cursor=pointer]:
+                    - generic [ref=e372]: 发送
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e72] [cursor=pointer]:
+        - img [ref=e73]
+  - generic:
+    - application:
+      - generic:
+        - generic:
+          - list
+        - generic:
+          - list
+  - generic [ref=e790]:
+    - dialog "聊天资源":
+      - generic [ref=e791]:
+        - button "Close" [ref=e792] [cursor=pointer]:
+          - img "close" [ref=e794]:
+            - img [ref=e795]
+        - generic [ref=e798]: 聊天资源
+        - generic [ref=e799]:
+          - button "容量概览" [ref=e801] [cursor=pointer]:
+            - generic [ref=e802]: 容量概览
+          - generic [ref=e803]:
+            - tablist [ref=e804]:
+              - generic [ref=e806]:
+                - tab "收藏消息" [ref=e808] [cursor=pointer]
+                - tab "已保存合并消息" [ref=e810] [cursor=pointer]
+                - tab "文件资源" [selected] [ref=e812] [cursor=pointer]
+            - tabpanel "文件资源" [ref=e815]:
+              - list [ref=e821]:
+                - listitem [ref=e822]:
+                  - generic [ref=e824]:
+                    - heading "chuanxi.jpg" [level=4] [ref=e825]
+                    - generic [ref=e826]: 842.58 KB / jpg
+                  - list [ref=e827]:
+                    - listitem [ref=e828]:
+                      - button "详情" [ref=e829] [cursor=pointer]:
+                        - generic [ref=e830]: 详情
+                      - emphasis [ref=e831]
+                    - listitem [ref=e832]:
+                      - button "引用状态" [ref=e833] [cursor=pointer]:
+                        - generic [ref=e834]: 引用状态
+                      - emphasis [ref=e835]
+                    - listitem [ref=e836]:
+                      - button "引用关系" [ref=e837] [cursor=pointer]:
+                        - generic [ref=e838]: 引用关系
+                      - emphasis [ref=e839]
+                    - listitem [ref=e840]:
+                      - button "下载" [ref=e841] [cursor=pointer]:
+                        - generic [ref=e842]: 下载
+                      - emphasis [ref=e843]
+                    - listitem [ref=e844]:
+                      - button "删除" [ref=e845] [cursor=pointer]:
+                        - generic [ref=e846]: 删除
+                - listitem [ref=e847]:
+                  - generic [ref=e849]:
+                    - heading "chuanxi.jpg" [level=4] [ref=e850]
+                    - generic [ref=e851]: 841.29 KB / jpg
+                  - list [ref=e852]:
+                    - listitem [ref=e853]:
+                      - button "详情" [ref=e854] [cursor=pointer]:
+                        - generic [ref=e855]: 详情
+                      - emphasis [ref=e856]
+                    - listitem [ref=e857]:
+                      - button "引用状态" [ref=e858] [cursor=pointer]:
+                        - generic [ref=e859]: 引用状态
+                      - emphasis [ref=e860]
+                    - listitem [ref=e861]:
+                      - button "引用关系" [ref=e862] [cursor=pointer]:
+                        - generic [ref=e863]: 引用关系
+                      - emphasis [ref=e864]
+                    - listitem [ref=e865]:
+                      - button "下载" [ref=e866] [cursor=pointer]:
+                        - generic [ref=e867]: 下载
+                      - emphasis [ref=e868]
+                    - listitem [ref=e869]:
+                      - button "删除" [ref=e870] [cursor=pointer]:
+                        - generic [ref=e871]: 删除
+  - generic [ref=e902]:
+    - dialog:
+      - generic [ref=e905]:
+        - generic [ref=e906]:
+          - img "info-circle" [ref=e907]:
+            - img [ref=e908]
+          - generic [ref=e910]:
+            - generic [ref=e911]: 引用关系
+            - generic [ref=e913]: "{ \"currentTime\": 1782020221360, \"data\": { \"fileId\": \"d78c623fa5704797a08a27422385d17f\", \"referenced\": false, \"referenceCount\": 0, \"references\": [], \"canDelete\": true, \"reasonText\": \"\", \"roomShareReferenceCount\": 0, \"messageReferenceSupported\": true, \"messageReferenceCount\": 0, \"messageReferenceInvalidCount\": 0, \"messageReferences\": [], \"messageReferenceHint\": \"当前仅识别 /file/upload 产出的 fileId 生命周期标记；活跃消息引用不伪造为删除保护。\", \"referenceTypes\": [ { \"key\": \"room_share\", \"title\": \"群共享文件\", \"supported\": true, \"count\": 0 }, { \"key\": \"message_file\", \"title\": \"聊天消息文件\", \"supported\": true, \"count\": 0 } ], \"pageMetas\": { \"key\": \"file_resource_references\", \"title\": \"文件引用\", \"subtitle\": \"当前统计群共享文件引用，消息文件引用先返回稳定降级结构。\", \"generatedAt\": 1782020221360 }, \"actionApis\": { \"context\": \"/file/upload/context\", \"upload\": \"/file/upload\", \"sign\": \"/file/sign\", \"download\": \"/file/download\", \"preview\": \"/file/preview\", \"delete\": \"/file/delete\", \"storageOverview\": \"/file/storage/overview\", \"enterpriseStorageOverview\": \"/file/storage/enterprise-overview\", \"roomStorageOverview\": \"/file/storage/room-overview\", \"resources\": \"/file/resources\", \"resourceDetail\": \"/file/resources/detail\", \"resourceReferences\": \"/file/resources/references\", \"cleanupRun\": \"/file/cleanup/run\", \"cleanupLogs\": \"/file/cleanup/logs\", \"cleanupLogDetail\": \"/file/cleanup/logs/detail\", \"cleanupFixtureExpire\": \"/file/cleanup/fixture/expire\", \"roomSendBefore\": \"/room/openim/send-before\", \"roomShareAdd\": \"/room/openim/share/add\", \"roomShares\": \"/room/openim/shares\" }, \"emptyState\": { \"show\": true, \"title\": \"暂无引用\", \"description\": \"该文件未被群共享引用，可以删除。\" } }, \"resultCode\": 1 }"
+        - button "知道了" [active] [ref=e915] [cursor=pointer]:
+          - generic [ref=e916]: 知道了

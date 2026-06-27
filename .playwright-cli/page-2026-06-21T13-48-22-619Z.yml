@@ -1,0 +1,286 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e306]:
+      - complementary [ref=e307]:
+        - generic [ref=e309]:
+          - generic [ref=e311] [cursor=pointer]: qqq
+          - generic [ref=e312]:
+            - button "系统公告" [ref=e313] [cursor=pointer]:
+              - img "bell" [ref=e314]:
+                - img [ref=e315]
+            - superscript [ref=e317]:
+              - generic [ref=e319]: "7"
+          - generic [ref=e322] [cursor=pointer]: 消息
+          - generic [ref=e325] [cursor=pointer]: 通讯录
+      - generic [ref=e326]:
+        - generic [ref=e327]:
+          - complementary
+        - generic [ref=e328]:
+          - banner [ref=e329]:
+            - generic [ref=e330]:
+              - generic [ref=e331]:
+                - img [ref=e333]
+                - generic [ref=e334]:
+                  - generic [ref=e335]: 啊啊i
+                  - generic [ref=e336]:
+                    - img "member" [ref=e337]
+                    - generic [ref=e338]: "3"
+              - generic [ref=e339]:
+                - img "search" [ref=e340] [cursor=pointer]:
+                  - img [ref=e341]
+                - img "folder-open" [ref=e343] [cursor=pointer]:
+                  - img [ref=e344]
+          - generic [ref=e346]:
+            - main [ref=e348]
+            - separator
+            - contentinfo [ref=e352]:
+              - generic [ref=e353]:
+                - generic [ref=e354]:
+                  - button "图片" [ref=e357] [cursor=pointer]:
+                    - img "图片" [ref=e359]
+                  - button "视频" [ref=e362] [cursor=pointer]:
+                    - img "视频" [ref=e364]
+                  - button "文件" [ref=e367] [cursor=pointer]:
+                    - img "文件" [ref=e369]
+                - generic [ref=e370]:
+                  - application "Rich Text Editor" [ref=e371]:
+                    - 'textbox "Rich Text Editor. Editing area: main. Press Alt+0 for help." [ref=e372]':
+                      - paragraph [ref=e373]
+                  - button "发送" [ref=e375] [cursor=pointer]:
+                    - generic [ref=e376]: 发送
+          - dialog [ref=e378]:
+            - generic [ref=e379]:
+              - generic [ref=e381]:
+                - button "Close" [ref=e382] [cursor=pointer]:
+                  - img "close" [ref=e383]:
+                    - img [ref=e384]
+                - generic [ref=e386]: 设置
+              - generic [ref=e388]:
+                - generic [ref=e390]:
+                  - button "edit avatar" [ref=e393] [cursor=pointer]:
+                    - generic [ref=e394]:
+                      - img [ref=e396]
+                      - img "edit avatar" [ref=e397]
+                  - generic [ref=e398]:
+                    - generic [ref=e399]: 啊啊i
+                    - img "edit name" [ref=e400] [cursor=pointer]
+                - separator [ref=e401]
+                - separator [ref=e402]
+                - separator [ref=e403]
+                - generic [ref=e404]:
+                  - generic [ref=e405]: 群组ID
+                  - generic [ref=e407]: "4011035808"
+                - generic [ref=e408]:
+                  - generic [ref=e409]: 群类型
+                  - generic [ref=e410]: 工作群
+                - generic [ref=e411] [cursor=pointer]:
+                  - generic [ref=e412]: 群公告
+                  - img "right" [ref=e413]:
+                    - img [ref=e414]
+                - generic [ref=e416] [cursor=pointer]:
+                  - generic [ref=e417]: 入群审核
+                  - img "right" [ref=e418]:
+                    - img [ref=e419]
+                - generic [ref=e421] [cursor=pointer]:
+                  - generic [ref=e422]: 特殊成员
+                  - img "right" [ref=e423]:
+                    - img [ref=e424]
+                - generic [ref=e426] [cursor=pointer]:
+                  - generic [ref=e427]: 群助手
+                  - img "right" [ref=e428]:
+                    - img [ref=e429]
+                - generic [ref=e431] [cursor=pointer]:
+                  - generic [ref=e432]: 群二维码
+                  - img "right" [ref=e433]:
+                    - img [ref=e434]
+                - generic [ref=e436] [cursor=pointer]:
+                  - generic [ref=e437]: 在线成员
+                  - img "right" [ref=e438]:
+                    - img [ref=e439]
+                - separator [ref=e441]
+                - generic [ref=e442]:
+                  - generic [ref=e443]: 群消息免打扰
+                  - switch [ref=e444] [cursor=pointer]
+                - generic [ref=e447]:
+                  - generic [ref=e448]: 群聊置顶
+                  - switch [ref=e449] [cursor=pointer]
+                - generic [ref=e452] [cursor=pointer]:
+                  - generic [ref=e453]: 清空聊天记录
+                  - img "right" [ref=e454]:
+                    - img [ref=e455]
+                - separator [ref=e457]
+                - generic [ref=e458]:
+                  - generic [ref=e459]: 加群方式
+                  - generic [ref=e460] [cursor=pointer]:
+                    - generic [ref=e461]:
+                      - combobox [ref=e463]
+                      - generic "审核加入" [ref=e464]
+                    - generic:
+                      - img:
+                        - img
+                - generic [ref=e465]:
+                  - generic [ref=e466]: 群聊验证
+                  - switch [checked] [ref=e467] [cursor=pointer]
+                - generic [ref=e470]:
+                  - generic [ref=e471]: 允许被搜索
+                  - switch [checked] [ref=e472] [cursor=pointer]
+                - generic [ref=e475]:
+                  - generic [ref=e476]: 显示已读状态
+                  - switch [ref=e477] [cursor=pointer]
+                - generic [ref=e480]:
+                  - generic [ref=e481]: 全体禁音
+                  - switch [ref=e482] [cursor=pointer]
+                - generic [ref=e485]:
+                  - generic [ref=e486]: 允许查看群成员
+                  - switch [ref=e487] [cursor=pointer]
+                - generic [ref=e490]:
+                  - generic [ref=e491]: 允许添加群成员为好友
+                  - switch [checked] [ref=e492] [cursor=pointer]
+                - generic [ref=e495]:
+                  - generic [ref=e496]: 允许成员邀请好友
+                  - switch [checked] [ref=e497] [cursor=pointer]
+                - generic [ref=e500]:
+                  - generic [ref=e501]: 允许成员修改群昵称
+                  - switch [checked] [ref=e502] [cursor=pointer]
+                - generic [ref=e505]:
+                  - generic [ref=e506]: 允许成员分享群二维码
+                  - switch [checked] [ref=e507] [cursor=pointer]
+                - generic [ref=e510]:
+                  - generic [ref=e511]: 允许查看在线状态
+                  - switch [checked] [ref=e512] [cursor=pointer]
+                - generic [ref=e515]:
+                  - generic [ref=e516]: 允许成员上传文件
+                  - switch [checked] [ref=e517] [cursor=pointer]
+                - generic [ref=e520]:
+                  - generic [ref=e521]: 允许成员私聊
+                  - switch [checked] [ref=e522] [cursor=pointer]
+                - generic [ref=e525]:
+                  - generic [ref=e526]: 允许成员@全体
+                  - switch [checked] [ref=e527] [cursor=pointer]
+                - generic [ref=e530]:
+                  - generic [ref=e531]: 允许成员创建公告
+                  - switch [checked] [ref=e532] [cursor=pointer]
+                - generic [ref=e535]:
+                  - generic [ref=e536]: 允许成员发起会议
+                  - switch [checked] [ref=e537] [cursor=pointer]
+                - generic [ref=e540]:
+                  - generic [ref=e541]: 允许成员开启讲课
+                  - switch [checked] [ref=e542] [cursor=pointer]
+                - generic [ref=e545]:
+                  - generic [ref=e546]: 允许成员退出群组
+                  - switch [checked] [ref=e547] [cursor=pointer]
+                - generic [ref=e550]:
+                  - generic [ref=e551]: 群消息撤回时限
+                  - generic [ref=e552]:
+                    - generic [ref=e555]:
+                      - generic [ref=e556]:
+                        - generic [ref=e557]:
+                          - button "Increase Value" [ref=e558] [cursor=pointer]:
+                            - img "up" [ref=e559]:
+                              - img [ref=e560]
+                          - button "Decrease Value" [ref=e562] [cursor=pointer]:
+                            - img "down" [ref=e563]:
+                              - img [ref=e564]
+                        - spinbutton [ref=e567]
+                      - generic [ref=e568]: 秒
+                    - button "保存" [disabled] [ref=e570]:
+                      - generic: 保存
+                - generic [ref=e571]:
+                  - generic [ref=e572]: 聊天记录保存时长
+                  - generic [ref=e573] [cursor=pointer]:
+                    - generic [ref=e574]:
+                      - combobox [ref=e576]
+                      - generic "关闭" [ref=e577]
+                    - generic:
+                      - img:
+                        - img
+                - generic [ref=e578]:
+                  - generic [ref=e579]: 定期删除消息记录
+                  - switch [ref=e580] [cursor=pointer]
+                - generic [ref=e583]:
+                  - generic [ref=e584]: 定期删除消息记录时间
+                  - generic [ref=e585]:
+                    - generic [ref=e588]:
+                      - spinbutton [disabled] [ref=e591]
+                      - generic [ref=e592]: 天
+                    - button "保存" [disabled] [ref=e594]:
+                      - generic: 保存
+                - generic [ref=e595]:
+                  - generic [ref=e596]: 消息销毁类型
+                  - generic [ref=e597] [cursor=pointer]:
+                    - generic [ref=e599]:
+                      - generic "文本" [ref=e601]:
+                        - generic [ref=e602]: 文本
+                      - generic:
+                        - generic: 图片
+                      - generic:
+                        - generic: 语音
+                      - generic:
+                        - generic: 视频
+                      - generic:
+                        - generic: 文件
+                      - generic:
+                        - generic: "@消息"
+                      - generic:
+                        - generic: 合并消息
+                      - generic:
+                        - generic: 名片
+                      - generic:
+                        - generic: 位置
+                      - generic:
+                        - generic: 自定义
+                      - generic "+ 9 ..." [ref=e604]:
+                        - generic [ref=e605]: + 9 ...
+                      - combobox [disabled] [ref=e608]
+                    - generic:
+                      - img:
+                        - img
+                - generic [ref=e609]:
+                  - generic [ref=e610]: 消息销毁后群内提示
+                  - switch [ref=e611] [cursor=pointer]
+                - generic [ref=e614]:
+                  - generic [ref=e615]: 阅后即焚
+                  - switch [ref=e616] [cursor=pointer]
+                - generic [ref=e619]:
+                  - generic [ref=e620]: 阅后即焚时间
+                  - generic [ref=e621]:
+                    - generic [ref=e624]:
+                      - spinbutton [disabled] [ref=e627]
+                      - generic [ref=e628]: 秒
+                    - button "保存" [disabled] [ref=e630]:
+                      - generic: 保存
+                - generic [ref=e631]:
+                  - generic [ref=e632]: 阅后即焚后群内提示
+                  - switch [ref=e633] [cursor=pointer]
+                - separator [ref=e636]
+                - separator [ref=e637]
+                - generic [ref=e638] [cursor=pointer]:
+                  - generic [ref=e639]: 转让群组
+                  - img "right" [ref=e640]:
+                    - img [ref=e641]
+                - button "解散群组" [ref=e644] [cursor=pointer]:
+                  - generic [ref=e645]: 解散群组
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+  - generic:
+    - application:
+      - generic:
+        - generic:
+          - list
+        - generic:
+          - list
+  - generic [ref=e718]:
+    - dialog "特殊成员":
+      - generic [ref=e719]:
+        - button "Close" [ref=e720] [cursor=pointer]:
+          - img "close" [ref=e722]:
+            - img [ref=e723]
+        - generic [ref=e726]: 特殊成员
+        - generic [ref=e734]:
+          - img [ref=e736]
+          - generic [ref=e748]: 未搜索到相关结果
+  - generic [ref=e750]:
+    - img "close-circle" [ref=e751]:
+      - img [ref=e752]
+    - text: 请求参数验证失败，缺少必填参数或参数错误

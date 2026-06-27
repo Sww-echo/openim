@@ -3,6 +3,7 @@ import { GroupItem, WSEvent } from "@openim/wasm-client-sdk/lib/types/entity";
 import { Button, Input, InputRef } from "antd";
 import { t } from "i18next";
 import {
+  FormEvent,
   forwardRef,
   ForwardRefRenderFunction,
   memo,
@@ -11,15 +12,14 @@ import {
   useState,
 } from "react";
 
+import { getBusinessGroupInfo } from "@/api/group";
 import { message } from "@/AntdGlobalComp";
 import { searchBusinessUserInfo } from "@/api/login";
 import DraggableModalWrap from "@/components/DraggableModalWrap";
 import { OverlayVisibleHandle, useOverlayVisible } from "@/hooks/useOverlayVisible";
 import { CardInfo } from "@/pages/common/UserCardModal";
 import { useContactStore } from "@/store";
-import { feedbackToast } from "@/utils/common";
-
-import { IMSDK } from "../MainContentWrap";
+import { feedbackToast, isSameID } from "@/utils/common";
 
 interface ISearchUserOrGroupProps {
   isSearchGroup: boolean;
@@ -42,21 +42,66 @@ const SearchUserOrGroup: ForwardRefRenderFunction<
     }
   }, [isOverlayOpen]);
 
+  const getLocalGroup = () =>
+    useContactStore
+      .getState()
+      .groupList.find((group) => isSameID(group.groupID, keyword));
+
+  const getLocalFriend = () =>
+    useContactStore
+      .getState()
+      .friendList.find((friend) => {
+        const businessFriend = friend as typeof friend & {
+          phoneNumber?: string | number;
+          telephone?: string | number;
+          account?: string | number;
+        };
+
+        return [
+          businessFriend.userID,
+          businessFriend.phoneNumber,
+          businessFriend.telephone,
+          businessFriend.account,
+        ].some((value) => value !== undefined && isSameID(value, keyword));
+      });
+
+  const isKeywordMatchedUser = (
+    targetUser?: CardInfo & {
+      phoneNumber?: string | number;
+      telephone?: string | number;
+      account?: string | number;
+    },
+  ) =>
+    Boolean(
+      targetUser &&
+        [
+          targetUser.userID,
+          targetUser.phoneNumber,
+          targetUser.telephone,
+          targetUser.account,
+        ].some((value) => value !== undefined && isSameID(value, keyword)),
+    );
+
   const searchData = async () => {
     if (!keyword) return;
     setLoading(true);
     if (isSearchGroup) {
       try {
-        const { data } = await IMSDK.getSpecifiedGroupsInfo([keyword]);
-        const groupInfo = data[0];
+        const groupInfo = await getBusinessGroupInfo(keyword);
         setLoading(false);
-        if (!groupInfo) {
+        const targetGroup = groupInfo ?? getLocalGroup();
+        if (!targetGroup) {
           message.warning(t("empty.noSearchResults"));
           return;
         }
-        openGroupCardWithData(groupInfo);
+        openGroupCardWithData(targetGroup);
       } catch (error) {
         setLoading(false);
+        const targetGroup = getLocalGroup();
+        if (targetGroup) {
+          openGroupCardWithData(targetGroup);
+          return;
+        }
         if ((error as WSEvent).errCode === 1004) {
           message.warning(t("empty.noSearchResults"));
           return;
@@ -65,27 +110,37 @@ const SearchUserOrGroup: ForwardRefRenderFunction<
       }
     } else {
       try {
+        const localFriend = getLocalFriend();
+        if (localFriend) {
+          setLoading(false);
+          openUserCardWithData(localFriend);
+          return;
+        }
+
         const {
           data: { total, users },
         } = await searchBusinessUserInfo(keyword);
         setLoading(false);
-        if (
-          !total ||
-          (users[0].userID !== keyword && users[0].phoneNumber !== keyword)
-        ) {
+        const targetUser = users.find(isKeywordMatchedUser);
+        if (!total || !targetUser) {
           message.warning(t("empty.noSearchResults"));
           return;
         }
         const friendInfo = useContactStore
           .getState()
-          .friendList.find((friend) => friend.userID === users[0].userID);
+          .friendList.find((friend) => isSameID(friend.userID, targetUser.userID));
 
         openUserCardWithData({
           ...(friendInfo ?? {}),
-          ...users[0],
+          ...targetUser,
         });
       } catch (error) {
         setLoading(false);
+        const localFriend = getLocalFriend();
+        if (localFriend) {
+          openUserCardWithData(localFriend);
+          return;
+        }
         if ((error as WSEvent).errCode === 1004) {
           message.warning(t("empty.noSearchResults"));
           return;
@@ -93,6 +148,11 @@ const SearchUserOrGroup: ForwardRefRenderFunction<
         feedbackToast({ error });
       }
     }
+  };
+
+  const submitSearch = (event?: FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
+    void searchData();
   };
 
   return (
@@ -126,7 +186,7 @@ const SearchUserOrGroup: ForwardRefRenderFunction<
           onClick={closeOverlay}
         />
       </div>
-      <div className="ignore-drag">
+      <form className="ignore-drag" onSubmit={submitSearch}>
         <div className="border-b border-[var(--gap-text)] px-5.5 py-6">
           <Input.Search
             ref={inputRef}
@@ -136,27 +196,27 @@ const SearchUserOrGroup: ForwardRefRenderFunction<
             addonAfter={null}
             spellCheck={false}
             onChange={(e) => setKeyword(e.target.value)}
-            onSearch={searchData}
           />
         </div>
         <div className="flex justify-end px-5.5 py-2.5">
           <Button
+            htmlType="submit"
             loading={loading}
-            className="px-6"
+            className="ignore-drag px-6"
             type="primary"
             disabled={!keyword}
-            onClick={searchData}
           >
             {t("confirm")}
           </Button>
           <Button
-            className="ml-3 border-0 bg-[var(--chat-bubble)] px-6"
+            htmlType="button"
+            className="ignore-drag ml-3 border-0 bg-[var(--chat-bubble)] px-6"
             onClick={closeOverlay}
           >
             {t("cancel")}
           </Button>
         </div>
-      </div>
+      </form>
     </DraggableModalWrap>
   );
 };

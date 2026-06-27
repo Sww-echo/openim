@@ -1,0 +1,123 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e17]:
+      - complementary [ref=e18]:
+        - generic [ref=e20]:
+          - generic [ref=e22] [cursor=pointer]: qqq
+          - generic [ref=e23]:
+            - button "系统公告" [ref=e24] [cursor=pointer]:
+              - img "bell" [ref=e25]:
+                - img [ref=e26]
+            - superscript [ref=e28]:
+              - generic [ref=e30]: "7"
+          - generic [ref=e33] [cursor=pointer]: 消息
+          - generic [ref=e36] [cursor=pointer]: 通讯录
+      - generic [ref=e37]:
+        - generic [ref=e38]:
+          - complementary
+        - generic [ref=e39]:
+          - banner [ref=e40]:
+            - generic [ref=e41]:
+              - generic [ref=e42]:
+                - generic [ref=e44]: www
+                - generic [ref=e46]: www
+              - generic [ref=e47]:
+                - img "search" [ref=e48] [cursor=pointer]:
+                  - img [ref=e49]
+                - img "folder-open" [ref=e51] [cursor=pointer]:
+                  - img [ref=e52]
+          - generic [ref=e54]:
+            - main [ref=e56]
+            - separator
+            - contentinfo [ref=e65]:
+              - generic [ref=e66]:
+                - generic [ref=e67]:
+                  - button "图片" [ref=e70] [cursor=pointer]:
+                    - img "图片" [ref=e72]
+                  - button "视频" [ref=e75] [cursor=pointer]:
+                    - img "视频" [ref=e77]
+                  - button "文件" [ref=e80] [cursor=pointer]:
+                    - img "文件" [ref=e82]
+                  - img "通话" [ref=e84] [cursor=pointer]
+                - generic [ref=e85]:
+                  - application "Rich Text Editor" [ref=e86]:
+                    - 'textbox "Rich Text Editor. Editing area: main. Press Alt+0 for help." [ref=e87]':
+                      - paragraph [ref=e88]
+                  - button "发送" [ref=e90] [cursor=pointer]:
+                    - generic [ref=e91]: 发送
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+  - generic:
+    - application:
+      - generic:
+        - generic:
+          - list
+        - generic:
+          - list
+  - generic [ref=e92]:
+    - dialog "聊天资源":
+      - generic [ref=e93]:
+        - button "Close" [ref=e94] [cursor=pointer]:
+          - img "close" [ref=e96]:
+            - img [ref=e97]
+        - generic [ref=e100]: 聊天资源
+        - generic [ref=e101]:
+          - button "容量概览" [ref=e154] [cursor=pointer]:
+            - generic [ref=e104]: 容量概览
+          - generic [ref=e105]:
+            - tablist [ref=e106]:
+              - generic [ref=e108]:
+                - tab "收藏消息" [ref=e110] [cursor=pointer]
+                - tab "已保存合并消息" [ref=e112] [cursor=pointer]
+                - tab "文件资源" [active] [selected] [ref=e114] [cursor=pointer]
+            - tabpanel "文件资源" [ref=e155]:
+              - list [ref=e161]:
+                - listitem [ref=e162]:
+                  - generic [ref=e164]:
+                    - heading "chuanxi.jpg" [level=4] [ref=e165]
+                    - generic [ref=e166]: 842.58 KB / jpg
+                  - list [ref=e167]:
+                    - listitem [ref=e168]:
+                      - button "详情" [ref=e169] [cursor=pointer]:
+                        - generic [ref=e170]: 详情
+                      - emphasis [ref=e171]
+                    - listitem [ref=e172]:
+                      - button "引用状态" [ref=e173] [cursor=pointer]:
+                        - generic [ref=e174]: 引用状态
+                      - emphasis [ref=e175]
+                    - listitem [ref=e176]:
+                      - button "引用关系" [ref=e177] [cursor=pointer]:
+                        - generic [ref=e178]: 引用关系
+                      - emphasis [ref=e179]
+                    - listitem [ref=e180]:
+                      - button "下载" [ref=e181] [cursor=pointer]:
+                        - generic [ref=e182]: 下载
+                      - emphasis [ref=e183]
+                    - listitem [ref=e184]:
+                      - button "删除" [ref=e185] [cursor=pointer]:
+                        - generic [ref=e186]: 删除
+                - listitem [ref=e187]:
+                  - generic [ref=e189]:
+                    - heading "chuanxi.jpg" [level=4] [ref=e190]
+                    - generic [ref=e191]: 841.29 KB / jpg
+                  - list [ref=e192]:
+                    - listitem [ref=e193]:
+                      - button "详情" [ref=e194] [cursor=pointer]:
+                        - generic [ref=e195]: 详情
+                      - emphasis [ref=e196]
+                    - listitem [ref=e197]:
+                      - button "引用状态" [ref=e198] [cursor=pointer]:
+                        - generic [ref=e199]: 引用状态
+                      - emphasis [ref=e200]
+                    - listitem [ref=e201]:
+                      - button "引用关系" [ref=e202] [cursor=pointer]:
+                        - generic [ref=e203]: 引用关系
+                      - emphasis [ref=e204]
+                    - listitem [ref=e205]:
+                      - button "下载" [ref=e206] [cursor=pointer]:
+                        - generic [ref=e207]: 下载
+                      - emphasis [ref=e208]
+                    - listitem [ref=e209]:
+                      - button "删除" [ref=e210] [cursor=pointer]:
+                        - generic [ref=e211]: 删除

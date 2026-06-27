@@ -1,0 +1,51 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e17]:
+      - complementary [ref=e18]:
+        - generic [ref=e20]:
+          - generic [ref=e22] [cursor=pointer]: e2e-main-user
+          - button "系统公告" [ref=e24] [cursor=pointer]:
+            - img "bell" [ref=e25]:
+              - img [ref=e26]
+          - generic [ref=e30] [cursor=pointer]: 消息
+          - generic [ref=e33] [cursor=pointer]: 通讯录
+      - generic [ref=e34]:
+        - complementary [ref=e36]
+        - generic [ref=e42]:
+          - generic [ref=e43]:
+            - generic [ref=e44]: 创建群聊
+            - generic [ref=e45]: 创建群组，立即开启在线化办公
+          - button "立即创建" [ref=e47] [cursor=pointer]:
+            - generic [ref=e48]: 立即创建
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+  - generic [ref=e87]:
+    - dialog:
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - generic [ref=e91]: 创建群聊
+          - img "close" [ref=e92] [cursor=pointer]:
+            - img [ref=e93]
+        - generic [ref=e95]:
+          - generic [ref=e96]:
+            - generic [ref=e97]: 群名称
+            - textbox "请输入" [ref=e98]
+          - generic [ref=e99]:
+            - generic [ref=e100]: 群头像
+            - generic [ref=e101]:
+              - img [ref=e103]
+              - button "点击修改" [ref=e106] [cursor=pointer]
+          - generic [ref=e107]:
+            - generic [ref=e108]: 群成员
+            - generic [ref=e109]:
+              - generic [ref=e113]:
+                - generic [ref=e115]: 我的好友
+                - img "right" [ref=e116]:
+                  - img [ref=e117]
+              - generic [ref=e120]: 已选择 0
+        - generic [ref=e122]:
+          - button "取消" [ref=e123] [cursor=pointer]:
+            - generic [ref=e124]: 取消
+          - button "确认" [ref=e125] [cursor=pointer]:
+            - generic [ref=e126]: 确认

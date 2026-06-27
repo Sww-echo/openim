@@ -28,6 +28,7 @@ export interface UserStore {
   updateIsLogining: (isLogining: boolean) => void;
   updateConnectState: (connectState: IMConnectState) => void;
   updateSelfInfo: (info: Partial<BusinessUserInfo>) => void;
+  clearUserRuntimeState: () => void;
   getSelfInfoByReq: () => void;
   updateAppSettings: (settings: Partial<AppSettings>) => void;
   userLogout: (force?: boolean) => Promise<void>;
@@ -61,9 +62,15 @@ export interface ConversationStore {
   ) => Promise<void>;
   getUnReadCountByReq: () => Promise<number>;
   updateUnReadCount: (count: number) => void;
-  getCurrentGroupInfoByReq: (groupID: string) => Promise<void>;
+  getCurrentGroupInfoByReq: (
+    groupID: string,
+    businessRoomId?: string,
+  ) => Promise<void>;
   updateCurrentGroupInfo: (groupInfo: GroupItem) => void;
-  getCurrentMemberInGroupByReq: (groupID: string) => Promise<void>;
+  getCurrentMemberInGroupByReq: (
+    groupID: string,
+    businessRoomId?: string,
+  ) => Promise<void>;
   setCurrentMemberInGroup: (memberInfo?: GroupMemberItem) => void;
   tryUpdateCurrentMemberInGroup: (member: GroupMemberItem) => void;
   clearConversationStore: () => void;
@@ -79,24 +86,40 @@ export interface ContactStore {
   sendGroupApplicationList: GroupApplicationItem[];
   unHandleFriendApplicationCount: number;
   unHandleGroupApplicationCount: number;
-  getFriendListByReq: () => Promise<void>;
+  contactDataLoaded: {
+    friendList: boolean;
+    groupList: boolean;
+    friendApplications: boolean;
+    groupApplications: boolean;
+  };
+  contactDataLoading: {
+    friendList: boolean;
+    groupList: boolean;
+    friendApplications: boolean;
+    groupApplications: boolean;
+  };
+  ensureFriendListLoaded: (force?: boolean) => Promise<boolean>;
+  ensureGroupListLoaded: (force?: boolean) => Promise<boolean>;
+  ensureFriendApplicationsLoaded: (force?: boolean) => Promise<boolean>;
+  ensureGroupApplicationsLoaded: (force?: boolean) => Promise<boolean>;
+  getFriendListByReq: () => Promise<boolean>;
   setFriendList: (list: FriendUserItem[]) => void;
   updateFriend: (friend: FriendUserItem, remove?: boolean) => void;
   pushNewFriend: (friend: FriendUserItem) => void;
   getBlackListByReq: () => Promise<void>;
   updateBlack: (black: BlackUserItem, remove?: boolean) => void;
   pushNewBlack: (black: BlackUserItem) => void;
-  getGroupListByReq: () => Promise<void>;
+  getGroupListByReq: () => Promise<boolean>;
   setGroupList: (list: GroupItem[]) => void;
   updateGroup: (group: GroupItem, remove?: boolean) => void;
   pushNewGroup: (group: GroupItem) => void;
-  getRecvFriendApplicationListByReq: () => Promise<void>;
+  getRecvFriendApplicationListByReq: () => Promise<boolean>;
   updateRecvFriendApplication: (application: FriendApplicationItem) => Promise<void>;
-  getSendFriendApplicationListByReq: () => Promise<void>;
+  getSendFriendApplicationListByReq: () => Promise<boolean>;
   updateSendFriendApplication: (application: FriendApplicationItem) => void;
-  getRecvGroupApplicationListByReq: () => Promise<void>;
+  getRecvGroupApplicationListByReq: () => Promise<boolean>;
   updateRecvGroupApplication: (application: GroupApplicationItem) => Promise<void>;
-  getSendGroupApplicationListByReq: () => Promise<void>;
+  getSendGroupApplicationListByReq: () => Promise<boolean>;
   updateSendGroupApplication: (application: GroupApplicationItem) => void;
   updateUnHandleFriendApplicationCount: (num: number) => void;
   updateUnHandleGroupApplicationCount: (num: number) => void;

@@ -1,0 +1,49 @@
+- generic [ref=e2]:
+  - generic [ref=e132]:
+    - complementary [ref=e133]:
+      - generic [ref=e135]:
+        - generic [ref=e137] [cursor=pointer]: qqq
+        - generic [ref=e138]:
+          - button "系统公告" [ref=e139] [cursor=pointer]:
+            - img "bell" [ref=e140]:
+              - img [ref=e141]
+          - superscript [ref=e143]:
+            - generic [ref=e145]: "7"
+        - generic [ref=e148] [cursor=pointer]: 消息
+        - generic [ref=e151] [cursor=pointer]: 通讯录
+    - generic [ref=e152]:
+      - complementary [ref=e153]:
+        - generic [ref=e155]:
+          - generic [ref=e156]: 通讯录
+          - list [ref=e157]:
+            - listitem [ref=e158] [cursor=pointer]:
+              - img "新的好友" [ref=e160]
+              - generic [ref=e161]: 新的好友
+            - listitem [ref=e162] [cursor=pointer]:
+              - img "群通知" [ref=e164]
+              - generic [ref=e165]: 群通知
+            - listitem [ref=e166] [cursor=pointer]:
+              - img "我的好友" [ref=e168]
+              - generic [ref=e169]: 我的好友
+            - listitem [ref=e170] [cursor=pointer]:
+              - img "我的群组" [ref=e172]
+              - generic [ref=e173]: 我的群组
+      - generic [ref=e175]:
+        - generic [ref=e176]: 我的好友
+        - generic [ref=e177]:
+          - generic [ref=e178]:
+            - generic [ref=e179] [cursor=pointer]: C
+            - generic [ref=e180] [cursor=pointer]: "#"
+          - generic [ref=e181]:
+            - generic [ref=e186]: C
+            - generic [ref=e189]:
+              - generic [ref=e191]:
+                - generic [ref=e193]: 橙子皮1
+                - generic [ref=e194]: 橙子皮1
+              - generic [ref=e196]:
+                - generic [ref=e198]: 橙子皮4
+                - generic [ref=e199]: 橙子皮4
+              - generic [ref=e202]: "#"
+  - complementary "React Query Devtools":
+    - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+      - img [ref=e5]

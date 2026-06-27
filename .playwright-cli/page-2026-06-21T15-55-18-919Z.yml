@@ -1,0 +1,84 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e181]:
+      - complementary [ref=e182]:
+        - generic [ref=e184]:
+          - generic [ref=e186] [cursor=pointer]: qqq
+          - generic [ref=e187]:
+            - button "系统公告" [ref=e188] [cursor=pointer]:
+              - img "bell" [ref=e189]:
+                - img [ref=e190]
+            - superscript [ref=e192]:
+              - generic [ref=e194]: "7"
+          - generic [ref=e197] [cursor=pointer]: 消息
+          - generic [ref=e200] [cursor=pointer]: 通讯录
+      - generic [ref=e201]:
+        - generic [ref=e202]:
+          - complementary
+        - generic [ref=e203]:
+          - banner [ref=e204]:
+            - generic [ref=e205]:
+              - generic [ref=e206]:
+                - generic [ref=e208]: www
+                - generic [ref=e210]: www
+              - generic [ref=e211]:
+                - img "search" [ref=e212] [cursor=pointer]:
+                  - img [ref=e213]
+                - img "folder-open" [ref=e215] [cursor=pointer]:
+                  - img [ref=e216]
+          - generic [ref=e218]:
+            - main [ref=e220]:
+              - generic [ref=e226]:
+                - generic [ref=e228]: 橙子皮
+                - generic [ref=e229]:
+                  - generic [ref=e230]:
+                    - generic "橙子皮" [ref=e231]
+                    - generic [ref=e232]: 星期五 14:43
+                  - generic [ref=e234]: 你是谁
+            - separator
+            - contentinfo [ref=e236]:
+              - generic [ref=e237]:
+                - generic [ref=e238]:
+                  - button "图片" [ref=e241] [cursor=pointer]:
+                    - img "图片" [ref=e243]
+                  - button "视频" [ref=e246] [cursor=pointer]:
+                    - img "视频" [ref=e248]
+                  - button "文件" [ref=e251] [cursor=pointer]:
+                    - img "文件" [ref=e253]
+                  - img "通话" [ref=e255] [cursor=pointer]
+                - generic [ref=e256]:
+                  - application "Rich Text Editor" [ref=e257]:
+                    - 'textbox "Rich Text Editor. Editing area: main. Press Alt+0 for help." [ref=e258]':
+                      - paragraph [ref=e259]
+                  - button "发送" [ref=e261] [cursor=pointer]:
+                    - generic [ref=e262]: 发送
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+  - generic:
+    - application:
+      - generic:
+        - generic:
+          - list
+        - generic:
+          - list
+  - generic [ref=e263]:
+    - dialog "聊天资源":
+      - generic [ref=e264]:
+        - button "Close" [ref=e265] [cursor=pointer]:
+          - img "close" [ref=e267]:
+            - img [ref=e268]
+        - generic [ref=e271]: 聊天资源
+        - generic [ref=e272]:
+          - button "合并上下文" [active] [ref=e325] [cursor=pointer]:
+            - generic [ref=e275]: 合并上下文
+          - generic [ref=e276]:
+            - tablist [ref=e277]:
+              - generic [ref=e279]:
+                - tab "收藏消息" [ref=e281] [cursor=pointer]
+                - tab "已保存合并消息" [selected] [ref=e283] [cursor=pointer]
+                - tab "文件资源" [ref=e285] [cursor=pointer]
+            - tabpanel "已保存合并消息" [ref=e326]:
+              - generic [ref=e333]:
+                - img [ref=e335]
+                - generic [ref=e347]: 未搜索到相关结果

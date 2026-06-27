@@ -1,0 +1,92 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e237]:
+      - complementary [ref=e238]:
+        - generic [ref=e240]:
+          - generic [ref=e242] [cursor=pointer]: qqq
+          - generic [ref=e243]:
+            - button "系统公告" [ref=e244] [cursor=pointer]:
+              - img "bell" [ref=e245]:
+                - img [ref=e246]
+            - superscript [ref=e248]:
+              - generic [ref=e250]: "7"
+          - generic [ref=e253] [cursor=pointer]: 消息
+          - generic [ref=e256] [cursor=pointer]: 通讯录
+      - generic [ref=e257]:
+        - complementary [ref=e259]:
+          - generic [ref=e263]:
+            - generic [ref=e265]:
+              - img [ref=e268]
+              - generic [ref=e269]:
+                - generic [ref=e270]:
+                  - generic [ref=e271]: 橙子皮、橙子皮1、橙子皮4
+                  - generic [ref=e272]: 星期五 17:39
+                - generic [ref=e275]: 橙子皮1：在不在
+            - generic [ref=e277]:
+              - generic [ref=e280]: www
+              - generic [ref=e281]:
+                - generic [ref=e282]:
+                  - generic [ref=e283]: www
+                  - generic [ref=e284]: 星期五 14:43
+                - generic [ref=e287]: 你是谁
+            - generic [ref=e289]:
+              - generic [ref=e292]: 橙子皮4
+              - generic [ref=e293]:
+                - generic [ref=e294]:
+                  - generic [ref=e295]: 橙子皮4
+                  - generic [ref=e296]: 2026年6月14日 20:23
+                - generic [ref=e299]: "11"
+            - generic [ref=e301]:
+              - generic [ref=e304]: 橙子皮1
+              - generic [ref=e305]:
+                - generic [ref=e306]:
+                  - generic [ref=e307]: 橙子皮1
+                  - generic [ref=e308]: 2026年6月8日 15:24
+                - generic [ref=e311]: qq
+        - generic [ref=e313]:
+          - banner [ref=e314]:
+            - generic [ref=e315]:
+              - generic [ref=e316]:
+                - generic [ref=e318]: www
+                - generic [ref=e320]: www
+              - generic [ref=e321]:
+                - img "search" [ref=e322] [cursor=pointer]:
+                  - img [ref=e323]
+                - img "folder-open" [ref=e325] [cursor=pointer]:
+                  - img [ref=e326]
+          - generic [ref=e328]:
+            - main [ref=e330]:
+              - generic [ref=e336]:
+                - generic [ref=e338]: 橙子皮
+                - generic [ref=e339]:
+                  - generic [ref=e340]:
+                    - generic "橙子皮" [ref=e341]
+                    - generic [ref=e342]: 星期五 14:43
+                  - generic [ref=e344]: 你是谁
+            - separator
+            - contentinfo [ref=e346]:
+              - generic [ref=e347]:
+                - generic [ref=e348]:
+                  - button "图片" [ref=e351] [cursor=pointer]:
+                    - img "图片" [ref=e353]
+                  - button "视频" [ref=e356] [cursor=pointer]:
+                    - img "视频" [ref=e358]
+                  - button "文件" [ref=e361] [cursor=pointer]:
+                    - img "文件" [ref=e363]
+                  - img "通话" [ref=e365] [cursor=pointer]
+                - generic [ref=e366]:
+                  - application "Rich Text Editor" [ref=e367]:
+                    - 'textbox "Rich Text Editor. Editing area: main. Press Alt+0 for help." [active] [ref=e368]':
+                      - paragraph [ref=e369]
+                  - button "发送" [ref=e371] [cursor=pointer]:
+                    - generic [ref=e372]: 发送
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e72] [cursor=pointer]:
+        - img [ref=e73]
+  - generic:
+    - application:
+      - generic:
+        - generic:
+          - list
+        - generic:
+          - list

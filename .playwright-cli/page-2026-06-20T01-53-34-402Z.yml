@@ -1,0 +1,39 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e8]:
+        - generic [ref=e9]: 在线化办公
+        - text: 多人协作，打造高效办公方式
+        - img "login_bg" [ref=e10]
+      - generic [ref=e75]:
+        - generic [ref=e76] [cursor=pointer]:
+          - img "left" [ref=e77]:
+            - img [ref=e78]
+          - text: 返回
+        - generic [ref=e80]: 忘记密码
+        - generic [ref=e81]:
+          - generic [ref=e83]:
+            - generic "手机号" [ref=e85]: "* 手机号"
+            - generic [ref=e89]:
+              - generic [ref=e90] [cursor=pointer]:
+                - generic [ref=e91]:
+                  - combobox [ref=e93]
+                  - generic "+86" [ref=e94]
+                - generic:
+                  - img:
+                    - img
+              - textbox "请输入手机号" [ref=e96]
+          - generic [ref=e99]:
+            - generic "验证码" [ref=e101]: "* 验证码"
+            - generic [ref=e105]:
+              - textbox "请输入您的验证码" [ref=e107]
+              - button "发送验证码" [ref=e109] [cursor=pointer]:
+                - generic [ref=e110]: 发送验证码
+          - button "下一步" [ref=e116] [cursor=pointer]:
+            - generic [ref=e117]: 下一步
+    - generic [ref=e65] [cursor=pointer]:
+      - generic [ref=e66]: OpenCorp-Base v3.8.3
+      - generic [ref=e67]: SDK(ffi) v3.8.3
+  - complementary "React Query Devtools":
+    - button "Open React Query Devtools" [ref=e68] [cursor=pointer]:
+      - img [ref=e69]

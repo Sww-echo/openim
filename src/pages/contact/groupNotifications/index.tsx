@@ -1,14 +1,36 @@
 import { ApplicationHandleResult } from "@openim/wasm-client-sdk";
 import { GroupApplicationItem } from "@openim/wasm-client-sdk/lib/types/entity";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Virtuoso } from "react-virtuoso";
 
+import { handleOpenIMJoinRequest } from "@/api/group";
 import ApplicationItem, { AccessFunction } from "@/components/ApplicationItem";
 import { IMSDK } from "@/layout/MainContentWrap";
 import { useUserStore } from "@/store";
 import { useContactStore } from "@/store/contact";
+import { pickBusinessJoinRequestId } from "@/utils/businessPayload";
 import { feedbackToast } from "@/utils/common";
+
+const syncBusinessGroupApplication = async (
+  application: GroupApplicationItem,
+  agree: boolean,
+) => {
+  const requestId = pickBusinessJoinRequestId(application);
+
+  if (!requestId) {
+    return;
+  }
+
+  await handleOpenIMJoinRequest({
+    requestId,
+    agree,
+    remark: "",
+  });
+};
+
+const normalizeApplicationId = (value?: string | number | null) =>
+  String(value ?? "").trim();
 
 export const GroupNotifications = () => {
   const { t } = useTranslation();
@@ -26,6 +48,13 @@ export const GroupNotifications = () => {
   const updateSendGroupApplication = useContactStore(
     (state) => state.updateSendGroupApplication,
   );
+  const ensureGroupApplicationsLoaded = useContactStore(
+    (state) => state.ensureGroupApplicationsLoaded,
+  );
+
+  useEffect(() => {
+    void ensureGroupApplicationsLoaded();
+  }, [ensureGroupApplicationsLoaded]);
 
   const groupApplicationList = sortArray(
     recvGroupApplicationList.concat(sendGroupApplicationList),
@@ -33,10 +62,19 @@ export const GroupNotifications = () => {
 
   const onAccept = useCallback(
     async (application: GroupApplicationItem, isRecv: boolean) => {
+      const groupID = normalizeApplicationId(application.groupID);
+      const fromUserID = normalizeApplicationId(application.userID);
+
+      if (!groupID || !fromUserID) {
+        feedbackToast({ error: new Error(t("toast.sendApplicationFailed")) });
+        return;
+      }
+
       try {
+        await syncBusinessGroupApplication(application, true);
         await IMSDK.acceptGroupApplication({
-          groupID: application.groupID,
-          fromUserID: application.userID,
+          groupID,
+          fromUserID,
           handleMsg: "",
         });
         const newApplication = {
@@ -52,15 +90,24 @@ export const GroupNotifications = () => {
         feedbackToast({ error });
       }
     },
-    [],
+    [t, updateRecvGroupApplication, updateSendGroupApplication],
   );
 
   const onReject = useCallback(
     async (application: GroupApplicationItem, isRecv: boolean) => {
+      const groupID = normalizeApplicationId(application.groupID);
+      const fromUserID = normalizeApplicationId(application.userID);
+
+      if (!groupID || !fromUserID) {
+        feedbackToast({ error: new Error(t("toast.sendApplicationFailed")) });
+        return;
+      }
+
       try {
+        await syncBusinessGroupApplication(application, false);
         await IMSDK.refuseGroupApplication({
-          groupID: application.groupID,
-          fromUserID: application.userID,
+          groupID,
+          fromUserID,
           handleMsg: "",
         });
         const newApplication = {
@@ -76,7 +123,7 @@ export const GroupNotifications = () => {
         feedbackToast({ error });
       }
     },
-    [],
+    [t, updateRecvGroupApplication, updateSendGroupApplication],
   );
 
   return (

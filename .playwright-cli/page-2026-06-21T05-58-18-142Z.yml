@@ -1,0 +1,83 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e923]:
+      - complementary [ref=e924]:
+        - generic [ref=e926]:
+          - generic [ref=e928] [cursor=pointer]: qqq
+          - generic [ref=e929]:
+            - button "系统公告" [ref=e930] [cursor=pointer]:
+              - img "bell" [ref=e931]:
+                - img [ref=e932]
+            - superscript [ref=e934]:
+              - generic [ref=e936]: "7"
+          - generic [ref=e939] [cursor=pointer]: 消息
+          - generic [ref=e942] [cursor=pointer]: 通讯录
+      - generic [ref=e943]:
+        - complementary [ref=e944]:
+          - generic [ref=e946]:
+            - generic [ref=e947]: 通讯录
+            - list [ref=e948]:
+              - listitem [ref=e949] [cursor=pointer]:
+                - img "新的好友" [ref=e951]
+                - generic [ref=e952]: 新的好友
+              - listitem [ref=e953] [cursor=pointer]:
+                - img "群通知" [ref=e955]
+                - generic [ref=e956]: 群通知
+              - listitem [ref=e957] [cursor=pointer]:
+                - img "我的好友" [ref=e959]
+                - generic [ref=e960]: 我的好友
+              - listitem [ref=e961] [cursor=pointer]:
+                - img "我的群组" [ref=e963]
+                - generic [ref=e964]: 我的群组
+        - generic [ref=e966]:
+          - generic [ref=e967]: 我的好友
+          - generic [ref=e968]:
+            - generic [ref=e969]:
+              - generic [ref=e970] [cursor=pointer]: C
+              - generic [ref=e971] [cursor=pointer]: "#"
+            - generic [ref=e972]:
+              - generic [ref=e977]: C
+              - generic [ref=e980]:
+                - generic [ref=e982]:
+                  - generic [ref=e984]: 橙子皮1
+                  - generic [ref=e985]: 橙子皮1
+                - generic [ref=e987]:
+                  - generic [ref=e989]: 橙子皮4
+                  - generic [ref=e990]: 橙子皮4
+                - generic [ref=e993]: "#"
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e72] [cursor=pointer]:
+        - img [ref=e73]
+  - generic [ref=e998]:
+    - dialog:
+      - generic [ref=e1003]:
+        - generic [ref=e1005]:
+          - generic [ref=e1006]:
+            - generic [ref=e1008]: 橙子皮1
+            - generic [ref=e1009]:
+              - generic "橙子皮1" [ref=e1011]
+              - generic [ref=e1013] [cursor=pointer]: "10000006"
+          - generic [ref=e1015]:
+            - generic [ref=e1016]: 个人信息
+            - generic [ref=e1017]:
+              - generic [ref=e1018]: 昵称
+              - generic [ref=e1019]: 橙子皮1
+            - generic [ref=e1020]:
+              - generic [ref=e1021]: 备注
+              - generic [ref=e1022]:
+                - generic [ref=e1023]: "-"
+                - img "edit name" [ref=e1024] [cursor=pointer]
+            - generic [ref=e1025]:
+              - generic [ref=e1026]: 性别
+              - generic [ref=e1027]: 男
+            - generic [ref=e1028]:
+              - generic [ref=e1029]: 生日
+              - generic [ref=e1030]: "-"
+            - generic [ref=e1031]:
+              - generic [ref=e1032]: 手机号
+              - generic [ref=e1033]: "-"
+            - generic [ref=e1034]:
+              - generic [ref=e1035]: 邮箱
+              - generic [ref=e1036]: "-"
+        - button "发送消息" [ref=e1038] [cursor=pointer]:
+          - generic [ref=e1039]: 发送消息

@@ -1,0 +1,49 @@
+- generic [ref=e2]:
+    - generic [ref=e556]:
+        - generic [ref=e558]:
+            - generic [ref=e560]:
+                - generic [ref=e561]: 在线化办公
+                - text: 多人协作，打造高效办公方式
+                - img "login_bg" [ref=e562]
+            - generic [ref=e563]:
+                - generic [ref=e565]: 欢迎使用OpenCorp
+                - generic [ref=e566]:
+                    - generic [ref=e568]:
+                        - generic "手机号" [ref=e570]
+                        - generic [ref=e574]:
+                            - generic [ref=e575] [cursor=pointer]:
+                                - generic [ref=e576]:
+                                    - combobox [ref=e578]
+                                    - generic "+86" [ref=e579]
+                                - generic:
+                                    - img:
+                                        - img
+                            - generic [ref=e580]:
+                                - textbox "请输入手机号" [ref=e581]: "18888888888"
+                                - button "close-circle" [ref=e583] [cursor=pointer]:
+                                    - img "close-circle" [ref=e584]:
+                                        - img [ref=e585]
+                    - generic [ref=e588]:
+                        - generic "密码" [ref=e590]: "* 密码"
+                        - generic [ref=e594]:
+                            - textbox "* 密码" [ref=e595]:
+                                - /placeholder: 请输入您的密码
+                            - img "eye-invisible" [ref=e597] [cursor=pointer]:
+                                - img [ref=e598]
+                    - generic [ref=e602]:
+                        - generic "企业号" [ref=e604]
+                        - textbox "企业号" [disabled] [ref=e608]:
+                            - /placeholder: 请输入企业号
+                            - text: LOCALTEST001
+                    - generic [ref=e610] [cursor=pointer]: 忘记密码
+                    - button "登录" [ref=e616] [cursor=pointer]:
+                        - generic [ref=e617]: 登录
+                    - generic [ref=e618]:
+                        - generic [ref=e619]: 还没有注册？
+                        - generic [ref=e620] [cursor=pointer]: 立即注册
+        - generic [ref=e621] [cursor=pointer]:
+            - generic [ref=e622]: OpenCorp-Base v3.8.3
+            - generic [ref=e623]: SDK(ffi) v3.8.3
+    - complementary "React Query Devtools":
+        - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+            - img [ref=e5]

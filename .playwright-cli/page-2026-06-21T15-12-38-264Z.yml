@@ -1,0 +1,97 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e351]:
+      - complementary [ref=e352]:
+        - generic [ref=e354]:
+          - generic [ref=e356] [cursor=pointer]: qqq
+          - generic [ref=e357]:
+            - button "系统公告" [ref=e358] [cursor=pointer]:
+              - img "bell" [ref=e359]:
+                - img [ref=e360]
+            - superscript [ref=e362]:
+              - generic [ref=e364]: "7"
+          - generic [ref=e367] [cursor=pointer]: 消息
+          - generic [ref=e370] [cursor=pointer]: 通讯录
+      - generic [ref=e371]:
+        - complementary [ref=e372]:
+          - generic [ref=e374]:
+            - generic [ref=e375]: 通讯录
+            - list [ref=e376]:
+              - listitem [ref=e377] [cursor=pointer]:
+                - img "新的好友" [ref=e379]
+                - generic [ref=e380]: 新的好友
+              - listitem [ref=e381] [cursor=pointer]:
+                - img "群通知" [ref=e383]
+                - generic [ref=e384]: 群通知
+              - listitem [ref=e385] [cursor=pointer]:
+                - img "我的好友" [ref=e387]
+                - generic [ref=e388]: 我的好友
+              - listitem [ref=e389] [cursor=pointer]:
+                - img "我的群组" [ref=e391]
+                - generic [ref=e392]: 我的群组
+        - generic [ref=e394]:
+          - generic [ref=e395]:
+            - paragraph [ref=e396]: 我的群组
+            - generic [ref=e397] [cursor=pointer]:
+              - generic [ref=e398]:
+                - combobox [ref=e400]
+                - generic "我创建的" [ref=e401]
+              - generic:
+                - img:
+                  - img
+          - generic [ref=e405]:
+            - generic [ref=e407]:
+              - img [ref=e409]
+              - generic [ref=e410]:
+                - paragraph [ref=e411]: 啊啊i
+                - paragraph [ref=e412]: "3"
+            - generic [ref=e414]:
+              - img [ref=e416]
+              - generic [ref=e417]:
+                - paragraph [ref=e418]: 橙子皮、橙子皮1、橙子皮4
+                - paragraph [ref=e419]: "3"
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e40] [cursor=pointer]:
+        - img [ref=e41]
+  - generic [ref=e751]:
+    - dialog:
+      - generic [ref=e754]:
+        - generic [ref=e755]:
+          - generic [ref=e756]: 账号设置
+          - img "close" [ref=e757] [cursor=pointer]:
+            - img [ref=e758]
+        - generic [ref=e760]:
+          - generic [ref=e762]:
+            - generic [ref=e763]: 个人设置
+            - generic [ref=e764]:
+              - generic [ref=e765]: 选择语言
+              - generic [ref=e766]:
+                - generic [ref=e767] [cursor=pointer]:
+                  - checkbox "简体中文" [checked] [ref=e769]
+                  - generic [ref=e771]: 简体中文
+                - generic [ref=e772] [cursor=pointer]:
+                  - checkbox "English" [ref=e774]
+                  - generic [ref=e776]: English
+            - generic [ref=e777]:
+              - generic [ref=e778]: 消息提示
+              - generic [ref=e779]:
+                - generic [ref=e780]:
+                  - generic [ref=e781]: 群公告通知
+                  - switch [checked] [ref=e782] [cursor=pointer]
+                - generic [ref=e785]:
+                  - generic [ref=e786]: "@我通知"
+                  - switch [checked] [ref=e787] [cursor=pointer]
+                - generic [ref=e790]:
+                  - generic [ref=e791]: 机器人回复通知
+                  - switch [checked] [ref=e792] [cursor=pointer]
+          - separator [ref=e795]
+          - generic [ref=e796] [cursor=pointer]:
+            - generic [ref=e797]: 修改密码
+            - img "right" [ref=e798]:
+              - img [ref=e799]
+          - separator [ref=e801]
+          - generic [ref=e802] [cursor=pointer]:
+            - generic [ref=e803]: 通讯录黑名单
+            - img "right" [ref=e804]:
+              - img [ref=e805]
+          - separator [ref=e807]

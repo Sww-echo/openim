@@ -1,0 +1,74 @@
+- generic [ref=e2]:
+  - generic [ref=e634]:
+    - complementary [ref=e635]:
+      - generic [ref=e637]:
+        - generic [ref=e639] [cursor=pointer]: 橙子皮
+        - generic [ref=e640]:
+          - button "系统公告" [ref=e641] [cursor=pointer]:
+            - img "bell" [ref=e642]:
+              - img [ref=e643]
+          - superscript [ref=e645]:
+            - generic [ref=e647]: "7"
+        - generic [ref=e650] [cursor=pointer]: 消息
+        - generic [ref=e653] [cursor=pointer]: 通讯录
+    - generic [ref=e654]:
+      - generic [ref=e655]:
+        - generic [ref=e656]:
+          - img "sync" [ref=e657]
+          - generic [ref=e658]: 连接中
+        - complementary [ref=e659]:
+          - generic [ref=e663]:
+            - generic [ref=e665]:
+              - img [ref=e668]
+              - generic [ref=e670]:
+                - generic [ref=e671]: "3"
+                - generic [ref=e672]: 21:53
+            - generic [ref=e676]:
+              - img [ref=e679]
+              - generic [ref=e680]:
+                - generic [ref=e681]:
+                  - generic [ref=e682]: "2"
+                  - generic [ref=e683]: 02:10
+                - generic [ref=e686]: 你解散了群聊
+            - generic [ref=e688]:
+              - img [ref=e691]
+              - generic [ref=e693]:
+                - generic [ref=e694]: TestGroup
+                - generic [ref=e695]: 02:05
+            - generic [ref=e699]:
+              - generic [ref=e702]: www
+              - generic [ref=e703]:
+                - generic [ref=e704]:
+                  - generic [ref=e705]: www
+                  - generic [ref=e706]: 01:11
+                - generic [ref=e709]: qq
+            - generic [ref=e711]:
+              - img [ref=e714]
+              - generic [ref=e715]:
+                - generic [ref=e716]:
+                  - generic [ref=e717]: 橙子皮、橙子皮1、橙子皮4
+                  - generic [ref=e718]: 昨天 17:48
+                - generic [ref=e721]: 橙子皮1：
+            - generic [ref=e723]:
+              - generic [ref=e726]: 橙子皮4
+              - generic [ref=e727]:
+                - generic [ref=e728]:
+                  - generic [ref=e729]: 橙子皮4
+                  - generic [ref=e730]: 2026年6月14日 20:23
+                - generic [ref=e733]: "11"
+            - generic [ref=e735]:
+              - generic [ref=e738]: 橙子皮1
+              - generic [ref=e739]:
+                - generic [ref=e740]:
+                  - generic [ref=e741]: 橙子皮1
+                  - generic [ref=e742]: 2026年6月8日 15:24
+                - generic [ref=e745]: qq
+      - generic [ref=e748]:
+        - generic [ref=e749]:
+          - generic [ref=e750]: 创建群聊
+          - generic [ref=e751]: 创建群组，立即开启在线化办公
+        - button "立即创建" [ref=e753] [cursor=pointer]:
+          - generic [ref=e754]: 立即创建
+  - complementary "React Query Devtools":
+    - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+      - img [ref=e5]

@@ -1,0 +1,72 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e17]:
+      - complementary [ref=e18]:
+        - generic [ref=e20]:
+          - generic [ref=e22] [cursor=pointer]: test-user
+          - button "系统公告" [ref=e24] [cursor=pointer]:
+            - img "bell" [ref=e25]:
+              - img [ref=e26]
+          - generic [ref=e28]:
+            - generic [ref=e30] [cursor=pointer]: 消息
+            - superscript [ref=e31]:
+              - generic [ref=e33]: "2"
+          - generic [ref=e36] [cursor=pointer]: 通讯录
+      - generic [ref=e37]:
+        - generic [ref=e38]:
+          - complementary
+        - generic [ref=e39]:
+          - banner [ref=e40]:
+            - generic [ref=e41]:
+              - generic [ref=e42]:
+                - img [ref=e44]
+                - generic [ref=e46]: codex-api-realign-1782496629149
+              - generic [ref=e47]:
+                - img "search" [ref=e48] [cursor=pointer]:
+                  - img [ref=e49]
+                - img "folder-open" [ref=e51] [cursor=pointer]:
+                  - img [ref=e52]
+          - generic [ref=e54]:
+            - main [ref=e56]
+            - separator
+            - contentinfo [ref=e65]:
+              - generic [ref=e66]:
+                - generic [ref=e67]:
+                  - button "图片" [ref=e70] [cursor=pointer]:
+                    - img "图片" [ref=e72]
+                  - button "视频" [ref=e75] [cursor=pointer]:
+                    - img "视频" [ref=e77]
+                  - button "文件" [ref=e80] [cursor=pointer]:
+                    - img "文件" [ref=e82]
+                - generic [ref=e83]:
+                  - application "Rich Text Editor" [ref=e84]:
+                    - 'textbox "Rich Text Editor. Editing area: main. Press Alt+0 for help." [ref=e85]':
+                      - paragraph [ref=e86]
+                  - button "发送" [ref=e88] [cursor=pointer]:
+                    - generic [ref=e89]: 发送
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+  - generic:
+    - application:
+      - generic:
+        - generic:
+          - list
+        - generic:
+          - list
+  - generic [ref=e90]:
+    - dialog:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - img "exclamation-circle":
+                - img
+              - generic:
+                - generic: 发送
+                - generic: 确认上传并发送当前文件吗？
+            - generic:
+              - button "取消":
+                - generic: 取消
+              - button "确定" [active]:
+                - generic: 确定

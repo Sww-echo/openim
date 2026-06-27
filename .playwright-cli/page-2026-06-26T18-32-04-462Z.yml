@@ -1,0 +1,59 @@
+- generic [ref=e2]:
+  - generic [ref=e96]:
+    - complementary [ref=e97]:
+      - generic [ref=e99]:
+        - generic [ref=e101] [cursor=pointer]: test-user
+        - button "系统公告" [ref=e103] [cursor=pointer]:
+          - img "bell" [ref=e104]:
+            - img [ref=e105]
+        - generic [ref=e107]:
+          - generic [ref=e109] [cursor=pointer]: 消息
+          - superscript [ref=e110]:
+            - generic [ref=e112]: "2"
+        - generic [ref=e115] [cursor=pointer]: 通讯录
+    - generic [ref=e126]:
+      - complementary [ref=e127]:
+        - generic [ref=e129]:
+          - generic [ref=e130]: 通讯录
+          - list [ref=e131]:
+            - listitem [ref=e132] [cursor=pointer]:
+              - img "新的好友" [ref=e134]
+              - generic [ref=e135]: 新的好友
+            - listitem [ref=e136] [cursor=pointer]:
+              - img "群通知" [ref=e138]
+              - generic [ref=e139]: 群通知
+            - listitem [ref=e140] [cursor=pointer]:
+              - img "我的好友" [ref=e142]
+              - generic [ref=e143]: 我的好友
+            - listitem [ref=e144] [cursor=pointer]:
+              - img "我的群组" [ref=e146]
+              - generic [ref=e147]: 我的群组
+      - generic [ref=e160]:
+        - generic [ref=e161]:
+          - paragraph [ref=e162]: 我的群组
+          - generic [ref=e163] [cursor=pointer]:
+            - generic [ref=e164]:
+              - combobox [ref=e166]
+              - generic "我加入的" [ref=e167]
+            - generic:
+              - img:
+                - img
+        - generic [ref=e171]:
+          - generic [ref=e173]:
+            - img [ref=e175]
+            - generic [ref=e176]:
+              - paragraph [ref=e177]: codex-api-realign-1782496629149
+              - paragraph [ref=e178]: "1"
+          - generic [ref=e180]:
+            - img [ref=e182]
+            - generic [ref=e183]:
+              - paragraph [ref=e184]: 我的群组
+              - paragraph [ref=e185]: "1"
+          - generic [ref=e187]:
+            - img [ref=e189]
+            - generic [ref=e190]:
+              - paragraph [ref=e191]: 我的群组
+              - paragraph [ref=e192]: "1"
+  - complementary "React Query Devtools":
+    - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+      - img [ref=e5]

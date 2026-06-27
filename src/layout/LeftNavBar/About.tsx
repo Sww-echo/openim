@@ -70,6 +70,14 @@ export const AboutContent = ({ closeOverlay }: { closeOverlay?: () => void }) =>
     setProgress(0);
   };
 
+  const confirmLogReport = (line: number) => {
+    modal.confirm({
+      title: t("placeholder.reportLog"),
+      content: t("placeholder.confirmUploadFile"),
+      onOk: () => tryLogReport(line),
+    });
+  };
+
   useEffect(() => {
     const uploadHandler = ({
       data: { current, size },
@@ -101,8 +109,8 @@ export const AboutContent = ({ closeOverlay }: { closeOverlay?: () => void }) =>
           <Button
             type="primary"
             onClick={() => {
-              tryLogReport(line);
               close();
+              confirmLogReport(line);
             }}
           >
             {t("confirm")}
@@ -158,7 +166,7 @@ export const AboutContent = ({ closeOverlay }: { closeOverlay?: () => void }) =>
           <>
             <div
               className="flex cursor-pointer items-center justify-between border-b border-[var(--gap-text)] px-3 py-2"
-              onClick={() => tryLogReport(10000)}
+              onClick={() => confirmLogReport(10000)}
             >
               <div>{t("placeholder.reportLog")}</div>
               <RightOutlined rev={undefined} />

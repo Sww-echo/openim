@@ -1,0 +1,59 @@
+- generic [ref=e1]:
+    - generic [ref=e2]:
+        - generic [ref=e499]:
+            - generic [ref=e501]:
+                - generic [ref=e503]:
+                    - generic [ref=e504]: 在线化办公
+                    - text: 多人协作，打造高效办公方式
+                    - img "login_bg" [ref=e505]
+                - generic [ref=e506]:
+                    - generic [ref=e508]: 欢迎使用OpenCorp
+                    - generic [ref=e509]:
+                        - generic [ref=e511]:
+                            - generic "手机号" [ref=e513]
+                            - generic [ref=e517]:
+                                - generic [ref=e518] [cursor=pointer]:
+                                    - generic [ref=e519]:
+                                        - combobox [ref=e521]
+                                        - generic "+86" [ref=e522]
+                                    - generic:
+                                        - img:
+                                            - img
+                                - generic [ref=e523]:
+                                    - textbox "请输入手机号" [ref=e524]: "18888888888"
+                                    - button "close-circle" [ref=e526] [cursor=pointer]:
+                                        - img "close-circle" [ref=e527]:
+                                            - img [ref=e528]
+                        - generic [ref=e531]:
+                            - generic "密码" [ref=e533]: "* 密码"
+                            - generic [ref=e537]:
+                                - textbox "* 密码" [ref=e538]:
+                                    - /placeholder: 请输入您的密码
+                                    - text: czp0422+
+                                - generic [ref=e539]:
+                                    - button "close-circle" [ref=e567] [cursor=pointer]:
+                                        - img "close-circle" [ref=e568]:
+                                            - img [ref=e569]
+                                    - img "eye-invisible" [ref=e540] [cursor=pointer]:
+                                        - img [ref=e541]
+                        - generic [ref=e545]:
+                            - generic "企业号" [ref=e547]
+                            - textbox "企业号" [disabled] [ref=e551]:
+                                - /placeholder: 请输入企业号
+                                - text: LOCALTEST001
+                        - generic [ref=e553] [cursor=pointer]: 忘记密码
+                        - button "登录" [active] [ref=e559] [cursor=pointer]:
+                            - generic [ref=e560]: 登录
+                        - generic [ref=e561]:
+                            - generic [ref=e562]: 还没有注册？
+                            - generic [ref=e563] [cursor=pointer]: 立即注册
+            - generic [ref=e564] [cursor=pointer]:
+                - generic [ref=e565]: OpenCorp-Base v3.8.3
+                - generic [ref=e566]: SDK(ffi) v3.8.3
+        - complementary "React Query Devtools":
+            - button "Open React Query Devtools" [ref=e183] [cursor=pointer]:
+                - img [ref=e184]
+    - generic [ref=e572]:
+        - img "close-circle" [ref=e573]:
+            - img [ref=e574]
+        - text: Request failed with status code 500

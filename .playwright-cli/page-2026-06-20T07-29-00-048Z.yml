@@ -1,0 +1,60 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e313]:
+      - complementary [ref=e314]:
+        - generic [ref=e316]:
+          - generic [ref=e318] [cursor=pointer]: qqq
+          - generic [ref=e319]:
+            - button "系统公告" [ref=e320] [cursor=pointer]:
+              - img "bell" [ref=e321]:
+                - img [ref=e322]
+            - superscript [ref=e324]:
+              - generic [ref=e326]: "7"
+          - generic [ref=e329] [cursor=pointer]: 消息
+          - generic [ref=e332] [cursor=pointer]: 通讯录
+      - generic [ref=e333]:
+        - generic [ref=e334]:
+          - complementary
+        - generic [ref=e335]:
+          - banner [ref=e336]:
+            - generic [ref=e337]:
+              - generic [ref=e338]:
+                - img [ref=e340]
+                - generic [ref=e341]:
+                  - generic [ref=e342]: 啊啊i
+                  - generic [ref=e343]:
+                    - img "member" [ref=e344]
+                    - generic [ref=e345]: "3"
+              - generic [ref=e346]:
+                - img "search" [ref=e347] [cursor=pointer]:
+                  - img [ref=e348]
+                - img "folder-open" [ref=e350] [cursor=pointer]:
+                  - img [ref=e351]
+          - generic [ref=e353]:
+            - main [ref=e355]
+            - separator
+            - contentinfo [ref=e359]:
+              - generic [ref=e360]:
+                - generic [ref=e361]:
+                  - button "图片" [ref=e364] [cursor=pointer]:
+                    - img "图片" [ref=e366]
+                  - button "视频" [ref=e369] [cursor=pointer]:
+                    - img "视频" [ref=e371]
+                  - button "文件" [ref=e374] [cursor=pointer]:
+                    - img "文件" [ref=e376]
+                - generic [ref=e377]:
+                  - application "Rich Text Editor" [ref=e378]:
+                    - 'textbox "Rich Text Editor. Editing area: main. Press Alt+0 for help." [active] [ref=e379]':
+                      - paragraph [ref=e380]
+                  - button "发送" [ref=e382] [cursor=pointer]:
+                    - generic [ref=e383]: 发送
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+  - generic:
+    - application:
+      - generic:
+        - generic:
+          - list
+        - generic:
+          - list

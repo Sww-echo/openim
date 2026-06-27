@@ -12,19 +12,138 @@ type FeedbackToastParams = {
 interface FeedbackError extends Error {
   errMsg?: string;
   errDlt?: string;
+  fieldErrors?: unknown;
+  reasonText?: string;
+  resultMsg?: string;
+  msg?: string;
+  warningMessage?: string;
+  response?: {
+    data?: unknown;
+  };
+  data?: unknown;
+  result?: unknown;
+  obj?: unknown;
 }
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
+const getText = (value: unknown) =>
+  typeof value === "string" || typeof value === "number" ? String(value).trim() : "";
+
+const getAllowedIpsText = (value: unknown) =>
+  Array.isArray(value) ? value.map(getText).filter(Boolean).join(", ") : getText(value);
+
+const getNestedErrorData = (record: Record<string, unknown>) =>
+  [
+    isRecord(record.response) ? record.response.data : undefined,
+    record.data,
+    record.result,
+    record.obj,
+    record.error,
+  ].filter(Boolean);
+
+const getFieldErrorMessage = (value: unknown): string | undefined => {
+  if (Array.isArray(value)) {
+    return value.map(getFieldErrorMessage).find(Boolean);
+  }
+  if (isRecord(value)) {
+    return Object.values(value).map(getFieldErrorMessage).find(Boolean);
+  }
+
+  return getText(value) || undefined;
+};
+
+const getRestrictionMessage = (record: Record<string, unknown>) => {
+  const curfew = isRecord(record.curfew) ? record.curfew : {};
+  const allowed = record.allowed ?? curfew.allowed;
+  const reason = getText(record.reason ?? curfew.reason);
+  const reasonText =
+    getText(record.reasonText) ||
+    getText(record.warningMessage) ||
+    getText(record.message) ||
+    getText(record.msg) ||
+    getText(curfew.reasonText) ||
+    getText(curfew.warningMessage) ||
+    getText(curfew.message);
+
+  if (allowed !== false && allowed !== "false" && allowed !== 0 && allowed !== "0") {
+    return undefined;
+  }
+
+  if (reason === "user_login_ip_not_allowed" || record.clientIp || record.allowedIps) {
+    return (
+      reasonText ||
+      t("toast.loginIpNotAllowed", {
+        clientIp: getText(record.clientIp),
+        allowedIps: getAllowedIpsText(record.allowedIps),
+      })
+    );
+  }
+
+  if (reason.includes("curfew") || Object.keys(curfew).length > 0) {
+    return (
+      reasonText ||
+      t("toast.loginCurfewBlocked", {
+        nextAvailableTime: getText(record.nextAvailableTime ?? curfew.nextAvailableTime),
+      })
+    );
+  }
+
+  return reasonText || t("toast.loginRestricted");
+};
+
+export const getFeedbackErrorMessage = (
+  error: unknown,
+  seen = new Set<unknown>(),
+): string | undefined => {
+  if (typeof error === "string" || typeof error === "number") {
+    return getText(error) || undefined;
+  }
+  if (!isRecord(error) || seen.has(error)) {
+    return undefined;
+  }
+  seen.add(error);
+
+  const restrictionMessage = getRestrictionMessage(error);
+  if (restrictionMessage) {
+    return restrictionMessage;
+  }
+
+  const directReason =
+    getText(error.reasonText) ||
+    getText(error.warningMessage) ||
+    getFieldErrorMessage(error.fieldErrors);
+  if (directReason) {
+    return directReason;
+  }
+
+  const nestedMessage = getNestedErrorData(error)
+    .map((item) => getFeedbackErrorMessage(item, seen))
+    .find(Boolean);
+  if (nestedMessage) {
+    return nestedMessage;
+  }
+
+  return (
+    getText(error.resultMsg) ||
+    getText(error.errMsg) ||
+    getText(error.msg) ||
+    getText(error.errDlt) ||
+    getText(error.message) ||
+    undefined
+  );
+};
+
 export const feedbackToast = (config?: FeedbackToastParams) => {
   const { msg, error, duration, onClose } = config ?? {};
-  let content = "";
+  let content: string | undefined;
   if (error) {
-    content =
-      (error as FeedbackError)?.message ??
-      (error as FeedbackError)?.errDlt ??
-      t("toast.accessFailed");
+    content = getFeedbackErrorMessage(error as FeedbackError);
   }
   message.open({
     type: error ? "error" : "success",
-    content: msg ?? content ?? t("toast.accessSuccess"),
+    content: msg ?? content ?? t(error ? "toast.accessFailed" : "toast.accessSuccess"),
     duration,
     onClose,
   });
@@ -34,6 +153,19 @@ export const feedbackToast = (config?: FeedbackToastParams) => {
 };
 
 export const canSendImageTypeList = ["png", "jpg", "jpeg", "gif", "bmp", "webp"];
+
+export const normalizeID = (id?: string | number | null) =>
+  id === undefined || id === null ? "" : String(id);
+
+export const isSameID = (
+  left?: string | number | null,
+  right?: string | number | null,
+) => {
+  const normalizedLeft = normalizeID(left);
+  const normalizedRight = normalizeID(right);
+
+  return Boolean(normalizedLeft) && normalizedLeft === normalizedRight;
+};
 
 export const bytesToSize = (bytes: number) => {
   if (bytes === 0) return "0 B";

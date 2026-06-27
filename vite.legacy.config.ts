@@ -6,14 +6,24 @@ import electron from "vite-electron-plugin";
 import { customStart, loadViteEnv } from "vite-electron-plugin/plugin";
 import preload from "vite-plugin-electron";
 import pkg from "./package.json";
+import { createBusinessApiProxy } from "./vite.proxy";
 
 let preloadHasReady = false;
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command }) => {
+export default defineConfig(({ command, mode }) => {
   rmSync("dist-electron", { recursive: true, force: true });
 
   const sourcemap = command === "serve" || !!process.env.VSCODE_DEBUG;
+  const debugServer = !!process.env.VSCODE_DEBUG
+    ? (() => {
+        const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL);
+        return {
+          host: url.hostname,
+          port: +url.port,
+        };
+      })()
+    : {};
 
   return {
     resolve: {
@@ -66,15 +76,10 @@ export default defineConfig(({ command }) => {
         },
       }),
     ],
-    server: !!process.env.VSCODE_DEBUG
-      ? (() => {
-          const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL);
-          return {
-            host: url.hostname,
-            port: +url.port,
-          };
-        })()
-      : undefined,
+    server: {
+      ...debugServer,
+      proxy: createBusinessApiProxy(mode),
+    },
     clearScreen: false,
   };
 });

@@ -1,0 +1,39 @@
+{
+  "id": "web-client-unfinished-api-integration",
+  "name": "web-client-unfinished-api-integration",
+  "title": "Web 用户端未完成接口调用接入",
+  "description": "在既有 Web 用户端接口接入基础上，继续实现已识别但尚未落到页面或调用链的 Web 端接口调用；当前为测试数据，允许真实调用接口并修改测试数据。",
+  "status": "in_progress",
+  "dev_type": null,
+  "scope": "web-client",
+  "package": null,
+  "priority": "P1",
+  "creator": "sww",
+  "assignee": "sww",
+  "createdAt": "2026-06-25",
+  "completedAt": null,
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [],
+  "parent": "06-14-web-client-api-integration",
+  "relatedFiles": [
+    "docs/openim-frontend-api-doc.json",
+    "src/api/login.ts",
+    "src/api/group.ts",
+    "src/store/user.ts",
+    "src/pages/common/ChooseModal/index.tsx",
+    "src/utils/storage.ts"
+  ],
+  "notes": "用户明确当前为测试数据，并授权真实调用接口、触发写操作、修改测试数据。范围仍限定 Web 用户端，不主动接入后台、支付、运营、运维桥接等非 Web 用户端接口。",
+  "meta": {
+    "client": "web",
+    "apiDoc": "docs/openim-frontend-api-doc.json",
+    "apiDocSource": "openim-swagger.html frontendApiGroups",
+    "sourceTask": "06-14-web-client-api-integration",
+    "mutationAllowed": true
+  }
+}

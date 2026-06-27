@@ -34,7 +34,7 @@ export function useHistoryMessageList() {
   useEffect(() => {
     const pushNewMessage = (message: MessageItem) => {
       if (
-        latestLoadState.current.messageList.find(
+        latestLoadState.current?.messageList.find(
           (item) => item.clientMsgID === message.clientMsgID,
         )
       ) {
@@ -60,11 +60,31 @@ export function useHistoryMessageList() {
         };
       });
     };
+    const deleteOneMessage = (clientMsgID: string) => {
+      setLoadState((preState) => ({
+        ...preState,
+        messageList: preState.messageList.filter(
+          (message) => message.clientMsgID !== clientMsgID,
+        ),
+      }));
+    };
+    const clearMessageList = () => {
+      setLoadState((preState) => ({
+        ...preState,
+        hasMoreOld: false,
+        messageList: [],
+        firstItemIndex: START_INDEX,
+      }));
+    };
     emitter.on("PUSH_NEW_MSG", pushNewMessage);
     emitter.on("UPDATE_ONE_MSG", updateOneMessage);
+    emitter.on("DELETE_ONE_MSG", deleteOneMessage);
+    emitter.on("CLEAR_MSG_LIST", clearMessageList);
     return () => {
       emitter.off("PUSH_NEW_MSG", pushNewMessage);
       emitter.off("UPDATE_ONE_MSG", updateOneMessage);
+      emitter.off("DELETE_ONE_MSG", deleteOneMessage);
+      emitter.off("CLEAR_MSG_LIST", clearMessageList);
     };
   }, []);
 
@@ -76,7 +96,7 @@ export function useHistoryMessageList() {
       const { data } = await IMSDK.getAdvancedHistoryMessageList({
         count: SPLIT_COUNT,
         startClientMsgID: loadMore
-          ? latestLoadState.current.messageList[0]?.clientMsgID
+          ? latestLoadState.current?.messageList[0]?.clientMsgID ?? ""
           : "",
         conversationID: conversationID ?? "",
         viewType: ViewType.History,
@@ -110,3 +130,6 @@ export function useHistoryMessageList() {
 export const pushNewMessage = (message: MessageItem) => emit("PUSH_NEW_MSG", message);
 export const updateOneMessage = (message: MessageItem) =>
   emit("UPDATE_ONE_MSG", message);
+export const deleteOneMessage = (clientMsgID: string) =>
+  emit("DELETE_ONE_MSG", clientMsgID);
+export const clearMessageList = () => emit("CLEAR_MSG_LIST");

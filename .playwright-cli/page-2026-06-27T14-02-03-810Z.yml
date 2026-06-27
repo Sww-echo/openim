@@ -1,0 +1,45 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e167]:
+      - generic [ref=e174]: 1%
+      - generic:
+        - generic:
+          - generic:
+            - complementary:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic: e2e-flow-user
+                  - generic:
+                    - button "系统公告":
+                      - img "bell":
+                        - img
+                  - generic:
+                    - generic:
+                      - generic: 消息
+                  - generic:
+                    - generic:
+                      - generic: 通讯录
+            - generic:
+              - generic:
+                - complementary
+              - generic:
+                - generic:
+                  - generic:
+                    - generic: 创建群聊
+                    - generic: 创建群组，立即开启在线化办公
+                  - generic:
+                    - button "立即创建":
+                      - generic: 立即创建
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+        - img [ref=e5]
+  - generic:
+    - generic [ref=e176]:
+      - img "check-circle" [ref=e177]:
+        - img [ref=e178]
+      - text: 注册成功！
+    - generic [ref=e181]:
+      - img "close-circle" [ref=e182]:
+        - img [ref=e183]
+      - text: 获取群列表失败！

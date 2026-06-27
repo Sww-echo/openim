@@ -12,12 +12,24 @@ module.exports = {
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:prettier/recommended",
   ],
-  overrides: [],
+  overrides: [
+    {
+      files: ["scripts/**/*.mjs"],
+      env: {
+        browser: false,
+        node: true,
+      },
+      rules: {
+        "@typescript-eslint/no-unsafe-argument": "off",
+        "@typescript-eslint/no-unsafe-return": "off",
+      },
+    },
+  ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
-    project: ["./tsconfig.json"],
+    project: ["./tsconfig.eslint.json"],
   },
   plugins: [
     "react",

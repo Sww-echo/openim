@@ -12,7 +12,7 @@ interface IEditableContentProps {
   placeholder?: string;
   className?: string;
   textClassName?: string;
-  onChange?: (value: string) => Promise<void>;
+  onChange?: (value: string) => void | Promise<void>;
 }
 
 const EditableContent: FC<IEditableContentProps> = ({

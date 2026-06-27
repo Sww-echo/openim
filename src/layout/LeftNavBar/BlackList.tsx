@@ -2,8 +2,16 @@ import { CloseOutlined } from "@ant-design/icons";
 import { BlackUserItem } from "@openim/wasm-client-sdk/lib/types/entity";
 import { Button, Empty, Modal } from "antd";
 import { t } from "i18next";
-import { forwardRef, ForwardRefRenderFunction, memo, useState } from "react";
+import {
+  forwardRef,
+  ForwardRefRenderFunction,
+  memo,
+  useEffect,
+  useState,
+} from "react";
 
+import { modal } from "@/AntdGlobalComp";
+import { deleteBusinessBlacklist } from "@/api/friend";
 import OIMAvatar from "@/components/OIMAvatar";
 import { useContactStore } from "@/store/contact";
 import { feedbackToast } from "@/utils/common";
@@ -49,10 +57,19 @@ const BlackItem = ({
 }) => {
   const [loading, setLoading] = useState(false);
 
-  const tryRemove = async () => {
-    setLoading(true);
-    await removeBlack(black.userID);
-    setLoading(false);
+  const tryRemove = () => {
+    modal.confirm({
+      title: t("placeholder.remove"),
+      content: t("toast.confirmRemoveBlacklist"),
+      onOk: async () => {
+        setLoading(true);
+        try {
+          await removeBlack(black.userID);
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
   };
 
   return (
@@ -70,9 +87,15 @@ const BlackItem = ({
 
 export const BlackListContent = ({ closeOverlay }: { closeOverlay?: () => void }) => {
   const blackList = useContactStore((state) => state.blackList);
+  const getBlackListByReq = useContactStore((state) => state.getBlackListByReq);
+
+  useEffect(() => {
+    void getBlackListByReq();
+  }, [getBlackListByReq]);
 
   const removeBlack = async (userID: string) => {
     try {
+      await deleteBusinessBlacklist(userID);
       await IMSDK.removeBlack(userID);
     } catch (error) {
       feedbackToast({ error });

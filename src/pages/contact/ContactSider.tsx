@@ -1,8 +1,7 @@
 import { Badge } from "antd";
 import clsx from "clsx";
 import i18n, { t } from "i18next";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import group_notifications from "@/assets/images/contact/group_notifications.png";
 import my_friends from "@/assets/images/contact/my_friends.png";
@@ -41,27 +40,49 @@ i18n.on("languageChanged", () => {
   Links[3].label = t("placeholder.myGroup");
 });
 
+const requestContactMenuData = (path: string) => {
+  const contactStore = useContactStore.getState();
+
+  if (path === "/contact/newFriends") {
+    void contactStore
+      .ensureFriendApplicationsLoaded(true)
+      .catch((error) => console.error("refresh friend applications failed", error));
+    return;
+  }
+
+  if (path === "/contact/groupNotifications") {
+    void contactStore
+      .ensureGroupApplicationsLoaded(true)
+      .catch((error) => console.error("refresh group applications failed", error));
+    return;
+  }
+
+  if (path === "/contact") {
+    void contactStore
+      .ensureFriendListLoaded(true)
+      .catch((error) => console.error("refresh friend list failed", error));
+    return;
+  }
+
+  if (path === "/contact/myGroups") {
+    void contactStore
+      .ensureGroupListLoaded(true)
+      .catch((error) => console.error("refresh group list failed", error));
+  }
+};
+
 const ContactSider = () => {
-  const [selectIndex, setSelectIndex] = useState(2);
   const unHandleFriendApplicationCount = useContactStore(
     (state) => state.unHandleFriendApplicationCount,
   );
   const unHandleGroupApplicationCount = useContactStore(
     (state) => state.unHandleGroupApplicationCount,
   );
+  const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (location.hash.includes("/contact/newFriends")) {
-      setSelectIndex(0);
-    }
-    if (location.hash.includes("/contact/groupNotifications")) {
-      setSelectIndex(1);
-    }
-    if (location.hash.includes("/contact/myGroups")) {
-      setSelectIndex(3);
-    }
-  }, []);
+  const selectIndex = Links.findIndex((item) => item.path === pathname);
+  const activeIndex = selectIndex === -1 ? 2 : selectIndex;
 
   const getBadge = (index: number) => {
     if (index === 0) {
@@ -87,12 +108,14 @@ const ContactSider = () => {
                 className={clsx(
                   "mx-2 flex cursor-pointer items-center rounded-md p-3 text-sm hover:bg-[var(--primary-active)]",
                   {
-                    "bg-[#f3f8fe]": index === selectIndex,
+                    "bg-[#f3f8fe]": index === activeIndex,
                   },
                 )}
                 onClick={() => {
-                  setSelectIndex(index);
-                  navigate(String(item.path));
+                  requestContactMenuData(item.path);
+                  if (pathname !== item.path) {
+                    navigate(String(item.path));
+                  }
                 }}
               >
                 <Badge size="small" count={getBadge(index)}>

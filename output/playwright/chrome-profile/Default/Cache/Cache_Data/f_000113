@@ -1,0 +1,177 @@
+import { injectQuery as __vite__injectQuery } from "/@vite/client";import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/pages/common/UserCardModal/SendRequest.tsx");import { jsxDEV } from "/@id/__x00__react/jsx-dev-runtime";
+import RefreshRuntime from "/@react-refresh";
+let prevRefreshReg;
+let prevRefreshSig;
+if (import.meta.hot) {
+  if (!window.__vite_plugin_react_preamble_installed__) {
+    throw new Error("@vitejs/plugin-react can't detect preamble. Something is wrong. See https://github.com/vitejs/vite-plugin-react/pull/11#discussion_r430879201");
+  }
+  prevRefreshReg = window.$RefreshReg$;
+  prevRefreshSig = window.$RefreshSig$;
+  window.$RefreshReg$ = (type, id) => {
+    RefreshRuntime.register(type, "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx " + id);
+  };
+  window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;
+}
+var _s = $RefreshSig$();
+import { LeftOutlined } from "/node_modules/.vite/deps/@ant-design_icons.js?v=80b87891";
+import { useRequest } from "/node_modules/.vite/deps/ahooks.js?v=80b87891";
+import { Button, Input } from "/node_modules/.vite/deps/antd.js?v=80b87891";
+import { t } from "/node_modules/.vite/deps/i18next.js?v=80b87891";
+import __vite__cjsImport7_react from "/node_modules/.vite/deps/react.js?v=80b87891"; const useState = __vite__cjsImport7_react["useState"];
+import { modal } from "/src/AntdGlobalComp.tsx";
+import { addBusinessFriend } from "/src/api/friend.ts?t=1782024303892";
+import OIMAvatar from "/src/components/OIMAvatar/index.tsx";
+import { feedbackToast } from "/src/utils/common.ts";
+const SendRequest = ({
+  cardInfo,
+  backToCard
+}) => {
+  _s();
+  const [reqMsg, setReqMsg] = useState("");
+  const {
+    runAsync,
+    loading
+  } = useRequest(addBusinessFriend, {
+    manual: true
+  });
+  const submitApplication = async () => {
+    try {
+      await runAsync(cardInfo.userID);
+      feedbackToast({
+        msg: t("toast.sendFreiendRequestSuccess")
+      });
+    } catch (error) {
+      feedbackToast({
+        error,
+        msg: t("toast.sendApplicationFailed")
+      });
+    }
+    backToCard();
+  };
+  const sendApplication = () => {
+    modal.confirm({
+      title: t("placeholder.send"),
+      content: t("application.confirmSendFriendRequest"),
+      onOk: submitApplication
+    });
+  };
+  return /* @__PURE__ */ jsxDEV("div", { className: "flex max-h-[520px] min-h-[484px] flex-col overflow-hidden px-5.5", children: [
+    /* @__PURE__ */ jsxDEV("div", { className: "w-full cursor-move", children: /* @__PURE__ */ jsxDEV("div", { className: "mb-8 mt-4.5 flex items-center", children: [
+      /* @__PURE__ */ jsxDEV(LeftOutlined, { className: "cursor-pointer text-[var(--sub-text)]", rev: void 0, onClick: backToCard }, void 0, false, {
+        fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+        lineNumber: 51,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { className: "ml-2 font-medium", children: t("placeholder.friendVerification") }, void 0, false, {
+        fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+        lineNumber: 52,
+        columnNumber: 11
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+      lineNumber: 50,
+      columnNumber: 9
+    }, this) }, void 0, false, {
+      fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+      lineNumber: 49,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV("div", { className: "ignore-drag flex flex-1 flex-col", children: [
+      /* @__PURE__ */ jsxDEV("div", { className: "flex items-center", children: [
+        /* @__PURE__ */ jsxDEV(OIMAvatar, { size: 60, src: cardInfo?.faceURL, text: cardInfo?.nickname }, void 0, false, {
+          fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+          lineNumber: 57,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "ml-3 flex-1 overflow-hidden", children: [
+          /* @__PURE__ */ jsxDEV("div", { className: "mb-3 flex-1 truncate text-base font-medium", title: cardInfo?.nickname, children: cardInfo?.nickname }, void 0, false, {
+            fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+            lineNumber: 59,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "mr-3 text-xs text-[var(--sub-text)]", children: cardInfo?.userID }, void 0, false, {
+            fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+            lineNumber: 62,
+            columnNumber: 13
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+          lineNumber: 58,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+        lineNumber: 56,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { className: "mt-7", children: [
+        /* @__PURE__ */ jsxDEV("div", { className: "text-xs text-[var(--sub-text)]", children: t("application.information") }, void 0, false, {
+          fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+          lineNumber: 68,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "mx-2 my-4", children: /* @__PURE__ */ jsxDEV(Input.TextArea, { showCount: true, value: reqMsg, maxLength: 50, bordered: false, placeholder: t("placeholder.pleaseEnter"), spellCheck: false, style: {
+          padding: "8px 6px"
+        }, autoSize: {
+          minRows: 6,
+          maxRows: 6
+        }, onChange: (e) => setReqMsg(e.target.value), className: "bg-[var(--chat-bubble)] hover:bg-[var(--chat-bubble)]" }, void 0, false, {
+          fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+          lineNumber: 72,
+          columnNumber: 13
+        }, this) }, void 0, false, {
+          fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+          lineNumber: 71,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+        lineNumber: 67,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { className: "mx-2 mb-6 flex flex-1 items-end", children: /* @__PURE__ */ jsxDEV(Button, { className: "flex-1", type: "primary", onClick: sendApplication, loading, children: t("placeholder.send") }, void 0, false, {
+        fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+        lineNumber: 81,
+        columnNumber: 11
+      }, this) }, void 0, false, {
+        fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+        lineNumber: 80,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+      lineNumber: 55,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx",
+    lineNumber: 48,
+    columnNumber: 10
+  }, this);
+};
+_s(SendRequest, "fDbfHnl7IZLsJw0+Qd0f2qCxSm0=", false, function() {
+  return [useRequest];
+});
+_c = SendRequest;
+export default SendRequest;
+var _c;
+$RefreshReg$(_c, "SendRequest");
+if (import.meta.hot) {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+  import(
+    /* @vite-ignore */
+    __vite__injectQuery(import.meta.url, 'import')).then((currentExports) => {
+    RefreshRuntime.registerExportsForReactRefresh("C:/Users/sww/Documents/openim/openim-electron-demo/src/pages/common/UserCardModal/SendRequest.tsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports)
+        return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate(currentExports, nextExports);
+      if (invalidateMessage)
+        import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+
+//# sourceMappingURL=data:application/json;base64,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LFVBQVU7QUFBQSxVQUFFQyxTQUFTO0FBQUEsVUFBR0MsU0FBUztBQUFBLFFBQUUsR0FDbkMsVUFBV0MsT0FBTW5CLFVBQVVtQixFQUFFQyxPQUFPQyxLQUFLLEdBQ3pDLFdBQVUsMkRBVlo7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQVVtRSxLQVhyRTtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBYUE7QUFBQSxXQWpCRjtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBa0JBO0FBQUEsTUFDQSx1QkFBQyxTQUFJLFdBQVUsbUNBQ2IsaUNBQUMsVUFDQyxXQUFVLFVBQ1YsTUFBSyxXQUNMLFNBQVNiLGlCQUNULFNBRUNuQixZQUFFLGtCQUFrQixLQU52QjtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBT0EsS0FSRjtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBU0E7QUFBQSxTQTNDRjtBQUFBO0FBQUE7QUFBQTtBQUFBLFdBNENBO0FBQUEsT0F2REY7QUFBQTtBQUFBO0FBQUE7QUFBQSxTQXdEQTtBQUVKO0FBQUVTLEdBekZJSCxhQUFXO0FBQUEsVUFRZVQsVUFBVTtBQUFBO0FBQUFvQyxLQVJwQzNCO0FBMkZOLGVBQWVBO0FBQVksSUFBQTJCO0FBQUFDLGFBQUFELElBQUEiLCJuYW1lcyI6WyJMZWZ0T3V0bGluZWQiLCJ1c2VSZXF1ZXN0IiwiQnV0dG9uIiwiSW5wdXQiLCJ0IiwidXNlU3RhdGUiLCJtb2RhbCIsImFkZEJ1c2luZXNzRnJpZW5kIiwiT0lNQXZhdGFyIiwiZmVlZGJhY2tUb2FzdCIsIlNlbmRSZXF1ZXN0IiwiY2FyZEluZm8iLCJiYWNrVG9DYXJkIiwiX3MiLCJyZXFNc2ciLCJzZXRSZXFNc2ciLCJydW5Bc3luYyIsImxvYWRpbmciLCJtYW51YWwiLCJzdWJtaXRBcHBsaWNhdGlvbiIsInVzZXJJRCIsIm1zZyIsImVycm9yIiwic2VuZEFwcGxpY2F0aW9uIiwiY29uZmlybSIsInRpdGxlIiwiY29udGVudCIsIm9uT2siLCJ1bmRlZmluZWQiLCJmYWNlVVJMIiwibmlja25hbWUiLCJwYWRkaW5nIiwibWluUm93cyIsIm1heFJvd3MiLCJlIiwidGFyZ2V0IiwidmFsdWUiLCJfYyIsIiRSZWZyZXNoUmVnJCJdLCJzb3VyY2VzIjpbIlNlbmRSZXF1ZXN0LnRzeCJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBMZWZ0T3V0bGluZWQgfSBmcm9tIFwiQGFudC1kZXNpZ24vaWNvbnNcIjtcclxuaW1wb3J0IHsgdXNlUmVxdWVzdCB9IGZyb20gXCJhaG9va3NcIjtcclxuaW1wb3J0IHsgQnV0dG9uLCBJbnB1dCB9IGZyb20gXCJhbnRkXCI7XHJcbmltcG9ydCB7IHQgfSBmcm9tIFwiaTE4bmV4dFwiO1xuaW1wb3J0IHsgdXNlU3RhdGUgfSBmcm9tIFwicmVhY3RcIjtcblxuaW1wb3J0IHsgbW9kYWwgfSBmcm9tIFwiQC9BbnRkR2xvYmFsQ29tcFwiO1xuaW1wb3J0IHsgYWRkQnVzaW5lc3NGcmllbmQgfSBmcm9tIFwiQC9hcGkvZnJpZW5kXCI7XG5pbXBvcnQgT0lNQXZhdGFyIGZyb20gXCJAL2NvbXBvbmVudHMvT0lNQXZhdGFyXCI7XG5pbXBvcnQgeyBmZWVkYmFja1RvYXN0IH0gZnJvbSBcIkAvdXRpbHMvY29tbW9uXCI7XG5cclxuaW1wb3J0IHsgQ2FyZEluZm8gfSBmcm9tIFwiLlwiO1xyXG5cclxuY29uc3QgU2VuZFJlcXVlc3QgPSAoe1xyXG4gIGNhcmRJbmZvLFxyXG4gIGJhY2tUb0NhcmQsXHJcbn06IHtcclxuICBjYXJkSW5mbzogQ2FyZEluZm87XHJcbiAgYmFja1RvQ2FyZDogKCkgPT4gdm9pZDtcbn0pID0+IHtcbiAgY29uc3QgW3JlcU1zZywgc2V0UmVxTXNnXSA9IHVzZVN0YXRlKFwiXCIpO1xuICBjb25zdCB7IHJ1bkFzeW5jLCBsb2FkaW5nIH0gPSB1c2VSZXF1ZXN0KGFkZEJ1c2luZXNzRnJpZW5kLCB7XG4gICAgbWFudWFsOiB0cnVlLFxuICB9KTtcblxuICBjb25zdCBzdWJtaXRBcHBsaWNhdGlvbiA9IGFzeW5jICgpID0+IHtcbiAgICB0cnkge1xuICAgICAgYXdhaXQgcnVuQXN5bmMoY2FyZEluZm8udXNlcklEISk7XG4gICAgICBmZWVkYmFja1RvYXN0KHsgbXNnOiB0KFwidG9hc3Quc2VuZEZyZWllbmRSZXF1ZXN0U3VjY2Vzc1wiKSB9KTtcbiAgICB9IGNhdGNoIChlcnJvcikge1xuICAgICAgZmVlZGJhY2tUb2FzdCh7IGVycm9yLCBtc2c6IHQoXCJ0b2FzdC5zZW5kQXBwbGljYXRpb25GYWlsZWRcIikgfSk7XHJcbiAgICB9XHJcbiAgICBiYWNrVG9DYXJkKCk7XG4gIH07XG5cbiAgY29uc3Qgc2VuZEFwcGxpY2F0aW9uID0gKCkgPT4ge1xuICAgIG1vZGFsLmNvbmZpcm0oe1xuICAgICAgdGl0bGU6IHQoXCJwbGFjZWhvbGRlci5zZW5kXCIpLFxuICAgICAgY29udGVudDogdChcImFwcGxpY2F0aW9uLmNvbmZpcm1TZW5kRnJpZW5kUmVxdWVzdFwiKSxcbiAgICAgIG9uT2s6IHN1Ym1pdEFwcGxpY2F0aW9uLFxuICAgIH0pO1xuICB9O1xuXHJcbiAgcmV0dXJuIChcclxuICAgIDxkaXYgY2xhc3NOYW1lPVwiZmxleCBtYXgtaC1bNTIwcHhdIG1pbi1oLVs0ODRweF0gZmxleC1jb2wgb3ZlcmZsb3ctaGlkZGVuIHB4LTUuNVwiPlxyXG4gICAgICA8ZGl2IGNsYXNzTmFtZT1cInctZnVsbCBjdXJzb3ItbW92ZVwiPlxyXG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwibWItOCBtdC00LjUgZmxleCBpdGVtcy1jZW50ZXJcIj5cclxuICAgICAgICAgIDxMZWZ0T3V0bGluZWRcclxuICAgICAgICAgICAgY2xhc3NOYW1lPVwiY3Vyc29yLXBvaW50ZXIgdGV4dC1bdmFyKC0tc3ViLXRleHQpXVwiXHJcbiAgICAgICAgICAgIHJldj17dW5kZWZpbmVkfVxyXG4gICAgICAgICAgICBvbkNsaWNrPXtiYWNrVG9DYXJkfVxyXG4gICAgICAgICAgLz5cclxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwibWwtMiBmb250LW1lZGl1bVwiPnt0KFwicGxhY2Vob2xkZXIuZnJpZW5kVmVyaWZpY2F0aW9uXCIpfTwvZGl2PlxyXG4gICAgICAgIDwvZGl2PlxyXG4gICAgICA8L2Rpdj5cclxuICAgICAgPGRpdiBjbGFzc05hbWU9XCJpZ25vcmUtZHJhZyBmbGV4IGZsZXgtMSBmbGV4LWNvbFwiPlxyXG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZmxleCBpdGVtcy1jZW50ZXJcIj5cclxuICAgICAgICAgIDxPSU1BdmF0YXIgc2l6ZT17NjB9IHNyYz17Y2FyZEluZm8/LmZhY2VVUkx9IHRleHQ9e2NhcmRJbmZvPy5uaWNrbmFtZX0gLz5cclxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwibWwtMyBmbGV4LTEgb3ZlcmZsb3ctaGlkZGVuXCI+XHJcbiAgICAgICAgICAgIDxkaXZcclxuICAgICAgICAgICAgICBjbGFzc05hbWU9XCJtYi0zIGZsZXgtMSB0cnVuY2F0ZSB0ZXh0LWJhc2UgZm9udC1tZWRpdW1cIlxyXG4gICAgICAgICAgICAgIHRpdGxlPXtjYXJkSW5mbz8ubmlja25hbWV9XHJcbiAgICAgICAgICAgID5cclxuICAgICAgICAgICAgICB7Y2FyZEluZm8/Lm5pY2tuYW1lfVxyXG4gICAgICAgICAgICA8L2Rpdj5cclxuICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJtci0zIHRleHQteHMgdGV4dC1bdmFyKC0tc3ViLXRleHQpXVwiPlxyXG4gICAgICAgICAgICAgIHtjYXJkSW5mbz8udXNlcklEfVxyXG4gICAgICAgICAgICA8L2Rpdj5cclxuICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgIDwvZGl2PlxyXG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwibXQtN1wiPlxyXG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJ0ZXh0LXhzIHRleHQtW3ZhcigtLXN1Yi10ZXh0KV1cIj5cclxuICAgICAgICAgICAge3QoXCJhcHBsaWNhdGlvbi5pbmZvcm1hdGlvblwiKX1cclxuICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJteC0yIG15LTRcIj5cclxuICAgICAgICAgICAgPElucHV0LlRleHRBcmVhXHJcbiAgICAgICAgICAgICAgc2hvd0NvdW50XHJcbiAgICAgICAgICAgICAgdmFsdWU9e3JlcU1zZ31cclxuICAgICAgICAgICAgICBtYXhMZW5ndGg9ezUwfVxyXG4gICAgICAgICAgICAgIGJvcmRlcmVkPXtmYWxzZX1cclxuICAgICAgICAgICAgICBwbGFjZWhvbGRlcj17dChcInBsYWNlaG9sZGVyLnBsZWFzZUVudGVyXCIpfVxyXG4gICAgICAgICAgICAgIHNwZWxsQ2hlY2s9e2ZhbHNlfVxyXG4gICAgICAgICAgICAgIHN0eWxlPXt7IHBhZGRpbmc6IFwiOHB4IDZweFwiIH19XHJcbiAgICAgICAgICAgICAgYXV0b1NpemU9e3sgbWluUm93czogNiwgbWF4Um93czogNiB9fVxyXG4gICAgICAgICAgICAgIG9uQ2hhbmdlPXsoZSkgPT4gc2V0UmVxTXNnKGUudGFyZ2V0LnZhbHVlKX1cclxuICAgICAgICAgICAgICBjbGFzc05hbWU9XCJiZy1bdmFyKC0tY2hhdC1idWJibGUpXSBob3ZlcjpiZy1bdmFyKC0tY2hhdC1idWJibGUpXVwiXHJcbiAgICAgICAgICAgIC8+XHJcbiAgICAgICAgICA8L2Rpdj5cclxuICAgICAgICA8L2Rpdj5cclxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cIm14LTIgbWItNiBmbGV4IGZsZXgtMSBpdGVtcy1lbmRcIj5cclxuICAgICAgICAgIDxCdXR0b25cclxuICAgICAgICAgICAgY2xhc3NOYW1lPVwiZmxleC0xXCJcclxuICAgICAgICAgICAgdHlwZT1cInByaW1hcnlcIlxyXG4gICAgICAgICAgICBvbkNsaWNrPXtzZW5kQXBwbGljYXRpb259XHJcbiAgICAgICAgICAgIGxvYWRpbmc9e2xvYWRpbmd9XHJcbiAgICAgICAgICA+XHJcbiAgICAgICAgICAgIHt0KFwicGxhY2Vob2xkZXIuc2VuZFwiKX1cclxuICAgICAgICAgIDwvQnV0dG9uPlxyXG4gICAgICAgIDwvZGl2PlxyXG4gICAgICA8L2Rpdj5cclxuICAgIDwvZGl2PlxyXG4gICk7XHJcbn07XHJcblxyXG5leHBvcnQgZGVmYXVsdCBTZW5kUmVxdWVzdDtcclxuIl0sImZpbGUiOiJDOi9Vc2Vycy9zd3cvRG9jdW1lbnRzL29wZW5pbS9vcGVuaW0tZWxlY3Ryb24tZGVtby9zcmMvcGFnZXMvY29tbW9uL1VzZXJDYXJkTW9kYWwvU2VuZFJlcXVlc3QudHN4In0=

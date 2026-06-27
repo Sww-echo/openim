@@ -15,7 +15,7 @@ export const useUserStore = create<UserStore>()((set, get) => ({
   syncState: "success",
   progress: 0,
   reinstall: true,
-  isLogining: false,
+  isLogining: true,
   connectState: "success",
   selfInfo: {} as BusinessUserInfo,
   appSettings: {
@@ -41,9 +41,18 @@ export const useUserStore = create<UserStore>()((set, get) => ({
     IMSDK.getSelfUserInfo()
       .then(({ data }) => {
         set(() => ({ selfInfo: data as unknown as BusinessUserInfo }));
-        getBusinessUserInfo([data.userID]).then(({ data: { users } }) =>
-          set((state) => ({ selfInfo: { ...state.selfInfo, ...users[0] } })),
-        );
+        getBusinessUserInfo([data.userID])
+          .then(({ data: { users } }) => {
+            const [businessSelfInfo] = users;
+            if (businessSelfInfo) {
+              set((state) => ({
+                selfInfo: { ...state.selfInfo, ...businessSelfInfo },
+              }));
+            }
+          })
+          .catch((error) => {
+            console.debug("getBusinessUserInfo self info failed", error);
+          });
       })
       .catch((error) => {
         feedbackToast({ error, msg: t("toast.getSelfInfoFailed") });
@@ -53,6 +62,9 @@ export const useUserStore = create<UserStore>()((set, get) => ({
   updateSelfInfo: (info: Partial<BusinessUserInfo>) => {
     set((state) => ({ selfInfo: { ...state.selfInfo, ...info } }));
   },
+  clearUserRuntimeState: () => {
+    set({ selfInfo: {} as BusinessUserInfo, progress: 0 });
+  },
   updateAppSettings: (settings: Partial<AppSettings>) => {
     if (settings.locale) {
       setLocale(settings.locale);
@@ -60,9 +72,11 @@ export const useUserStore = create<UserStore>()((set, get) => ({
     set((state) => ({ appSettings: { ...state.appSettings, ...settings } }));
   },
   userLogout: async (force?: boolean) => {
-    if (!force) await IMSDK.logout();
-    clearIMProfile();
-    set({ selfInfo: {} as BusinessUserInfo, progress: 0 });
+    if (!force) {
+      await IMSDK.logout();
+    }
+    await clearIMProfile();
+    set({ selfInfo: {} as BusinessUserInfo, progress: 0, isLogining: false });
     useContactStore.getState().clearContactStore();
     useConversationStore.getState().clearConversationStore();
     router.navigate("/login");

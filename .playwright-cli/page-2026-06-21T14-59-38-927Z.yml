@@ -1,0 +1,276 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e351]:
+      - complementary [ref=e352]:
+        - generic [ref=e354]:
+          - generic [ref=e356] [cursor=pointer]: qqq
+          - generic [ref=e357]:
+            - button "系统公告" [ref=e358] [cursor=pointer]:
+              - img "bell" [ref=e359]:
+                - img [ref=e360]
+            - superscript [ref=e362]:
+              - generic [ref=e364]: "7"
+          - generic [ref=e367] [cursor=pointer]: 消息
+          - generic [ref=e370] [cursor=pointer]: 通讯录
+      - generic [ref=e371]:
+        - complementary [ref=e372]:
+          - generic [ref=e374]:
+            - generic [ref=e375]: 通讯录
+            - list [ref=e376]:
+              - listitem [ref=e377] [cursor=pointer]:
+                - img "新的好友" [ref=e379]
+                - generic [ref=e380]: 新的好友
+              - listitem [ref=e381] [cursor=pointer]:
+                - img "群通知" [ref=e383]
+                - generic [ref=e384]: 群通知
+              - listitem [ref=e385] [cursor=pointer]:
+                - img "我的好友" [ref=e387]
+                - generic [ref=e388]: 我的好友
+              - listitem [ref=e389] [cursor=pointer]:
+                - img "我的群组" [ref=e391]
+                - generic [ref=e392]: 我的群组
+        - generic [ref=e394]:
+          - generic [ref=e395]:
+            - paragraph [ref=e396]: 我的群组
+            - generic [ref=e397] [cursor=pointer]:
+              - generic [ref=e398]:
+                - combobox [ref=e400]
+                - generic "我创建的" [ref=e401]
+              - generic:
+                - img:
+                  - img
+          - generic [ref=e405]:
+            - generic [ref=e407]:
+              - img [ref=e409]
+              - generic [ref=e410]:
+                - paragraph [ref=e411]: 啊啊i
+                - paragraph [ref=e412]: "3"
+            - generic [ref=e414]:
+              - img [ref=e416]
+              - generic [ref=e417]:
+                - paragraph [ref=e418]: 橙子皮、橙子皮1、橙子皮4
+                - paragraph [ref=e419]: "3"
+    - complementary "React Query Devtools":
+      - button "Open React Query Devtools" [ref=e40] [cursor=pointer]:
+        - img [ref=e41]
+  - generic [ref=e455]:
+    - dialog:
+      - generic [ref=e458]:
+        - generic [ref=e459]:
+          - generic [ref=e460]: 系统公告
+          - img "close" [ref=e461] [cursor=pointer]:
+            - img [ref=e462]
+        - generic [ref=e466]:
+          - button "全部标为已读" [ref=e468] [cursor=pointer]:
+            - generic [ref=e469]: 全部标为已读
+          - list [ref=e473]:
+            - listitem [ref=e474] [cursor=pointer]:
+              - generic [ref=e476]:
+                - heading "script-announcement-high-risk-1781591010" [level=4] [ref=e477]
+                - generic [ref=e478]:
+                  - generic [ref=e479]: high risk content
+                  - generic [ref=e480]: "1781591144"
+              - list [ref=e481]:
+                - listitem [ref=e482]:
+                  - button "标为已读" [ref=e483]:
+                    - generic [ref=e484]: 标为已读
+            - listitem [ref=e485] [cursor=pointer]:
+              - generic [ref=e487]:
+                - heading "script-announcement-high-risk-1781570454" [level=4] [ref=e488]
+                - generic [ref=e489]:
+                  - generic [ref=e490]: high risk content
+                  - generic [ref=e491]: "1781570459"
+              - list [ref=e492]:
+                - listitem [ref=e493]:
+                  - button "标为已读" [ref=e494]:
+                    - generic [ref=e495]: 标为已读
+            - listitem [ref=e496] [cursor=pointer]:
+              - generic [ref=e498]:
+                - heading "script-announcement-high-risk-1781488052" [level=4] [ref=e499]
+                - generic [ref=e500]:
+                  - generic [ref=e501]: high risk content
+                  - generic [ref=e502]: "1781488056"
+              - list [ref=e503]:
+                - listitem [ref=e504]:
+                  - button "标为已读" [ref=e505]:
+                    - generic [ref=e506]: 标为已读
+            - listitem [ref=e507] [cursor=pointer]:
+              - generic [ref=e509]:
+                - heading "script-announcement-high-risk-1781487049" [level=4] [ref=e510]
+                - generic [ref=e511]:
+                  - generic [ref=e512]: high risk content
+                  - generic [ref=e513]: "1781487053"
+              - list [ref=e514]:
+                - listitem [ref=e515]:
+                  - button "标为已读" [ref=e516]:
+                    - generic [ref=e517]: 标为已读
+            - listitem [ref=e518] [cursor=pointer]:
+              - generic [ref=e520]:
+                - heading "script-announcement-high-risk-1781486554" [level=4] [ref=e521]
+                - generic [ref=e522]:
+                  - generic [ref=e523]: high risk content
+                  - generic [ref=e524]: "1781486558"
+              - list [ref=e525]:
+                - listitem [ref=e526]:
+                  - button "标为已读" [ref=e527]:
+                    - generic [ref=e528]: 标为已读
+            - listitem [ref=e529] [cursor=pointer]:
+              - generic [ref=e531]:
+                - heading "script-announcement-high-risk-1781485663" [level=4] [ref=e532]
+                - generic [ref=e533]:
+                  - generic [ref=e534]: high risk content
+                  - generic [ref=e535]: "1781485670"
+              - list [ref=e536]:
+                - listitem [ref=e537]:
+                  - button "标为已读" [ref=e538]:
+                    - generic [ref=e539]: 标为已读
+            - listitem [ref=e540] [cursor=pointer]:
+              - generic [ref=e542]:
+                - heading "script-announcement-high-risk-1781485013" [level=4] [ref=e543]
+                - generic [ref=e544]:
+                  - generic [ref=e545]: high risk content
+                  - generic [ref=e546]: "1781485016"
+              - list [ref=e547]:
+                - listitem [ref=e548]:
+                  - button "标为已读" [ref=e549]:
+                    - generic [ref=e550]: 标为已读
+            - listitem [ref=e551] [cursor=pointer]:
+              - generic [ref=e553]:
+                - heading "script-announcement-high-risk-1781444701" [level=4] [ref=e554]
+                - generic [ref=e555]:
+                  - generic [ref=e556]: high risk content
+                  - generic [ref=e557]: "1781444713"
+              - list [ref=e558]:
+                - listitem [ref=e559]:
+                  - button "标为已读" [disabled] [ref=e560]:
+                    - generic: 标为已读
+            - listitem [ref=e561] [cursor=pointer]:
+              - generic [ref=e563]:
+                - heading "script-announcement-high-risk-1781439510" [level=4] [ref=e564]
+                - generic [ref=e565]:
+                  - generic [ref=e566]: high risk content
+                  - generic [ref=e567]: "1781439522"
+              - list [ref=e568]:
+                - listitem [ref=e569]:
+                  - button "标为已读" [disabled] [ref=e570]:
+                    - generic: 标为已读
+            - listitem [ref=e571] [cursor=pointer]:
+              - generic [ref=e573]:
+                - heading "script-announcement-high-risk-1781365142" [level=4] [ref=e574]
+                - generic [ref=e575]:
+                  - generic [ref=e576]: high risk content
+                  - generic [ref=e577]: "1781365157"
+              - list [ref=e578]:
+                - listitem [ref=e579]:
+                  - button "标为已读" [disabled] [ref=e580]:
+                    - generic: 标为已读
+            - listitem [ref=e581] [cursor=pointer]:
+              - generic [ref=e583]:
+                - heading "script-announcement-high-risk-1781253069" [level=4] [ref=e584]
+                - generic [ref=e585]:
+                  - generic [ref=e586]: high risk content
+                  - generic [ref=e587]: "1781253075"
+              - list [ref=e588]:
+                - listitem [ref=e589]:
+                  - button "标为已读" [disabled] [ref=e590]:
+                    - generic: 标为已读
+            - listitem [ref=e591] [cursor=pointer]:
+              - generic [ref=e593]:
+                - heading "script-announcement-high-risk-1781151415" [level=4] [ref=e594]
+                - generic [ref=e595]:
+                  - generic [ref=e596]: high risk content
+                  - generic [ref=e597]: "1781151419"
+              - list [ref=e598]:
+                - listitem [ref=e599]:
+                  - button "标为已读" [disabled] [ref=e600]:
+                    - generic: 标为已读
+            - listitem [ref=e601] [cursor=pointer]:
+              - generic [ref=e603]:
+                - heading "script-announcement-high-risk-1781151238" [level=4] [ref=e604]
+                - generic [ref=e605]:
+                  - generic [ref=e606]: high risk content
+                  - generic [ref=e607]: "1781151244"
+              - list [ref=e608]:
+                - listitem [ref=e609]:
+                  - button "标为已读" [disabled] [ref=e610]:
+                    - generic: 标为已读
+            - listitem [ref=e611] [cursor=pointer]:
+              - generic [ref=e613]:
+                - heading "script-announcement-high-risk-1781064881" [level=4] [ref=e614]
+                - generic [ref=e615]:
+                  - generic [ref=e616]: high risk content
+                  - generic [ref=e617]: "1781064885"
+              - list [ref=e618]:
+                - listitem [ref=e619]:
+                  - button "标为已读" [disabled] [ref=e620]:
+                    - generic: 标为已读
+            - listitem [ref=e621] [cursor=pointer]:
+              - generic [ref=e623]:
+                - heading "script-announcement-high-risk-1781056603" [level=4] [ref=e624]
+                - generic [ref=e625]:
+                  - generic [ref=e626]: high risk content
+                  - generic [ref=e627]: "1781056609"
+              - list [ref=e628]:
+                - listitem [ref=e629]:
+                  - button "标为已读" [disabled] [ref=e630]:
+                    - generic: 标为已读
+            - listitem [ref=e631] [cursor=pointer]:
+              - generic [ref=e633]:
+                - heading "script-announcement-high-risk-1781053697" [level=4] [ref=e634]
+                - generic [ref=e635]:
+                  - generic [ref=e636]: high risk content
+                  - generic [ref=e637]: "1781053702"
+              - list [ref=e638]:
+                - listitem [ref=e639]:
+                  - button "标为已读" [disabled] [ref=e640]:
+                    - generic: 标为已读
+            - listitem [ref=e641] [cursor=pointer]:
+              - generic [ref=e643]:
+                - heading "script-announcement-high-risk-1781012819" [level=4] [ref=e644]
+                - generic [ref=e645]:
+                  - generic [ref=e646]: high risk content
+                  - generic [ref=e647]: "1781012834"
+              - list [ref=e648]:
+                - listitem [ref=e649]:
+                  - button "标为已读" [disabled] [ref=e650]:
+                    - generic: 标为已读
+            - listitem [ref=e651] [cursor=pointer]:
+              - generic [ref=e653]:
+                - heading "script-announcement-high-risk-1781006759" [level=4] [ref=e654]
+                - generic [ref=e655]:
+                  - generic [ref=e656]: high risk content
+                  - generic [ref=e657]: "1781006773"
+              - list [ref=e658]:
+                - listitem [ref=e659]:
+                  - button "标为已读" [disabled] [ref=e660]:
+                    - generic: 标为已读
+            - listitem [ref=e661] [cursor=pointer]:
+              - generic [ref=e663]:
+                - heading "script-announcement-high-risk-1781005734" [level=4] [ref=e664]
+                - generic [ref=e665]:
+                  - generic [ref=e666]: high risk content
+                  - generic [ref=e667]: "1781005745"
+              - list [ref=e668]:
+                - listitem [ref=e669]:
+                  - button "标为已读" [disabled] [ref=e670]:
+                    - generic: 标为已读
+            - listitem [ref=e671] [cursor=pointer]:
+              - generic [ref=e673]:
+                - heading "script-announcement-high-risk-1780996302" [level=4] [ref=e674]
+                - generic [ref=e675]:
+                  - generic [ref=e676]: high risk content
+                  - generic [ref=e677]: "1780996306"
+              - list [ref=e678]:
+                - listitem [ref=e679]:
+                  - button "标为已读" [disabled] [ref=e680]:
+                    - generic: 标为已读
+            - listitem [ref=e681] [cursor=pointer]:
+              - generic [ref=e683]:
+                - heading "script-announcement-high-risk-1780995505" [level=4] [ref=e684]
+                - generic [ref=e685]:
+                  - generic [ref=e686]: high risk content
+                  - generic [ref=e687]: "1780995511"
+              - list [ref=e688]:
+                - listitem [ref=e689]:
+                  - button "标为已读" [disabled] [ref=e690]:
+                    - generic: 标为已读

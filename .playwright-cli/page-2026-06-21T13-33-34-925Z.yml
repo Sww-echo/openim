@@ -1,0 +1,54 @@
+- generic [ref=e2]:
+  - generic [ref=e206]:
+    - complementary [ref=e207]:
+      - generic [ref=e209]:
+        - generic [ref=e211] [cursor=pointer]: qqq
+        - generic [ref=e212]:
+          - button "系统公告" [ref=e213] [cursor=pointer]:
+            - img "bell" [ref=e214]:
+              - img [ref=e215]
+          - superscript [ref=e217]:
+            - generic [ref=e219]: "7"
+        - generic [ref=e222] [cursor=pointer]: 消息
+        - generic [ref=e225] [cursor=pointer]: 通讯录
+    - generic [ref=e226]:
+      - complementary [ref=e227]:
+        - generic [ref=e229]:
+          - generic [ref=e230]: 通讯录
+          - list [ref=e231]:
+            - listitem [ref=e232] [cursor=pointer]:
+              - img "新的好友" [ref=e234]
+              - generic [ref=e235]: 新的好友
+            - listitem [ref=e236] [cursor=pointer]:
+              - img "群通知" [ref=e238]
+              - generic [ref=e239]: 群通知
+            - listitem [ref=e240] [cursor=pointer]:
+              - img "我的好友" [ref=e242]
+              - generic [ref=e243]: 我的好友
+            - listitem [ref=e244] [cursor=pointer]:
+              - img "我的群组" [ref=e246]
+              - generic [ref=e247]: 我的群组
+      - generic [ref=e249]:
+        - generic [ref=e250]:
+          - paragraph [ref=e251]: 我的群组
+          - generic [ref=e252] [cursor=pointer]:
+            - generic [ref=e253]:
+              - combobox [ref=e255]
+              - generic "我创建的" [ref=e256]
+            - generic:
+              - img:
+                - img
+        - generic [ref=e260]:
+          - generic [ref=e262]:
+            - img [ref=e264]
+            - generic [ref=e265]:
+              - paragraph [ref=e266]: 啊啊i
+              - paragraph [ref=e267]: "3"
+          - generic [ref=e269]:
+            - img [ref=e271]
+            - generic [ref=e272]:
+              - paragraph [ref=e273]: 橙子皮、橙子皮1、橙子皮4
+              - paragraph [ref=e274]: "3"
+  - complementary "React Query Devtools":
+    - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+      - img [ref=e5]

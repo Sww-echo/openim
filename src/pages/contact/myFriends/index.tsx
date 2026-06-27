@@ -14,6 +14,9 @@ import FriendListItem from "./FriendListItem";
 export const MyFriends = () => {
   const { t } = useTranslation();
   const friendList = useContactStore((state) => state.friendList);
+  const ensureFriendListLoaded = useContactStore(
+    (state) => state.ensureFriendListLoaded,
+  );
   const virtuoso = useRef<GroupedVirtuosoHandle>(null);
   const alphabetRef = useRef<{ updateCurrentLetter: (letter: string) => void }>(null);
 
@@ -23,6 +26,10 @@ export const MyFriends = () => {
       refreshDeps: [friendList],
     },
   );
+
+  useEffect(() => {
+    void ensureFriendListLoaded();
+  }, [ensureFriendListLoaded]);
 
   useEffect(() => {
     return () => {
