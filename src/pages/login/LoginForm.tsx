@@ -3,11 +3,7 @@ import { t } from "i18next";
 import md5 from "md5";
 import { useNavigate } from "react-router-dom";
 
-import {
-  DEFAULT_ENTERPRISE_CODE,
-  normalizeIMProfile,
-  useLogin,
-} from "@/api/login";
+import { DEFAULT_ENTERPRISE_CODE, normalizeIMProfile, useLogin } from "@/api/login";
 import { feedbackToast } from "@/utils/common";
 import {
   getPhoneNumber,
@@ -92,11 +88,7 @@ const LoginForm = ({ setFormType }: LoginFormProps) => {
             <Form.Item name="areaCode" noStyle>
               <Select options={areaCode} className="!w-28" />
             </Form.Item>
-            <Form.Item
-              name="phoneNumber"
-              noStyle
-              rules={getPhoneNumberRules()}
-            >
+            <Form.Item name="phoneNumber" noStyle rules={getPhoneNumberRules()}>
               <Input allowClear placeholder={t("toast.inputPhoneNumber")} />
             </Form.Item>
           </Space.Compact>
@@ -111,7 +103,11 @@ const LoginForm = ({ setFormType }: LoginFormProps) => {
         </Form.Item>
 
         <Form.Item label={t("placeholder.enterpriseCode")} name="enterpriseCode">
-          <Input disabled placeholder={t("toast.inputEnterpriseCode")} />
+          <Input
+            allowClear
+            spellCheck={false}
+            placeholder={t("toast.inputEnterpriseCode")}
+          />
         </Form.Item>
 
         <div className="mb-10 flex flex-row justify-between">

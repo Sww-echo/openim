@@ -5,11 +5,7 @@ import { t } from "i18next";
 import md5 from "md5";
 import { useNavigate } from "react-router-dom";
 
-import {
-  DEFAULT_ENTERPRISE_CODE,
-  normalizeIMProfile,
-  useRegister,
-} from "@/api/login";
+import { DEFAULT_ENTERPRISE_CODE, normalizeIMProfile, useRegister } from "@/api/login";
 import { setAreaCode, setIMProfile, setPhoneNumber } from "@/utils/storage";
 
 import { areaCode } from "./areaCode";
@@ -111,18 +107,18 @@ const RegisterForm = ({ setFormType }: RegisterFormProps) => {
             <Form.Item name="areaCode" noStyle>
               <Select options={areaCode} className="!w-28" />
             </Form.Item>
-            <Form.Item
-              name="phoneNumber"
-              noStyle
-              rules={getPhoneNumberRules()}
-            >
+            <Form.Item name="phoneNumber" noStyle rules={getPhoneNumberRules()}>
               <Input allowClear placeholder={t("toast.inputPhoneNumber")} />
             </Form.Item>
           </Space.Compact>
         </Form.Item>
 
         <Form.Item label={t("placeholder.enterpriseCode")} name="enterpriseCode">
-          <Input disabled placeholder={t("toast.inputEnterpriseCode")} />
+          <Input
+            allowClear
+            spellCheck={false}
+            placeholder={t("toast.inputEnterpriseCode")}
+          />
         </Form.Item>
 
         <Form.Item

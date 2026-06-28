@@ -24,6 +24,9 @@ const normalizePasswordText = (value: unknown) =>
 const normalizeOptionalAuthText = (value: unknown) =>
   normalizeAuthText(value) || undefined;
 
+const normalizeEnterpriseCodeText = (value: unknown) =>
+  normalizeAuthText(value) || DEFAULT_ENTERPRISE_CODE;
+
 const getAreaCode = (code?: string) => {
   const normalizedCode = normalizeAuthText(code);
   return normalizedCode
@@ -57,7 +60,7 @@ const normalizeAccountCodeParams = <
 
   return {
     ...restParams,
-    enterpriseCode: DEFAULT_ENTERPRISE_CODE,
+    enterpriseCode: normalizeEnterpriseCodeText(params.enterpriseCode),
     areaCode: getAreaCode(params.areaCode),
     phoneNumber: normalizeAuthText(params.phoneNumber),
     telephone: normalizeAuthText(params.phoneNumber),
@@ -77,7 +80,7 @@ const normalizeLoginParams = (params: API.Login.LoginParams) => {
     phoneNumber: normalizeAuthText(params.phoneNumber),
     account: normalizeOptionalAuthText(params.account),
     password: normalizePasswordText(params.password),
-    enterpriseCode: DEFAULT_ENTERPRISE_CODE,
+    enterpriseCode: normalizeEnterpriseCodeText(params.enterpriseCode),
     platform,
     areaCode: getAreaCode(params.areaCode),
   };
@@ -94,7 +97,7 @@ const normalizeRegisterParams = (params: API.Login.DemoRegisterType) => {
 
   return {
     ...restParams,
-    enterpriseCode: DEFAULT_ENTERPRISE_CODE,
+    enterpriseCode: normalizeEnterpriseCodeText(params.enterpriseCode),
     user: {
       ...params.user,
       nickname: normalizeAuthText(params.user.nickname),

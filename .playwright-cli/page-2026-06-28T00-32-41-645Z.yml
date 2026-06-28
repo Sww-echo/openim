@@ -1,0 +1,60 @@
+- generic [ref=e2]:
+  - generic [ref=e11]:
+    - generic [ref=e13]:
+      - generic [ref=e15]:
+        - generic [ref=e16]: 在线化办公
+        - text: 多人协作，打造高效办公方式
+        - img "login_bg" [ref=e17]
+      - generic [ref=e81]:
+        - generic [ref=e82] [cursor=pointer]:
+          - img "left" [ref=e83]:
+            - img [ref=e84]
+          - text: 返回
+        - generic [ref=e86]: 新用户注册
+        - generic [ref=e87]:
+          - generic [ref=e89]:
+            - generic "手机号" [ref=e91]
+            - generic [ref=e95]:
+              - generic [ref=e96] [cursor=pointer]:
+                - generic [ref=e97]:
+                  - combobox [ref=e99]
+                  - generic "+86" [ref=e100]
+                - generic:
+                  - img:
+                    - img
+              - textbox "请输入手机号" [ref=e102]
+          - generic [ref=e105]:
+            - generic "企业号" [ref=e107]
+            - generic [ref=e111]:
+              - textbox "企业号" [ref=e112]:
+                - /placeholder: 请输入企业号
+                - text: LOCALTEST001
+              - button "close-circle" [ref=e114] [cursor=pointer]:
+                - img "close-circle" [ref=e115]:
+                  - img [ref=e116]
+          - generic [ref=e119]:
+            - generic "昵称" [ref=e121]: "* 昵称"
+            - textbox "* 昵称" [ref=e126]:
+              - /placeholder: 请输入昵称
+          - generic [ref=e129]:
+            - generic "密码" [ref=e131]: "* 密码"
+            - generic [ref=e135]:
+              - textbox "* 密码" [ref=e136]:
+                - /placeholder: 请输入您的密码
+              - img "eye-invisible" [ref=e138] [cursor=pointer]:
+                - img [ref=e139]
+          - generic [ref=e143]:
+            - generic "确认密码:" [ref=e145]: "* 确认密码:"
+            - generic [ref=e149]:
+              - textbox "* 确认密码:" [ref=e150]:
+                - /placeholder: 请再次确认您的密码
+              - img "eye-invisible" [ref=e152] [cursor=pointer]:
+                - img [ref=e153]
+          - button "确认" [ref=e161] [cursor=pointer]:
+            - generic [ref=e162]: 确认
+    - generic [ref=e78] [cursor=pointer]:
+      - generic [ref=e79]: OpenCorp-Base v3.8.3
+      - generic [ref=e80]: SDK(ffi) v3.8.3
+  - complementary "React Query Devtools":
+    - button "Open React Query Devtools" [ref=e4] [cursor=pointer]:
+      - img [ref=e5]

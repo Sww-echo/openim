@@ -25,6 +25,12 @@ export const Login = () => {
     feedbackToast({ msg: t("toast.copySuccess") });
   };
 
+  const loginPanelClass = [
+    styles.login,
+    "mr-14 w-[350px] rounded-md p-11",
+    formType === 2 ? "h-auto max-h-[calc(100vh-96px)] overflow-y-auto" : "h-[450px]",
+  ].join(" ");
+
   return (
     <div className="relative flex h-full flex-col">
       <div className="app-drag relative h-10 bg-[var(--top-search-bar)]">
@@ -33,7 +39,7 @@ export const Login = () => {
       <div className="flex flex-1 items-center justify-center">
         <LeftBar />
         <div
-          className={`${styles.login} mr-14 h-[450px] w-[350px] rounded-md p-11`}
+          className={loginPanelClass}
           style={{ boxShadow: "0 0 30px rgba(0,0,0,.1)" }}
         >
           {formType === 0 && <LoginForm setFormType={setFormType} />}

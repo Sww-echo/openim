@@ -3,8 +3,8 @@ import { t } from "i18next";
 import { DEFAULT_ENTERPRISE_CODE, validateEnterpriseCode } from "@/api/login";
 import { isBusinessRecord, unwrapBusinessPayload } from "@/utils/businessPayload";
 
-export const normalizeEnterpriseCode = (_code?: string) => {
-  return DEFAULT_ENTERPRISE_CODE;
+export const normalizeEnterpriseCode = (code?: string) => {
+  return code?.trim() || DEFAULT_ENTERPRISE_CODE;
 };
 
 const isInvalidEnterpriseResult = (value: unknown) =>
