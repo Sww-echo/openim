@@ -49,9 +49,7 @@ export interface ConversationStore {
   unReadCount: number;
   currentGroupInfo?: GroupItem;
   currentMemberInGroup?: GroupMemberItem;
-  getConversationListByReq: (
-    isOffset?: boolean
-  ) => Promise<boolean>;
+  getConversationListByReq: (isOffset?: boolean) => Promise<boolean>;
   updateConversationList: (
     list: ConversationItem[],
     type: ConversationListUpdateType,
@@ -62,10 +60,7 @@ export interface ConversationStore {
   ) => Promise<void>;
   getUnReadCountByReq: () => Promise<number>;
   updateUnReadCount: (count: number) => void;
-  getCurrentGroupInfoByReq: (
-    groupID: string,
-    businessRoomId?: string,
-  ) => Promise<void>;
+  getCurrentGroupInfoByReq: (groupID: string, businessRoomId?: string) => Promise<void>;
   updateCurrentGroupInfo: (groupInfo: GroupItem) => void;
   getCurrentMemberInGroupByReq: (
     groupID: string,
@@ -99,7 +94,10 @@ export interface ContactStore {
     groupApplications: boolean;
   };
   ensureFriendListLoaded: (force?: boolean) => Promise<boolean>;
-  ensureGroupListLoaded: (force?: boolean) => Promise<boolean>;
+  ensureGroupListLoaded: (
+    force?: boolean,
+    options?: { silent?: boolean },
+  ) => Promise<boolean>;
   ensureFriendApplicationsLoaded: (force?: boolean) => Promise<boolean>;
   ensureGroupApplicationsLoaded: (force?: boolean) => Promise<boolean>;
   getFriendListByReq: () => Promise<boolean>;
@@ -109,7 +107,7 @@ export interface ContactStore {
   getBlackListByReq: () => Promise<void>;
   updateBlack: (black: BlackUserItem, remove?: boolean) => void;
   pushNewBlack: (black: BlackUserItem) => void;
-  getGroupListByReq: () => Promise<boolean>;
+  getGroupListByReq: (options?: { silent?: boolean }) => Promise<boolean>;
   setGroupList: (list: GroupItem[]) => void;
   updateGroup: (group: GroupItem, remove?: boolean) => void;
   pushNewGroup: (group: GroupItem) => void;

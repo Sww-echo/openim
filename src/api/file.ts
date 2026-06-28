@@ -316,6 +316,63 @@ const getBlobFromResponse = (response: unknown) => {
   return payload instanceof Blob ? payload : undefined;
 };
 
+const shouldInspectBlobAsText = (blob: Blob) => {
+  const contentType = blob.type.toLowerCase();
+
+  return (
+    contentType.includes("json") ||
+    contentType.includes("text") ||
+    (!contentType && blob.size > 0 && blob.size <= 64 * 1024)
+  );
+};
+
+const isBusinessErrorPayload = (value: unknown) => {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  const resultCode = value.resultCode;
+  const errCode = value.errCode;
+
+  return (
+    (resultCode !== undefined && Number(resultCode) !== 1) ||
+    (errCode !== undefined && Number(errCode) !== 0) ||
+    Boolean(
+      normalizeFileText(value.reasonText) ||
+        normalizeFileText(value.resultMsg) ||
+        normalizeFileText(value.errMsg) ||
+        normalizeFileText(value.msg) ||
+        value.fieldErrors,
+    )
+  );
+};
+
+const ensureSuccessFileBlob = async (response: unknown) => {
+  const blob = getBlobFromResponse(response);
+
+  if (!blob || !shouldInspectBlobAsText(blob)) {
+    return blob;
+  }
+
+  try {
+    const parsed = JSON.parse(await blob.text()) as unknown;
+
+    if (
+      isBusinessErrorPayload(parsed) ||
+      isBusinessErrorPayload(unwrapApiPayload(parsed))
+    ) {
+      throw parsed;
+    }
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      return blob;
+    }
+    throw error;
+  }
+
+  return blob;
+};
+
 export const getSignedFilePreviewUrl = async (fileId: string | number) => {
   const normalizedFileId = normalizeFileText(fileId);
   if (!normalizedFileId) {
@@ -336,7 +393,7 @@ export const getSignedFilePreviewUrl = async (fileId: string | number) => {
   }
 
   const previewResponse = await previewFileBySign(assertSignedFileParams(signParams));
-  const previewBlob = getBlobFromResponse(previewResponse);
+  const previewBlob = await ensureSuccessFileBlob(previewResponse);
 
   return previewBlob ? URL.createObjectURL(previewBlob) : undefined;
 };
@@ -364,7 +421,7 @@ export const getSignedFileDownloadUrl = async (fileId: string | number) => {
   }
 
   const downloadResponse = await downloadFileBySign(assertSignedFileParams(signParams));
-  const downloadBlob = getBlobFromResponse(downloadResponse);
+  const downloadBlob = await ensureSuccessFileBlob(downloadResponse);
 
   if (!downloadBlob) {
     return undefined;

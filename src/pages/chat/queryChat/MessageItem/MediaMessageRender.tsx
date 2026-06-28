@@ -18,6 +18,7 @@ const MediaMessageRender: FC<IMessageItemProps> = ({ message }) => {
     [message.ex],
   );
   const [businessSourceUrl, setBusinessSourceUrl] = useState<string>();
+  const [businessPreviewLoading, setBusinessPreviewLoading] = useState(false);
   const imageHeight = message.pictureElem!.sourcePicture.height;
   const imageWidth = message.pictureElem!.sourcePicture.width;
   const snapshotMaxHeight = message.pictureElem!.snapshotPicture?.height ?? imageHeight;
@@ -27,7 +28,9 @@ const MediaMessageRender: FC<IMessageItemProps> = ({ message }) => {
 
   const sdkSourceUrl =
     message.pictureElem!.snapshotPicture?.url || message.pictureElem!.sourcePicture.url;
-  const sourceUrl = businessSourceUrl ?? sdkSourceUrl;
+  const sourceUrl = businessFileId
+    ? businessSourceUrl || (businessPreviewLoading ? undefined : sdkSourceUrl)
+    : sdkSourceUrl;
   const isSending = message.status === MessageStatus.Sending;
   const minStyle = { minHeight: `${adaptedHight}px`, minWidth: `${adaptedWidth}px` };
 
@@ -37,24 +40,31 @@ const MediaMessageRender: FC<IMessageItemProps> = ({ message }) => {
 
     setBusinessSourceUrl(undefined);
     if (!businessFileId) {
+      setBusinessPreviewLoading(false);
       return undefined;
     }
 
+    setBusinessPreviewLoading(true);
     getSignedFilePreviewUrl(businessFileId)
       .then((url) => {
-        if (!url) {
-          return;
-        }
         if (!active) {
-          if (url.startsWith("blob:")) {
+          if (url?.startsWith("blob:")) {
             URL.revokeObjectURL(url);
           }
           return;
         }
+        if (!url) {
+          setBusinessPreviewLoading(false);
+          return;
+        }
         objectUrl = url.startsWith("blob:") ? url : undefined;
         setBusinessSourceUrl(url);
+        setBusinessPreviewLoading(false);
       })
       .catch((error) => {
+        if (active) {
+          setBusinessPreviewLoading(false);
+        }
         console.debug("Failed to load business file preview", error);
       });
 

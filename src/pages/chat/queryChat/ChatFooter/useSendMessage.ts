@@ -40,6 +40,47 @@ const toFiniteNumber = (value: unknown) => {
 const normalizeTargetId = (value?: string | number | null) =>
   String(value ?? "").trim();
 
+const unwrapSendBeforePayload = (response: unknown) => {
+  const record =
+    response && typeof response === "object"
+      ? (response as Record<string, unknown>)
+      : {};
+  const payload = record.data ?? response;
+
+  return payload && typeof payload === "object"
+    ? (payload as Record<string, unknown>)
+    : {};
+};
+
+const isExplicitFalse = (value: unknown) =>
+  value === false || value === 0 || value === "0" || value === "false";
+
+const getSendBeforeReason = (payload: Record<string, unknown>) =>
+  String(
+    payload.reasonText ??
+      payload.errMsg ??
+      payload.errorMsg ??
+      payload.message ??
+      payload.msg ??
+      "",
+  ).trim();
+
+const assertSendBeforeAllowed = (
+  response: unknown,
+  keys: Array<"allowed" | "canSend">,
+) => {
+  const payload = unwrapSendBeforePayload(response);
+  const blocked = keys.some(
+    (key) =>
+      Object.prototype.hasOwnProperty.call(payload, key) &&
+      isExplicitFalse(payload[key]),
+  );
+
+  if (blocked) {
+    throw new Error(getSendBeforeReason(payload) || "当前不允许发送");
+  }
+};
+
 const getMessageFileSize = (message: MessageItem) => {
   const businessFile = getBusinessFileFromMessageEx(message.ex);
   const businessFileSize = toFiniteNumber(businessFile?.fileSize ?? businessFile?.size);
@@ -91,17 +132,19 @@ export function useSendMessage() {
             ) || options.groupID;
           const normalizedRoomId = normalizeTargetId(businessRoomId);
           if (normalizedRoomId) {
-            await groupSendBefore({
+            const response = await groupSendBefore({
               roomId: normalizedRoomId,
               messageType: getBusinessMessageType(message),
               contentText: getContentText(message),
               fileSize: getMessageFileSize(message),
             });
+            assertSendBeforeAllowed(response, ["canSend", "allowed"]);
           }
         } else if (options.recvID) {
-          await singleSendBefore({
+          const response = await singleSendBefore({
             toUserId: normalizedRecvID,
           });
+          assertSendBeforeAllowed(response, ["allowed", "canSend"]);
         }
 
         if (needPush) {

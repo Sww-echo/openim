@@ -398,8 +398,25 @@ export const useValidateEnterpriseCode = () => {
   });
 };
 
-export const refreshOpenIMToken = async () =>
-  businessRequest.get<LoginSuccessData>("/user/openim/token");
+export const refreshOpenIMToken = async (options?: { skipAuthLogout?: boolean }) => {
+  const config = options?.skipAuthLogout
+    ? ({ skipAuthLogout: true } as Parameters<typeof businessRequest.get>[1])
+    : undefined;
+
+  return businessRequest.get<LoginSuccessData>("/user/openim/token", config);
+};
+
+export const getOpenIMConfigStatus = () =>
+  businessRequest.get<{
+    apiURL?: string;
+    apiUrl?: string;
+    openIMApiURL?: string;
+    wsURL?: string;
+    wsUrl?: string;
+    openIMWsURL?: string;
+    platformID?: number | string;
+    platformId?: number | string;
+  }>("/config/openim/status");
 
 export interface EnterpriseCodeValidateResult {
   valid?: boolean;

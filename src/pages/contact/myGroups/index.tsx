@@ -25,13 +25,11 @@ export const MyGroups = () => {
   const groupListLoading = useContactStore(
     (state) => state.contactDataLoading.groupList,
   );
-  const ensureGroupListLoaded = useContactStore(
-    (state) => state.ensureGroupListLoaded,
-  );
+  const ensureGroupListLoaded = useContactStore((state) => state.ensureGroupListLoaded);
   const { userID } = useUserStore((state) => state.selfInfo);
 
   useEffect(() => {
-    void ensureGroupListLoaded();
+    void ensureGroupListLoaded(false, { silent: true });
   }, [ensureGroupListLoaded]);
 
   const handleChange = (value: string) => {
@@ -45,8 +43,7 @@ export const MyGroups = () => {
       (groups, group) => {
         const creatorUserID = normalizeId(group.creatorUserID);
         const isCreatedBySelf =
-          Boolean(creatorUserID && currentUserID) &&
-          creatorUserID === currentUserID;
+          Boolean(creatorUserID && currentUserID) && creatorUserID === currentUserID;
 
         groups.joinedGroups.push(group);
 

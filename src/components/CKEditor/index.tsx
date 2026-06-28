@@ -9,6 +9,7 @@ import {
   forwardRef,
   ForwardRefRenderFunction,
   memo,
+  useEffect,
   useImperativeHandle,
   useRef,
 } from "react";
@@ -34,11 +35,22 @@ const keyCodes = {
   backspace: 8,
 };
 
+type CKEditorKeydownEvent = {
+  stop: () => void;
+};
+
+type CKEditorKeydownData = {
+  keyCode: number;
+  shiftKey: boolean;
+  preventDefault: () => void;
+};
+
 const Index: ForwardRefRenderFunction<CKEditorRef, CKEditorProps> = (
   { value, placeholder, onChange, onEnter },
   ref,
 ) => {
   const ckEditor = useRef<ClassicEditor | null>(null);
+  const lastSyncedValue = useRef(value);
 
   const focus = (moveToEnd = false) => {
     const editor = ckEditor.current;
@@ -61,7 +73,7 @@ const Index: ForwardRefRenderFunction<CKEditorRef, CKEditorProps> = (
   const listenKeydown = (editor: ClassicEditor) => {
     editor.editing.view.document.on(
       "keydown",
-      (evt, data) => {
+      (evt: CKEditorKeydownEvent, data: CKEditorKeydownData) => {
         if (data.keyCode === 13 && !data.shiftKey) {
           data.preventDefault();
           evt.stop();
@@ -92,6 +104,19 @@ const Index: ForwardRefRenderFunction<CKEditorRef, CKEditorProps> = (
     [],
   );
 
+  useEffect(() => {
+    const editor = ckEditor.current;
+
+    if (!editor || lastSyncedValue.current === value) {
+      return;
+    }
+
+    if (editor.getData() !== value) {
+      editor.setData(value);
+    }
+    lastSyncedValue.current = value;
+  }, [value]);
+
   return (
     <CKEditor
       editor={ClassicEditor}
@@ -109,11 +134,13 @@ const Index: ForwardRefRenderFunction<CKEditorRef, CKEditorProps> = (
       }}
       onReady={(editor) => {
         ckEditor.current = editor;
+        lastSyncedValue.current = editor.getData();
         listenKeydown(editor);
         focus(true);
       }}
       onChange={(event, editor) => {
         const data = editor.getData();
+        lastSyncedValue.current = data;
         onChange?.(data);
       }}
     />

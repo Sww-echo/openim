@@ -1,5 +1,4 @@
 import { LeftOutlined } from "@ant-design/icons";
-import { useRequest } from "ahooks";
 import { Button, Input } from "antd";
 import { t } from "i18next";
 import { useEffect, useMemo, useState } from "react";
@@ -70,9 +69,7 @@ const SendRequest = ({
 }) => {
   const [reqMsg, setReqMsg] = useState("");
   const [latestRecord, setLatestRecord] = useState<BusinessRecord>();
-  const { runAsync, loading } = useRequest(addBusinessFriend, {
-    manual: true,
-  });
+  const [loading, setLoading] = useState(false);
   const targetUserID = normalizeTargetUserID(cardInfo.userID);
   const latestStatusText = useMemo(
     () => getApplicationStatusText(latestRecord),
@@ -100,12 +97,15 @@ const SendRequest = ({
     }
 
     try {
-      await runAsync(targetUserID, reqMsg.trim());
+      setLoading(true);
+      await addBusinessFriend(targetUserID, reqMsg.trim());
       await useContactStore.getState().ensureFriendListLoaded(true);
       await useContactStore.getState().ensureFriendApplicationsLoaded(true);
       feedbackToast({ msg: t("toast.sendFreiendRequestSuccess") });
     } catch (error) {
       feedbackToast({ error, msg: t("toast.sendApplicationFailed") });
+    } finally {
+      setLoading(false);
     }
     backToCard();
   };

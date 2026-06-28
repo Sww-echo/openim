@@ -7,7 +7,11 @@ import { useUserStore } from "@/store";
 import { getChatToken, getIMToken } from "./storage";
 import { feedbackToast } from "./common";
 
-const tokenErrorCodeList = [1501, 1503, 1504, 1505];
+const tokenErrorCodeList = [1501, 1503, 1504, 1505, 1507];
+
+type AuthAwareRequestConfig = {
+  skipAuthLogout?: boolean;
+};
 
 const businessPublicPaths = new Set([
   "/account/code/send",
@@ -87,7 +91,11 @@ const createAxiosInstance = (baseURL: string, imToken = false) => {
     (res) => {
       const data = res.data;
 
-      if (tokenErrorCodeList.includes(data.errCode)) {
+      const skipAuthLogout = Boolean(
+        (res.config as AuthAwareRequestConfig).skipAuthLogout,
+      );
+
+      if (tokenErrorCodeList.includes(data.errCode) && !skipAuthLogout) {
         feedbackToast({
           msg: t("toast.loginExpiration"),
           error: t("toast.loginExpiration"),

@@ -18,7 +18,11 @@ import { t } from "i18next";
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { normalizeOpenIMTokenProfile, refreshOpenIMToken } from "@/api/login";
+import {
+  getOpenIMConfigStatus,
+  normalizeOpenIMTokenProfile,
+  refreshOpenIMToken,
+} from "@/api/login";
 import { CustomType } from "@/constants";
 import {
   pushNewMessage,
@@ -41,6 +45,62 @@ let sdkLoginPromise: Promise<void> | undefined;
 let sdkLoginKey = "";
 let sdkLoggedInKey = "";
 
+const normalizeSDKConfigText = (value: unknown) =>
+  typeof value === "string" || typeof value === "number" ? String(value).trim() : "";
+
+const normalizeSDKPlatformID = (value: unknown) => {
+  const platformID = Number(value);
+  return Number.isFinite(platformID) && platformID > 0 ? platformID : undefined;
+};
+
+const resolveOpenIMSDKConfig = async () => {
+  const fallback = {
+    apiAddr: import.meta.env.VITE_API_URL,
+    wsAddr: import.meta.env.VITE_WS_URL,
+    platformID: window.electronAPI?.getPlatform() ?? 5,
+  };
+
+  try {
+    const response = await getOpenIMConfigStatus();
+    const payload = (response as { data?: unknown }).data ?? response;
+    const record =
+      payload && typeof payload === "object"
+        ? (payload as Record<string, unknown>)
+        : {};
+    const apiAddr = normalizeSDKConfigText(
+      record.apiURL ?? record.apiUrl ?? record.openIMApiURL,
+    );
+    const wsAddr = normalizeSDKConfigText(
+      record.wsURL ?? record.wsUrl ?? record.openIMWsURL,
+    );
+    const platformID = normalizeSDKPlatformID(record.platformID ?? record.platformId);
+
+    return {
+      apiAddr: apiAddr || fallback.apiAddr,
+      wsAddr: wsAddr || fallback.wsAddr,
+      platformID: platformID ?? fallback.platformID,
+    };
+  } catch (error) {
+    console.debug("get openim config status failed", error);
+    return fallback;
+  }
+};
+
+const resetSDKLoginState = () => {
+  sdkLoggedInKey = "";
+  sdkLoginPromise = undefined;
+  sdkLoginKey = "";
+};
+
+const refreshStoredOpenIMToken = async (fallbackUserID: string) => {
+  const response = await refreshOpenIMToken();
+  const responsePayload = (response as { data?: unknown }).data ?? response;
+  const tokenProfile = normalizeOpenIMTokenProfile(responsePayload, fallbackUserID);
+
+  await updateCurrentIMToken(tokenProfile.imToken, tokenProfile.userID);
+  return tokenProfile;
+};
+
 const loginOpenIMSDKOnce = (userID: string, token: string) => {
   const nextLoginKey = `${userID}:${token}`;
 
@@ -54,12 +114,11 @@ const loginOpenIMSDKOnce = (userID: string, token: string) => {
 
   sdkLoginKey = nextLoginKey;
   sdkLoginPromise = (async () => {
-    const apiAddr = import.meta.env.VITE_API_URL;
-    const wsAddr = import.meta.env.VITE_WS_URL;
+    const { apiAddr, wsAddr, platformID } = await resolveOpenIMSDKConfig();
 
     if (window.electronAPI) {
       await IMSDK.initSDK({
-        platformID: window.electronAPI?.getPlatform() ?? 5,
+        platformID,
         apiAddr,
         wsAddr,
         dataDir: window.electronAPI.getDataPath("sdkResources") || "./",
@@ -79,7 +138,7 @@ const loginOpenIMSDKOnce = (userID: string, token: string) => {
     await IMSDK.login({
       userID,
       token,
-      platformID: 5,
+      platformID,
       apiAddr,
       wsAddr,
       logLevel: LogLevel.Debug,
@@ -185,12 +244,28 @@ export function useGlobalEvent() {
     updateIsLogining(true);
     const IMToken = (await getIMToken()) as string;
     const IMUserID = (await getIMUserID()) as string;
+    let loginToken = IMToken;
+    let loginUserID = IMUserID;
+
     try {
-      await loginOpenIMSDKOnce(IMUserID, IMToken);
+      const tokenProfile = await refreshStoredOpenIMToken(IMUserID);
+      loginToken = tokenProfile.imToken;
+      loginUserID = tokenProfile.userID;
+    } catch (error) {
+      console.error("refreshOpenIMTokenBeforeLogin failed", error);
+      updateSyncState("success");
+      updateConnectState("success");
+      updateIsLogining(false);
+      tryOut(t("toast.loginExpiration"), true);
+      return;
+    }
+
+    try {
+      await loginOpenIMSDKOnce(loginUserID, loginToken);
       initStore();
     } catch (error) {
       if ((error as WsResponse).errCode === 10102) {
-        sdkLoggedInKey = `${IMUserID}:${IMToken}`;
+        sdkLoggedInKey = `${loginUserID}:${loginToken}`;
         initStore();
         updateIsLogining(false);
         return;
@@ -270,17 +345,21 @@ export function useGlobalEvent() {
     void refreshOpenIMTokenAndRetry();
   };
 
-  const tryOut = (msg: string) =>
+  const tryOut = (msg: string, immediateLogout = false) => {
+    const logout = () => {
+      resetSDKLoginState();
+      void userLogout(true);
+    };
+
     feedbackToast({
       msg,
       error: msg,
-      onClose: () => {
-        sdkLoggedInKey = "";
-        sdkLoginPromise = undefined;
-        sdkLoginKey = "";
-        userLogout(true);
-      },
+      onClose: immediateLogout ? undefined : logout,
     });
+    if (immediateLogout) {
+      logout();
+    }
+  };
 
   async function refreshOpenIMTokenAndRetry() {
     if (refreshingIMToken.current) {
@@ -290,19 +369,16 @@ export function useGlobalEvent() {
     refreshingIMToken.current = true;
     try {
       const currentUserID = ((await getIMUserID()) as string) ?? "";
-      const response = await refreshOpenIMToken();
-      const responsePayload = (response as { data?: unknown }).data ?? response;
-      const tokenProfile = normalizeOpenIMTokenProfile(responsePayload, currentUserID);
-
-      await updateCurrentIMToken(tokenProfile.imToken, tokenProfile.userID);
-      sdkLoggedInKey = "";
-      sdkLoginPromise = undefined;
-      sdkLoginKey = "";
+      await refreshStoredOpenIMToken(currentUserID);
+      resetSDKLoginState();
       await IMSDK.logout().catch(() => undefined);
       await tryLogin();
     } catch (error) {
       console.error("refreshOpenIMTokenAndRetry failed", error);
-      tryOut(t("toast.loginExpiration"));
+      updateSyncState("success");
+      updateConnectState("success");
+      updateIsLogining(false);
+      tryOut(t("toast.loginExpiration"), true);
     } finally {
       refreshingIMToken.current = false;
     }

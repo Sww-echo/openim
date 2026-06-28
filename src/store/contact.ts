@@ -538,7 +538,7 @@ export const useContactStore = create<ContactStore>()((set, get) => ({
 
     return contactLoadPromises.friendList;
   },
-  ensureGroupListLoaded: async (force = false) => {
+  ensureGroupListLoaded: async (force = false, options = {}) => {
     if (!force && get().contactDataLoaded.groupList) {
       return true;
     }
@@ -554,7 +554,7 @@ export const useContactStore = create<ContactStore>()((set, get) => ({
         },
       }));
       try {
-        const loaded = await get().getGroupListByReq();
+        const loaded = await get().getGroupListByReq(options);
         if (loaded) {
           set((state) => ({
             contactDataLoaded: {
@@ -636,7 +636,9 @@ export const useContactStore = create<ContactStore>()((set, get) => ({
         },
       }));
       try {
-        const groupListLoaded = await get().ensureGroupListLoaded(force);
+        const groupListLoaded = await get().ensureGroupListLoaded(force, {
+          silent: true,
+        });
         const results = await Promise.all([
           get().getRecvGroupApplicationListByReq(),
           get().getSendGroupApplicationListByReq(),
@@ -786,7 +788,7 @@ export const useContactStore = create<ContactStore>()((set, get) => ({
         : state.friendList.filter((f) => !isSameID(f.userID, black.userID)),
     }));
   },
-  getGroupListByReq: async () => {
+  getGroupListByReq: async (options = {}) => {
     let tmpList = [] as GroupItem[];
     let hasLoadedSource = false;
     let lastError: unknown;
@@ -804,14 +806,24 @@ export const useContactStore = create<ContactStore>()((set, get) => ({
     } catch (error) {
       lastError = error;
       console.debug("Skipped SDK group list", error);
+
+      try {
+        const { data } = await IMSDK.getJoinedGroupList();
+        tmpList = [...data];
+        hasLoadedSource = true;
+      } catch (fallbackError) {
+        lastError = fallbackError;
+        console.debug("Skipped SDK group list fallback", fallbackError);
+      }
     }
 
     if (!hasLoadedSource) {
-      feedbackToast({ error: lastError, msg: t("toast.getGroupListFailed") });
+      if (!options.silent) {
+        feedbackToast({ error: lastError, msg: t("toast.getGroupListFailed") });
+      }
       return false;
     }
 
-    // const { data } = await IMSDK.getJoinedGroupList();
     set(() => ({ groupList: tmpList }));
     return true;
   },

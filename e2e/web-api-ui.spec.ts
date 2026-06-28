@@ -71,6 +71,10 @@ const extractListItems = (body: unknown): unknown[] => {
     return [];
   }
 
+  if (pickText(payload, ["userID", "userId", "id"])) {
+    return [payload];
+  }
+
   for (const key of ["pageData", "list", "records", "items", "data"]) {
     const value = payload[key];
     if (Array.isArray(value)) {
@@ -325,9 +329,7 @@ test.describe("Web business API UI e2e", () => {
       });
   });
 
-  test("add friend search calls business friend search without sending request", async ({
-    page,
-  }) => {
+  test("add friend search calls user get without sending request", async ({ page }) => {
     test.skip(
       !friendSearchKeyword,
       "Set OPENIM_E2E_FRIEND_SEARCH_KEYWORD to run add-friend search UI check.",
@@ -336,9 +338,19 @@ test.describe("Web business API UI e2e", () => {
     await loginAndExpectChat(page);
 
     const friendAddRequests: string[] = [];
+    const unexpectedSearchRequests: string[] = [];
     page.on("request", (request) => {
-      if (request.url().includes("/friends/add")) {
-        friendAddRequests.push(request.url());
+      const requestUrl = request.url();
+      const pathname = new URL(requestUrl).pathname;
+      if (pathname.endsWith("/friends/add")) {
+        friendAddRequests.push(requestUrl);
+      }
+      if (
+        pathname.endsWith("/friends/page") ||
+        pathname.endsWith("/user/public/search/list") ||
+        pathname.endsWith("/user/getByAccount")
+      ) {
+        unexpectedSearchRequests.push(requestUrl);
       }
     });
 
@@ -353,8 +365,8 @@ test.describe("Web business API UI e2e", () => {
 
     const searchResponsePromise = page.waitForResponse(
       (response) =>
-        response.request().method() === "POST" &&
-        response.url().includes("/friends/page"),
+        response.request().method() === "GET" &&
+        new URL(response.url()).pathname.endsWith("/user/get"),
       {
         timeout: 30000,
       },
@@ -400,5 +412,6 @@ test.describe("Web business API UI e2e", () => {
 
     await page.waitForTimeout(500);
     expect(friendAddRequests).toHaveLength(0);
+    expect(unexpectedSearchRequests).toHaveLength(0);
   });
 });

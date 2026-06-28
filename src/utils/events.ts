@@ -18,6 +18,7 @@ type EmitterEvents = {
   UPDATE_ONE_MSG: MessageItem;
   DELETE_ONE_MSG: string;
   CLEAR_MSG_LIST: void;
+  REFRESH_GROUP_MEMBERS: void;
 
   SELECT_USER: SelectUserParams;
 };

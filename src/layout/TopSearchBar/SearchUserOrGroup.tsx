@@ -12,9 +12,9 @@ import {
   useState,
 } from "react";
 
-import { getBusinessGroupInfo } from "@/api/group";
 import { message } from "@/AntdGlobalComp";
-import { searchBusinessUserInfo } from "@/api/login";
+import { searchUserForAddFriend } from "@/api/friend";
+import { getBusinessGroupInfo } from "@/api/group";
 import DraggableModalWrap from "@/components/DraggableModalWrap";
 import { OverlayVisibleHandle, useOverlayVisible } from "@/hooks/useOverlayVisible";
 import { CardInfo } from "@/pages/common/UserCardModal";
@@ -48,22 +48,20 @@ const SearchUserOrGroup: ForwardRefRenderFunction<
       .groupList.find((group) => isSameID(group.groupID, keyword));
 
   const getLocalFriend = () =>
-    useContactStore
-      .getState()
-      .friendList.find((friend) => {
-        const businessFriend = friend as typeof friend & {
-          phoneNumber?: string | number;
-          telephone?: string | number;
-          account?: string | number;
-        };
+    useContactStore.getState().friendList.find((friend) => {
+      const businessFriend = friend as typeof friend & {
+        phoneNumber?: string | number;
+        telephone?: string | number;
+        account?: string | number;
+      };
 
-        return [
-          businessFriend.userID,
-          businessFriend.phoneNumber,
-          businessFriend.telephone,
-          businessFriend.account,
-        ].some((value) => value !== undefined && isSameID(value, keyword));
-      });
+      return [
+        businessFriend.userID,
+        businessFriend.phoneNumber,
+        businessFriend.telephone,
+        businessFriend.account,
+      ].some((value) => value !== undefined && isSameID(value, keyword));
+    });
 
   const isKeywordMatchedUser = (
     targetUser?: CardInfo & {
@@ -119,7 +117,7 @@ const SearchUserOrGroup: ForwardRefRenderFunction<
 
         const {
           data: { total, users },
-        } = await searchBusinessUserInfo(keyword);
+        } = await searchUserForAddFriend(keyword);
         setLoading(false);
         const targetUser = users.find(isKeywordMatchedUser);
         if (!total || !targetUser) {

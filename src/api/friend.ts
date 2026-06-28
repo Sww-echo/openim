@@ -86,6 +86,11 @@ const asRecord = (value: unknown) =>
 const normalizeBusinessText = (value: unknown) =>
   typeof value === "string" || typeof value === "number" ? String(value).trim() : "";
 
+const normalizeBusinessNumber = (value: unknown) => {
+  const normalizedValue = Number(value);
+  return Number.isFinite(normalizedValue) ? normalizedValue : undefined;
+};
+
 const normalizeBusinessParams = (params?: Record<string, unknown>) =>
   Object.entries(params ?? {}).reduce((nextParams, [key, value]) => {
     if (value === undefined || value === null) {
@@ -127,6 +132,7 @@ const normalizeUserInfo = (
     record.data ??
     payload;
   const info = asRecord(Array.isArray(nested) ? nested[0] : nested);
+  const settings = asRecord(info.settings);
   const userID = normalizeBusinessText(
     info.userID ?? info.userId ?? info.id ?? fallbackUserID,
   );
@@ -159,6 +165,9 @@ const normalizeUserInfo = (
     ),
     gender: Number(info.gender ?? info.sex ?? 0),
     birth: Number(info.birth ?? info.birthday ?? 0),
+    allowAddFriend: normalizeBusinessNumber(
+      info.allowAddFriend ?? info.friendsVerify ?? settings.friendsVerify,
+    ) as BusinessAllowType | undefined,
   };
 };
 
@@ -205,46 +214,29 @@ const buildAccountLookupCandidates = (keyword: string) => {
     candidates.add(`86${normalizedKeyword}`);
   }
 
-  if (normalizedKeyword.startsWith("+86") && normalizedKeyword.length > 3) {
-    const withoutCountryCode = normalizedKeyword.slice(3);
-    if (PHONE_NUMBER_PATTERN.test(withoutCountryCode)) {
-      candidates.add(withoutCountryCode);
-    }
+  if (normalizedKeyword.startsWith("+86")) {
+    candidates.add(normalizedKeyword.slice(3));
   }
 
-  if (
-    normalizedKeyword.startsWith("86") &&
-    normalizedKeyword.length > 2 &&
-    PHONE_NUMBER_PATTERN.test(normalizedKeyword.slice(2))
-  ) {
+  if (normalizedKeyword.startsWith("86")) {
     candidates.add(normalizedKeyword.slice(2));
   }
 
-  return [...candidates];
+  return [...candidates].filter(Boolean);
 };
 
 const isKeywordMatchedUser = (user: BusinessUserInfo, keyword: string) =>
-  [user.userID, user.phoneNumber, user.telephone, user.account].some((value) =>
-    isSameBusinessID(value, keyword),
-  );
-
-const lookupBusinessUserByAccountCandidates = async (keyword: string) => {
-  for (const account of buildAccountLookupCandidates(keyword)) {
-    try {
-      const accountUser = await getBusinessUserByAccount(account);
-      if (!accountUser.userID) {
-        continue;
-      }
-      if (isKeywordMatchedUser(accountUser, keyword)) {
-        return accountUser;
-      }
-    } catch (error) {
-      console.warn("get business user by account failed", account, error);
-    }
-  }
-
-  return undefined;
-};
+  [
+    user.userID,
+    user.userId,
+    user.account,
+    user.phoneNumber,
+    user.telephone,
+    user.phone,
+    user.mobile,
+    user.mobilePhone,
+    user.tel,
+  ].some((value) => isSameBusinessID(value as string | number | undefined, keyword));
 
 const getCurrentUserID = async () => normalizeBusinessText(await getIMUserID());
 
@@ -399,9 +391,7 @@ export const getBusinessUserBySearchKey = async (keyword: string) => {
     timeout: 6000,
   });
 
-  return withBusinessAvatarFallback(
-    normalizeUserInfo(unwrapData(response), normalizedKeyword),
-  );
+  return normalizeUserInfo(unwrapData(response));
 };
 
 export const getBusinessUserInfoV1 = async (
@@ -476,79 +466,14 @@ export const searchBusinessUserInfo = async (
     };
   }
 
-  const accountUser = await lookupBusinessUserByAccountCandidates(normalizedKeyword);
-  if (accountUser?.userID) {
-    return {
-      data: {
-        total: 1,
-        users: [accountUser],
-      },
-    };
-  }
-
-  try {
-    const publicUsers = await searchPublicBusinessUsers(normalizedKeyword);
-    const matchedUsers = publicUsers.users.filter((user) =>
-      isKeywordMatchedUser(user, normalizedKeyword),
-    );
-    if (matchedUsers.length) {
-      return {
-        data: {
-          total: matchedUsers.length,
-          users: matchedUsers,
-        },
-      };
-    }
-  } catch (error) {
-    console.warn("search public business users failed", normalizedKeyword, error);
-  }
-
-  try {
-    const keywordUser = await getBusinessUserBySearchKey(normalizedKeyword);
-    if (keywordUser.userID && isKeywordMatchedUser(keywordUser, normalizedKeyword)) {
-      return {
-        data: {
-          total: 1,
-          users: [keywordUser],
-        },
-      };
-    }
-  } catch (error) {
-    console.warn("get business user by search key failed", normalizedKeyword, error);
-  }
-
-  const userId = await getCurrentUserIDWithTimeout();
-  if (!userId) {
-    return {
-      data: {
-        total: 0,
-        users: [],
-      },
-    };
-  }
-
-  const response = await businessRequest.get<FriendSearchPayload>("/friends/page", {
-    params: {
-      userId,
-      keyword: normalizedKeyword,
-      pageIndex: 0,
-      pageSize: 10,
-      status: 0,
-    },
-    timeout: 6000,
-  });
-  const normalized = normalizeUserList(response);
-  const matchedUsers = normalized.users.filter((user) =>
-    isKeywordMatchedUser(user, normalizedKeyword),
-  );
+  const keywordUser = await getBusinessUserBySearchKey(normalizedKeyword);
+  const users = keywordUser.userID ? [keywordUser] : [];
 
   return {
-    data: matchedUsers.length
-      ? {
-          total: matchedUsers.length,
-          users: matchedUsers,
-        }
-      : normalized,
+    data: {
+      total: users.length,
+      users,
+    },
   };
 };
 
@@ -577,6 +502,75 @@ export const searchPublicBusinessUsers = async (keyword: string) => {
   return {
     total: normalized.total,
     users: normalized.users.filter(hasUserID),
+  };
+};
+
+const uniqueBusinessUsers = (users: BusinessUserInfo[]) => {
+  const userMap = new Map<string, BusinessUserInfo>();
+
+  users.forEach((user) => {
+    if (!user.userID) {
+      return;
+    }
+    userMap.set(user.userID, {
+      ...userMap.get(user.userID),
+      ...user,
+    });
+  });
+
+  return Array.from(userMap.values());
+};
+
+export const searchUserForAddFriend = async (
+  keyword: string,
+): Promise<{ data: { total: number; users: BusinessUserInfo[] } }> => {
+  const normalizedKeyword = normalizeBusinessText(keyword);
+  if (!normalizedKeyword) {
+    return {
+      data: {
+        total: 0,
+        users: [],
+      },
+    };
+  }
+
+  const users: BusinessUserInfo[] = [];
+
+  try {
+    const publicSearch = await searchPublicBusinessUsers(normalizedKeyword);
+    users.push(...publicSearch.users);
+  } catch (error) {
+    console.debug("search public business users failed", normalizedKeyword, error);
+  }
+
+  try {
+    const exactUser = await getBusinessUserBySearchKey(normalizedKeyword);
+    if (exactUser.userID && isKeywordMatchedUser(exactUser, normalizedKeyword)) {
+      users.push(exactUser);
+    }
+  } catch (error) {
+    console.debug("get business user by search key failed", normalizedKeyword, error);
+  }
+
+  for (const account of buildAccountLookupCandidates(normalizedKeyword)) {
+    try {
+      const accountUser = await getBusinessUserByAccount(account);
+      if (accountUser.userID && isKeywordMatchedUser(accountUser, normalizedKeyword)) {
+        users.push(accountUser);
+        break;
+      }
+    } catch (error) {
+      console.debug("get business user by account failed", account, error);
+    }
+  }
+
+  const uniqueUsers = uniqueBusinessUsers(users);
+
+  return {
+    data: {
+      total: uniqueUsers.length,
+      users: uniqueUsers,
+    },
   };
 };
 

@@ -1,13 +1,14 @@
 import { GroupMemberRole } from "@openim/wasm-client-sdk";
 import { GroupMemberItem } from "@openim/wasm-client-sdk/lib/types/entity";
 import { useLatest } from "ahooks";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { getOpenIMGroupMembers } from "@/api/group";
 import { IMSDK } from "@/layout/MainContentWrap";
 import { useConversationStore } from "@/store";
 import { BusinessRecord, pickExplicitBusinessRoomId } from "@/utils/businessPayload";
 import { isSameID } from "@/utils/common";
+import emitter from "@/utils/events";
 import { normalizeBusinessGroupMemberRoleLevel } from "@/utils/groupMember";
 
 export interface FetchStateType {
@@ -155,6 +156,8 @@ export default function useGroupMembers(props?: UseGroupMembersProps) {
       }));
       const count = 100;
       const pageIndex = refresh ? 0 : Math.floor(latestState.offset / count);
+      let businessData: GroupMemberItem[] = [];
+
       if (businessRoomId) {
         try {
           const response = await getOpenIMGroupMembers({
@@ -162,39 +165,46 @@ export default function useGroupMembers(props?: UseGroupMembersProps) {
             pageIndex,
             pageSize: count,
           });
-          const data = mergeMembersByUserID(
+          businessData = mergeMembersByUserID(
             getListPayload(response).map((item) =>
               normalizeBusinessMember(item, sourceID),
             ),
           );
-
-          if (data.length > 0 || explicitBusinessRoomId || pageIndex > 0) {
-            setFetchState((state) => ({
-              ...state,
-              groupMemberList: [...(refresh ? [] : state.groupMemberList), ...data],
-              hasMore: data.length === count,
-              offset: refresh ? data.length : state.offset + data.length,
-              loading: false,
-            }));
-            return;
-          }
         } catch (businessError) {
           console.debug("Skipped business group members list", businessError);
         }
       }
 
       try {
-        const data = await getSDKGroupMembers(sourceID, pageIndex, count);
+        const sdkData = await getSDKGroupMembers(sourceID, pageIndex, count);
+        const data = mergeMembersByUserID([...sdkData, ...businessData]);
 
         setFetchState((state) => ({
           ...state,
-          groupMemberList: [...(refresh ? [] : state.groupMemberList), ...data],
-          hasMore: data.length === count,
+          groupMemberList: mergeMembersByUserID([
+            ...(refresh ? [] : state.groupMemberList),
+            ...data,
+          ]),
+          hasMore: sdkData.length === count || businessData.length === count,
           offset: refresh ? data.length : state.offset + data.length,
           loading: false,
         }));
       } catch (sdkError) {
         console.debug("Skipped SDK group members list", sdkError);
+        if (businessData.length > 0 || explicitBusinessRoomId || pageIndex > 0) {
+          setFetchState((state) => ({
+            ...state,
+            groupMemberList: mergeMembersByUserID([
+              ...(refresh ? [] : state.groupMemberList),
+              ...businessData,
+            ]),
+            hasMore: businessData.length === count,
+            offset: refresh ? businessData.length : state.offset + businessData.length,
+            loading: false,
+          }));
+          return;
+        }
+
         setFetchState((state) => ({
           ...state,
           groupMemberList: refresh ? [] : state.groupMemberList,
@@ -215,6 +225,17 @@ export default function useGroupMembers(props?: UseGroupMembersProps) {
       groupMemberList: [],
     });
   };
+
+  useEffect(() => {
+    const refreshGroupMembers = () => {
+      void getMemberData(true);
+    };
+
+    emitter.on("REFRESH_GROUP_MEMBERS", refreshGroupMembers);
+    return () => {
+      emitter.off("REFRESH_GROUP_MEMBERS", refreshGroupMembers);
+    };
+  }, [getMemberData]);
 
   const updateMemberInState = (
     userID: string,

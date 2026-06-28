@@ -1,5 +1,6 @@
 import { ApplicationHandleResult } from "@openim/wasm-client-sdk";
 import { GroupApplicationItem } from "@openim/wasm-client-sdk/lib/types/entity";
+import { Empty, Spin } from "antd";
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Virtuoso } from "react-virtuoso";
@@ -50,6 +51,9 @@ export const GroupNotifications = () => {
   );
   const ensureGroupApplicationsLoaded = useContactStore(
     (state) => state.ensureGroupApplicationsLoaded,
+  );
+  const groupApplicationsLoading = useContactStore(
+    (state) => state.contactDataLoading.groupApplications,
   );
 
   useEffect(() => {
@@ -132,19 +136,25 @@ export const GroupNotifications = () => {
         {t("placeholder.groupNotification")}
       </p>
       <div className="flex-1 pb-3">
-        <Virtuoso
-          className="h-full overflow-x-hidden"
-          data={groupApplicationList}
-          itemContent={(_, item) => (
-            <ApplicationItem
-              key={`${item.userID}${item.reqTime}`}
-              source={item}
-              currentUserID={currentUserID}
-              onAccept={onAccept as AccessFunction}
-              onReject={onReject as AccessFunction}
-            />
-          )}
-        />
+        {groupApplicationsLoading ? (
+          <Spin className="mt-[30%] w-full" />
+        ) : groupApplicationList.length === 0 ? (
+          <Empty className="mt-[30%]" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        ) : (
+          <Virtuoso
+            className="h-full overflow-x-hidden"
+            data={groupApplicationList}
+            itemContent={(_, item) => (
+              <ApplicationItem
+                key={`${item.userID}${item.reqTime}`}
+                source={item}
+                currentUserID={currentUserID}
+                onAccept={onAccept as AccessFunction}
+                onReject={onReject as AccessFunction}
+              />
+            )}
+          />
+        )}
       </div>
     </div>
   );

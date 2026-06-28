@@ -25,6 +25,7 @@ import { useConversationToggle } from "@/hooks/useConversationToggle";
 import { OverlayVisibleHandle, useOverlayVisible } from "@/hooks/useOverlayVisible";
 import { IMSDK } from "@/layout/MainContentWrap";
 import { FileWithPath } from "@/pages/chat/queryChat/ChatFooter/SendActionBar/useFileMessage";
+import { useConversationStore } from "@/store";
 import { useContactStore } from "@/store/contact";
 import {
   BusinessRecord,
@@ -224,7 +225,19 @@ const getJoinedSDKGroupList = async () => {
       }
     }
   } catch (error) {
-    console.debug("Skipped SDK joined group list when resolving created group", error);
+    console.debug(
+      "Skipped SDK joined group list page when resolving created group",
+      error,
+    );
+    try {
+      const { data } = await IMSDK.getJoinedGroupList();
+      return data ?? [];
+    } catch (fallbackError) {
+      console.debug(
+        "Skipped SDK joined group list fallback when resolving created group",
+        fallbackError,
+      );
+    }
   }
 
   return groups;
@@ -252,8 +265,6 @@ const resolveCreatedSDKGroupID = async (businessPayload: unknown) => {
   const openIMGroupID = pickCreatedBusinessValue(businessPayload, openIMGroupIDKeys);
   const businessRoomID = pickCreatedBusinessValue(businessPayload, businessRoomIDKeys);
 
-  await useContactStore.getState().ensureGroupListLoaded(true);
-
   const candidates = Array.from(
     new Set(
       [openIMGroupID, ...getStoredGroupIDCandidates(businessRoomID), businessRoomID]
@@ -262,15 +273,34 @@ const resolveCreatedSDKGroupID = async (businessPayload: unknown) => {
     ),
   );
 
-  const joinedGroups = await getJoinedSDKGroupList();
-  const joinedGroupID = candidates
-    .map(
-      (candidate) =>
-        joinedGroups.find((group) => isSameID(group.groupID, candidate))?.groupID,
-    )
-    .find(Boolean);
+  let joinedGroupID = "";
+
+  for (let retry = 0; retry < 5; retry += 1) {
+    if (retry > 0) {
+      await wait(700);
+    }
+
+    const joinedGroups = await getJoinedSDKGroupList();
+    joinedGroupID =
+      candidates
+        .map(
+          (candidate) =>
+            joinedGroups.find((group) => isSameID(group.groupID, candidate))?.groupID,
+        )
+        .find(Boolean) ?? "";
+
+    if (joinedGroupID) {
+      break;
+    }
+  }
 
   if (joinedGroupID) {
+    await useContactStore
+      .getState()
+      .ensureGroupListLoaded(true, { silent: true })
+      .catch((error) => {
+        console.debug("refresh group list after business create failed", error);
+      });
     return joinedGroupID;
   }
 
@@ -295,8 +325,127 @@ const getGroupChooseExtraData = (value: unknown): GroupChooseExtraData => {
   };
 };
 
+const selectedOpenIMUserIDKeys = [
+  "openIMUserID",
+  "openIMUserId",
+  "openimUserID",
+  "openimUserId",
+  "openImUserID",
+  "openImUserId",
+  "userID",
+  "userId",
+];
+
+const getSelectedUserID = (item: CheckListItem) => {
+  const record = item as CheckListItem & BusinessRecord;
+  return (
+    selectedOpenIMUserIDKeys
+      .map((key) => normalizeChooseText(record[key]))
+      .find(Boolean) ?? ""
+  );
+};
+
 const getSelectedUserIDs = (choosedList: CheckListItem[]) =>
-  choosedList.map((item) => normalizeChooseText(item.userID)).filter(Boolean);
+  Array.from(new Set(choosedList.map(getSelectedUserID).filter(Boolean)));
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const createSDKGroup = async (
+  groupBaseInfo: { groupName: string; groupAvatar: string },
+  memberUserIDs: string[],
+) => {
+  const { data: createdGroup } = await IMSDK.createGroup({
+    groupInfo: {
+      groupType: GroupType.WorkingGroup,
+      groupName: groupBaseInfo.groupName,
+      faceURL: groupBaseInfo.groupAvatar,
+    },
+    memberUserIDs,
+    adminUserIDs: [],
+  });
+  const sdkCreatedGroupID = normalizeChooseText(createdGroup.groupID);
+
+  if (!sdkCreatedGroupID) {
+    throw new Error(t("toast.updateGroupInfoFailed"));
+  }
+
+  await useContactStore
+    .getState()
+    .ensureGroupListLoaded(true, { silent: true })
+    .catch((error) => {
+      console.debug("refresh group list after SDK create failed", error);
+    });
+
+  return sdkCreatedGroupID;
+};
+
+const ensureUsersJoinedGroup = async (groupID: string, userIDList: string[]) => {
+  const normalizedUserIDs = userIDList.map(normalizeChooseText).filter(Boolean);
+  let joinedUserIDs = [] as string[];
+
+  for (let retry = 0; retry < 5; retry += 1) {
+    if (retry > 0) {
+      await wait(700);
+    }
+
+    const { data } = await IMSDK.getUsersInGroup({
+      groupID,
+      userIDList: normalizedUserIDs,
+    });
+    joinedUserIDs = (data ?? []).map(normalizeChooseText);
+
+    const allJoined = normalizedUserIDs.every((userID) =>
+      joinedUserIDs.some((joinedUserID) => isSameID(joinedUserID, userID)),
+    );
+    if (allJoined) {
+      return;
+    }
+  }
+
+  const missingUserIDs = normalizedUserIDs.filter(
+    (userID) => !joinedUserIDs.some((joinedUserID) => isSameID(joinedUserID, userID)),
+  );
+  throw new Error(`${t("toast.updateGroupInfoFailed")} ${missingUserIDs.join(", ")}`);
+};
+
+const inviteUsersToSDKGroup = async (groupID: string, userIDList: string[]) => {
+  const normalizedUserIDs = userIDList.map(normalizeChooseText).filter(Boolean);
+  if (!groupID || !normalizedUserIDs.length) {
+    throw new Error(t("toast.updateGroupInfoFailed"));
+  }
+
+  let inviteError: unknown;
+  try {
+    await IMSDK.inviteUserToGroup({
+      groupID,
+      userIDList: normalizedUserIDs,
+      reason: "",
+    });
+  } catch (error) {
+    inviteError = error;
+    console.debug("inviteUserToGroup failed, verify group members next", error);
+  }
+
+  try {
+    await ensureUsersJoinedGroup(groupID, normalizedUserIDs);
+  } catch (verifyError) {
+    throw inviteError ?? verifyError;
+  }
+
+  await useContactStore
+    .getState()
+    .ensureGroupListLoaded(true, { silent: true })
+    .catch((error) => {
+      console.debug("refresh group list after invite failed", error);
+    });
+
+  const conversationStore = useConversationStore.getState();
+  if (isSameID(conversationStore.currentConversation?.groupID, groupID)) {
+    await conversationStore.getCurrentGroupInfoByReq(groupID).catch((error) => {
+      console.debug("refresh current group info after invite failed", error);
+    });
+  }
+};
 
 const getForwardMessagePayload = (response: unknown) => {
   const payload = unwrapBusinessPayload(response);
@@ -466,33 +615,28 @@ export const ChooseContact: FC<ChooseContactProps> = ({
 
           if (!shouldFallbackToSDK) {
             if (createdGroupID) {
+              await inviteUsersToSDKGroup(createdGroupID, memberUserIDs);
               await toSpecifiedConversation({
                 sourceID: createdGroupID,
                 sessionType: SessionType.WorkingGroup,
               });
             } else {
-              feedbackToast({ msg: t("toast.accessSuccess") });
+              shouldFallbackToSDK = true;
+              console.debug(
+                "createBusinessGroup succeeded, but no joined SDK group was found",
+              );
             }
           }
 
           if (shouldFallbackToSDK) {
-            const { data: createdGroup } = await IMSDK.createGroup({
-              groupInfo: {
-                groupType: GroupType.WorkingGroup,
-                groupName: groupBaseInfo.groupName,
-                faceURL: groupBaseInfo.groupAvatar,
-              },
+            const sdkCreatedGroupID = await createSDKGroup(
+              groupBaseInfo,
               memberUserIDs,
-              adminUserIDs: [],
+            );
+            await toSpecifiedConversation({
+              sourceID: sdkCreatedGroupID,
+              sessionType: SessionType.WorkingGroup,
             });
-            const sdkCreatedGroupID = normalizeChooseText(createdGroup.groupID);
-
-            if (sdkCreatedGroupID) {
-              await toSpecifiedConversation({
-                sourceID: sdkCreatedGroupID,
-                sessionType: SessionType.WorkingGroup,
-              });
-            }
           }
           break;
         }
@@ -504,11 +648,8 @@ export const ChooseContact: FC<ChooseContactProps> = ({
             break;
           }
 
-          await IMSDK.inviteUserToGroup({
-            groupID,
-            userIDList,
-            reason: "",
-          });
+          await inviteUsersToSDKGroup(groupID, userIDList);
+          emit("REFRESH_GROUP_MEMBERS");
           break;
         }
         case "KICK_FORM_GROUP": {

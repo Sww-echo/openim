@@ -63,7 +63,14 @@ export const useUserStore = create<UserStore>()((set, get) => ({
     set((state) => ({ selfInfo: { ...state.selfInfo, ...info } }));
   },
   clearUserRuntimeState: () => {
-    set({ selfInfo: {} as BusinessUserInfo, progress: 0 });
+    set({
+      selfInfo: {} as BusinessUserInfo,
+      progress: 0,
+      syncState: "success",
+      reinstall: true,
+      isLogining: false,
+      connectState: "success",
+    });
   },
   updateAppSettings: (settings: Partial<AppSettings>) => {
     if (settings.locale) {
@@ -76,7 +83,14 @@ export const useUserStore = create<UserStore>()((set, get) => ({
       await IMSDK.logout();
     }
     await clearIMProfile();
-    set({ selfInfo: {} as BusinessUserInfo, progress: 0, isLogining: false });
+    set({
+      selfInfo: {} as BusinessUserInfo,
+      progress: 0,
+      syncState: "success",
+      reinstall: true,
+      isLogining: false,
+      connectState: "success",
+    });
     useContactStore.getState().clearContactStore();
     useConversationStore.getState().clearConversationStore();
     router.navigate("/login");

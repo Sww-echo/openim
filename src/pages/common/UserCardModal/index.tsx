@@ -32,6 +32,7 @@ import {
 } from "@/api/friend";
 import { getLegacyGroupMember, getLegacyGroupMemberInviterInfo } from "@/api/group";
 import {
+  BusinessAllowType,
   BusinessUserInfo,
   getBusinessUserBindInfo,
   getBusinessUserInfo,
@@ -479,8 +480,13 @@ const UserCardModal: ForwardRefRenderFunction<
   };
 
   const cardTargetUserID = toBusinessText(cardInfo?.userID ?? targetUserID).trim();
+  const allowAddFriend = Number(cardInfo?.allowAddFriend) === BusinessAllowType.Allow;
   const showAddFriend =
-    Boolean(cardInfo && cardTargetUserID) && !isFriendUser && !isSelf && !notAdd;
+    Boolean(cardInfo && cardTargetUserID) &&
+    allowAddFriend &&
+    !isFriendUser &&
+    !isSelf &&
+    !notAdd;
 
   return (
     <DraggableModalWrap

@@ -7,7 +7,7 @@ import { UploadRequestOption } from "rc-upload/lib/interface";
 import { memo, ReactNode, useState } from "react";
 import React from "react";
 
-import { message as antdMessage, modal } from "@/AntdGlobalComp";
+import { message as antdMessage } from "@/AntdGlobalComp";
 import {
   getBusinessFileFromMessageEx,
   getBusinessFileId,
@@ -236,19 +236,7 @@ const SendActionBar = ({
   };
 
   const fileHandle = (options: UploadRequestOption, actionKey: UploadActionKey) => {
-    if (actionKey !== "video") {
-      void runFileHandle(options, actionKey);
-      return;
-    }
-
-    modal.confirm({
-      title: t("placeholder.send"),
-      content: t("placeholder.confirmUploadAndSendFile"),
-      onOk: () => {
-        void runFileHandle(options, actionKey);
-      },
-      onCancel: () => options.onError?.(new Error("Upload canceled")),
-    });
+    void runFileHandle(options, actionKey);
   };
 
   return (

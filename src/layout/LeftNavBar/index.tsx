@@ -7,7 +7,11 @@ import ImageResizer from "react-image-file-resizer";
 import { UNSAFE_NavigationContext, useResolvedPath } from "react-router-dom";
 
 import { modal } from "@/AntdGlobalComp";
-import { updateBusinessUserInfo } from "@/api/login";
+import {
+  normalizeOpenIMTokenProfile,
+  refreshOpenIMToken,
+  updateBusinessUserInfo,
+} from "@/api/login";
 import contact_icon from "@/assets/images/nav/nav_bar_contact.png";
 import contact_icon_active from "@/assets/images/nav/nav_bar_contact_active.png";
 import message_icon from "@/assets/images/nav/nav_bar_message.png";
@@ -22,7 +26,10 @@ import { uploadFile } from "@/utils/imCommon";
 import {
   getCurrentAccountKey,
   getSavedAccounts,
+  setAreaCode,
+  setPhoneNumber,
   switchIMProfile,
+  updateCurrentIMToken,
   WebSavedAccount,
 } from "@/utils/storage";
 
@@ -69,6 +76,18 @@ const resizeFile = (file: File): Promise<File> =>
       "file",
     );
   });
+
+const tokenExpiredCodeList = new Set([1501, 1503, 1504, 1505, 1507]);
+
+const isTokenExpiredError = (error: unknown) => {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const record = error as Record<string, unknown>;
+  const code = Number(record.errCode ?? record.resultCode ?? record.code);
+  return Number.isFinite(code) && tokenExpiredCodeList.has(code);
+};
 
 type NavItemType = (typeof NavList)[0];
 
@@ -200,6 +219,7 @@ const LeftNavBar = memo(() => {
   const userLogout = useUserStore((state) => state.userLogout);
   const updateSelfInfo = useUserStore((state) => state.updateSelfInfo);
   const clearUserRuntimeState = useUserStore((state) => state.clearUserRuntimeState);
+  const updateIsLogining = useUserStore((state) => state.updateIsLogining);
 
   const refreshSavedAccounts = useCallback(async () => {
     const [accounts, accountKey] = await Promise.all([
@@ -259,9 +279,15 @@ const LeftNavBar = memo(() => {
     }
 
     setSwitchingAccountKey(account.accountKey);
+    updateIsLogining(true);
     try {
-      await IMSDK.logout().catch(() => undefined);
       await switchIMProfile(account.accountKey);
+      const response = await refreshOpenIMToken({ skipAuthLogout: true });
+      const responsePayload = (response as { data?: unknown }).data ?? response;
+      const tokenProfile = normalizeOpenIMTokenProfile(responsePayload, account.userID);
+      await updateCurrentIMToken(tokenProfile.imToken, tokenProfile.userID);
+
+      await IMSDK.logout().catch(() => undefined);
       clearUserRuntimeState();
       useContactStore.getState().clearContactStore();
       useConversationStore.getState().clearConversationStore();
@@ -269,7 +295,26 @@ const LeftNavBar = memo(() => {
       window.location.hash = "#/chat";
       window.location.reload();
     } catch (error) {
-      feedbackToast({ error });
+      if (account.areaCode) {
+        setAreaCode(account.areaCode);
+      }
+      if (account.phoneNumber || account.account) {
+        setPhoneNumber(account.phoneNumber || account.account || "");
+      }
+      if (isTokenExpiredError(error)) {
+        feedbackToast({
+          msg: t("toast.loginExpiration"),
+          error: t("toast.loginExpiration"),
+        });
+      } else {
+        feedbackToast({ error });
+      }
+      await IMSDK.logout().catch(() => undefined);
+      clearUserRuntimeState();
+      useContactStore.getState().clearContactStore();
+      useConversationStore.getState().clearConversationStore();
+      setShowProfile(false);
+      await userLogout(true);
     } finally {
       setSwitchingAccountKey(undefined);
     }

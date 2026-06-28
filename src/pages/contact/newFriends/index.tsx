@@ -1,10 +1,10 @@
 import { ApplicationHandleResult } from "@openim/wasm-client-sdk";
 import { FriendApplicationItem } from "@openim/wasm-client-sdk/lib/types/entity";
+import { Empty, Spin } from "antd";
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Virtuoso } from "react-virtuoso";
 
-import { addBusinessFriend } from "@/api/friend";
 import ApplicationItem, { AccessFunction } from "@/components/ApplicationItem";
 import { IMSDK } from "@/layout/MainContentWrap";
 import { useUserStore } from "@/store";
@@ -33,6 +33,9 @@ export const NewFriends = () => {
   const ensureFriendApplicationsLoaded = useContactStore(
     (state) => state.ensureFriendApplicationsLoaded,
   );
+  const friendApplicationsLoading = useContactStore(
+    (state) => state.contactDataLoading.friendApplications,
+  );
 
   useEffect(() => {
     void ensureFriendApplicationsLoaded(true);
@@ -52,15 +55,10 @@ export const NewFriends = () => {
       }
 
       try {
-        await addBusinessFriend(targetUserID);
-        try {
-          await IMSDK.acceptFriendApplication({
-            toUserID: targetUserID,
-            handleMsg: "",
-          });
-        } catch (error) {
-          console.debug("acceptFriendApplication skipped", error);
-        }
+        await IMSDK.acceptFriendApplication({
+          toUserID: targetUserID,
+          handleMsg: "",
+        });
         const newApplication = {
           ...application,
           handleResult: ApplicationHandleResult.Agree,
@@ -105,28 +103,34 @@ export const NewFriends = () => {
         feedbackToast({ error });
       }
     },
-    [],
+    [t, updateRecvFriendApplication, updateSendFriendApplication],
   );
 
   return (
     <div className="flex h-full w-full flex-col bg-white">
       <p className="m-5.5 text-base font-extrabold">{t("placeholder.newFriends")}</p>
       <div className="flex-1 pb-3">
-        <Virtuoso
-          className="h-full overflow-x-hidden"
-          data={friendApplicationList}
-          itemContent={(_, item) => (
-            <ApplicationItem
-              key={`${
-                currentUserID === item.fromUserID ? item.toUserID : item.fromUserID
-              }${item.createTime}`}
-              source={item}
-              currentUserID={currentUserID}
-              onAccept={onAccept as AccessFunction}
-              onReject={onReject as AccessFunction}
-            />
-          )}
-        />
+        {friendApplicationsLoading ? (
+          <Spin className="mt-[30%] w-full" />
+        ) : friendApplicationList.length === 0 ? (
+          <Empty className="mt-[30%]" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        ) : (
+          <Virtuoso
+            className="h-full overflow-x-hidden"
+            data={friendApplicationList}
+            itemContent={(_, item) => (
+              <ApplicationItem
+                key={`${
+                  currentUserID === item.fromUserID ? item.toUserID : item.fromUserID
+                }${item.createTime}`}
+                source={item}
+                currentUserID={currentUserID}
+                onAccept={onAccept as AccessFunction}
+                onReject={onReject as AccessFunction}
+              />
+            )}
+          />
+        )}
       </div>
     </div>
   );
