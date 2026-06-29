@@ -66,6 +66,8 @@ const ChatFooter: ForwardRefRenderFunction<unknown, unknown> = () => {
   });
   const html = draftKey && draftState.key === draftKey ? draftState.html : "";
   const latestHtml = useLatest(html);
+  const [sending, setSending] = useState(false);
+  const latestSending = useLatest(sending);
 
   const { getImageMessage, getVideoMessage, getFileMessage } = useFileMessage();
   const { sendMessage } = useSendMessage();
@@ -121,16 +123,27 @@ const ChatFooter: ForwardRefRenderFunction<unknown, unknown> = () => {
   };
 
   const sendTextMessage = async (cleanText: string) => {
-    const message = (await IMSDK.createTextMessage(cleanText)).data;
-    const didStartSend = await sendMessage({ message });
+    if (latestSending.current) {
+      return;
+    }
 
-    if (didStartSend && draftKey) {
-      await removeAccountScopedItem(draftKey);
-      setDraftState({ key: draftKey, html: "" });
+    try {
+      setSending(true);
+      const message = (await IMSDK.createTextMessage(cleanText)).data;
+      const didStartSend = await sendMessage({ message });
+
+      if (didStartSend && draftKey) {
+        await removeAccountScopedItem(draftKey);
+        setDraftState({ key: draftKey, html: "" });
+      }
+    } finally {
+      setSending(false);
     }
   };
 
   const enterToSend = () => {
+    if (latestSending.current) return;
+
     const cleanText = getCleanText(latestHtml.current ?? "");
     if (!cleanText) return;
 
@@ -150,7 +163,13 @@ const ChatFooter: ForwardRefRenderFunction<unknown, unknown> = () => {
         <div className="relative flex flex-1 flex-col overflow-hidden">
           <CKEditor value={html} onEnter={enterToSend} onChange={onChange} />
           <div className="flex items-center justify-end py-2 pr-3">
-            <Button className="w-fit px-6 py-1" type="primary" onClick={enterToSend}>
+            <Button
+              className="w-fit px-6 py-1"
+              type="primary"
+              loading={sending}
+              disabled={!getCleanText(html)}
+              onClick={enterToSend}
+            >
               {t("placeholder.send")}
             </Button>
           </div>

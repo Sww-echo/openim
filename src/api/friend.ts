@@ -505,6 +505,31 @@ export const searchPublicBusinessUsers = async (keyword: string) => {
   };
 };
 
+export const searchNearbyBusinessUsers = async (keyword: string) => {
+  const normalizedKeyword = normalizeBusinessText(keyword);
+  if (!normalizedKeyword) {
+    return {
+      total: 0,
+      users: [],
+    };
+  }
+
+  const response = await businessRequest.get<FriendSearchPayload>("/nearby/user", {
+    params: {
+      nickname: normalizedKeyword,
+      pageIndex: 0,
+      pageSize: 20,
+    },
+    timeout: 6000,
+  });
+  const normalized = normalizeUserList(response);
+
+  return {
+    total: normalized.total,
+    users: normalized.users.filter(hasUserID),
+  };
+};
+
 const uniqueBusinessUsers = (users: BusinessUserInfo[]) => {
   const userMap = new Map<string, BusinessUserInfo>();
 
@@ -535,6 +560,13 @@ export const searchUserForAddFriend = async (
   }
 
   const users: BusinessUserInfo[] = [];
+
+  try {
+    const nearbySearch = await searchNearbyBusinessUsers(normalizedKeyword);
+    users.push(...nearbySearch.users);
+  } catch (error) {
+    console.debug("search nearby business users failed", normalizedKeyword, error);
+  }
 
   try {
     const publicSearch = await searchPublicBusinessUsers(normalizedKeyword);

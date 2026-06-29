@@ -119,7 +119,7 @@ const SearchUserOrGroup: ForwardRefRenderFunction<
           data: { total, users },
         } = await searchUserForAddFriend(keyword);
         setLoading(false);
-        const targetUser = users.find(isKeywordMatchedUser);
+        const targetUser = users.find(isKeywordMatchedUser) ?? users[0];
         if (!total || !targetUser) {
           message.warning(t("empty.noSearchResults"));
           return;
