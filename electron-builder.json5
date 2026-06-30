@@ -3,7 +3,7 @@
  */
 {
   appId: "io.opencorp.desktop.base",
-  productName: "OpenCorp-Base",
+  productName: "羽信",
   asar: true,
   asarUnpack: ["**/*.node"],
   extends: null,
@@ -89,6 +89,6 @@
     createDesktopShortcut: true,
     createStartMenuShortcut: true,
     deleteAppDataOnUninstall: true,
-    shortcutName: "OpenCorp-Base",
+    shortcutName: "羽信",
   }
 }

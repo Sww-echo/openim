@@ -7,7 +7,7 @@ import { t } from "i18next";
 import { forwardRef, ForwardRefRenderFunction, memo, useEffect, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
-import logo from "@/assets/images/profile/logo.png";
+import yulogo from "@/assets/images/yulogo.jpg";
 import { APP_NAME, APP_VERSION, SDK_VERSION } from "@/config";
 import { feedbackToast } from "@/utils/common";
 
@@ -150,7 +150,7 @@ export const AboutContent = ({ closeOverlay }: { closeOverlay?: () => void }) =>
           />
         </div>
         <div className="flex flex-col items-center justify-center">
-          <img className="mb-2 mt-7" width={56} src={logo} alt="" />
+          <img className="mb-2 mt-7 h-14 w-14 object-contain" src={yulogo} alt="" />
           <div
             className="mb-5 flex cursor-pointer flex-col items-center"
             onClick={handleCopy}
