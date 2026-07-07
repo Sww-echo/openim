@@ -1,12 +1,9 @@
 import { t } from "i18next";
 import { useState } from "react";
-import { useCopyToClipboard } from "react-use";
 
 import brandLogo from "@/assets/images/log.jpg";
 import login_bg from "@/assets/images/login/login_bg.png";
 import WindowControlBar from "@/components/WindowControlBar";
-import { APP_NAME, APP_VERSION, SDK_VERSION } from "@/config";
-import { feedbackToast } from "@/utils/common";
 
 import styles from "./index.module.scss";
 import LoginForm from "./LoginForm";
@@ -19,17 +16,10 @@ export const Login = () => {
   // 0login 1resetPassword 2register
   const [formType, setFormType] = useState<FormType>(0);
 
-  const [_, copyToClipboard] = useCopyToClipboard();
-
-  const handleCopy = () => {
-    copyToClipboard(`${`${APP_NAME} ${APP_VERSION}`}/${SDK_VERSION}`);
-    feedbackToast({ msg: t("toast.copySuccess") });
-  };
-
   const loginPanelClass = [
     styles.login,
     "mr-14 w-[350px] rounded-md p-11",
-    formType === 2 ? "h-auto max-h-[calc(100vh-96px)] overflow-y-auto" : "h-[450px]",
+    formType === 2 ? "h-auto max-h-[calc(100vh-96px)] overflow-y-auto" : "h-[500px]",
   ].join(" ");
 
   return (
@@ -47,13 +37,6 @@ export const Login = () => {
           {formType === 1 && <ModifyForm setFormType={setFormType} />}
           {formType === 2 && <RegisterForm setFormType={setFormType} />}
         </div>
-      </div>
-      <div
-        className="absolute bottom-3 right-3 flex cursor-pointer flex-col items-center text-xs"
-        onClick={handleCopy}
-      >
-        <div className="text-[var(--sub-text)]">{`${APP_NAME} ${APP_VERSION}`}</div>
-        <div className="text-[var(--sub-text)]">{SDK_VERSION}</div>
       </div>
     </div>
   );
