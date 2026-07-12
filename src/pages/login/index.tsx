@@ -1,7 +1,6 @@
 import { t } from "i18next";
 import { useState } from "react";
 
-import brandLogo from "@/assets/images/log.jpg";
 import login_bg from "@/assets/images/login/login_bg.png";
 import WindowControlBar from "@/components/WindowControlBar";
 
@@ -46,7 +45,6 @@ const LeftBar = () => {
   return (
     <div className="flex min-h-[420]">
       <div className="mr-14 text-center">
-        <img className="mx-auto mb-4 h-16 w-16 object-contain" src={brandLogo} alt="" />
         <div className="text-2xl">{t("placeholder.title")}</div>
         <span className="text-sm  text-gray-400">{t("placeholder.subTitle")}</span>
         <img src={login_bg} alt="login_bg" />
