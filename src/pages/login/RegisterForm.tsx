@@ -69,7 +69,7 @@ const RegisterForm = ({ setFormType }: RegisterFormProps) => {
   const { data: registrationConfig, isLoading: registrationConfigLoading } =
     useRegistrationConfig(normalizeEnterpriseCode(enterpriseCodeValue));
 
-  const registrationMethods = registrationConfig?.registrationMethods ?? [];
+  const registrationMethods = registrationConfig?.registrationMethods ?? ["phone"];
   const passwordRegistrationAllowed =
     registrationConfig?.passwordRegistrationAllowed ?? true;
   const verificationRegistrationRequired = !passwordRegistrationAllowed;
@@ -106,16 +106,14 @@ const RegisterForm = ({ setFormType }: RegisterFormProps) => {
       setPhoneNumber(fields.phoneNumber);
     }
 
-    if (verificationRegistrationRequired) {
-      if (!availableRegisterMethods.length) {
-        return message.error(t("toast.verificationRegistrationUnsupported"));
-      }
-      if (selectedRegisterMethod === "phone" && !phoneRegistrationAllowed) {
-        return message.error(t("toast.phoneRegistrationUnsupported"));
-      }
-      if (selectedRegisterMethod === "email" && !emailRegistrationAllowed) {
-        return message.error(t("toast.emailRegistrationUnsupported"));
-      }
+    if (!availableRegisterMethods.length) {
+      return message.error(t("toast.verificationRegistrationUnsupported"));
+    }
+    if (selectedRegisterMethod === "phone" && !phoneRegistrationAllowed) {
+      return message.error(t("toast.phoneRegistrationUnsupported"));
+    }
+    if (selectedRegisterMethod === "email" && !emailRegistrationAllowed) {
+      return message.error(t("toast.emailRegistrationUnsupported"));
     }
     if (verificationRegistrationRequired && !fields.verifyCode?.trim()) {
       return message.error(t("toast.inputVerifyCode"));
@@ -249,7 +247,7 @@ const RegisterForm = ({ setFormType }: RegisterFormProps) => {
           registerMethod: "phone",
         }}
       >
-        {verificationRegistrationRequired && availableRegisterMethods.length > 1 && (
+        {availableRegisterMethods.length > 1 && (
           <Form.Item label={t("placeholder.register")} name="registerMethod">
             <Select options={availableRegisterMethods} />
           </Form.Item>
@@ -268,7 +266,7 @@ const RegisterForm = ({ setFormType }: RegisterFormProps) => {
           </Form.Item>
         )}
 
-        {verificationRegistrationRequired && selectedRegisterMethod === "email" && (
+        {selectedRegisterMethod === "email" && (
           <Form.Item
             label={t("placeholder.email")}
             name="email"
