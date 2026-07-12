@@ -1,5 +1,5 @@
 import { t } from "i18next";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { v4 as uuidv4 } from "uuid";
 
 import {
@@ -13,7 +13,7 @@ import { errorHandle } from "./errorHandle";
 
 const platform = window.electronAPI?.getPlatform() ?? 5;
 
-export const DEFAULT_ENTERPRISE_CODE = "LOCALTEST001";
+export const DEFAULT_ENTERPRISE_CODE = "ENT-619057BE";
 
 const normalizeAuthText = (value: unknown) =>
   typeof value === "string" || typeof value === "number" ? String(value).trim() : "";
@@ -26,6 +26,34 @@ const normalizeOptionalAuthText = (value: unknown) =>
 
 const normalizeEnterpriseCodeText = (value: unknown) =>
   normalizeAuthText(value) || DEFAULT_ENTERPRISE_CODE;
+
+const normalizeBoolean = (value: unknown, fallback: boolean) => {
+  if (typeof value === "boolean") {
+    return value;
+  }
+  if (typeof value === "number") {
+    return value !== 0;
+  }
+  if (typeof value === "string") {
+    const normalizedValue = value.trim().toLowerCase();
+    if (["true", "1", "yes"].includes(normalizedValue)) {
+      return true;
+    }
+    if (["false", "0", "no"].includes(normalizedValue)) {
+      return false;
+    }
+  }
+
+  return fallback;
+};
+
+const normalizeRegistrationMethods = (value: unknown) => {
+  if (Array.isArray(value)) {
+    return value.map(normalizeAuthText).filter(Boolean);
+  }
+  const text = normalizeAuthText(value);
+  return text ? text.split(",").map(normalizeAuthText).filter(Boolean) : [];
+};
 
 const getAreaCode = (code?: string) => {
   const normalizedCode = normalizeAuthText(code);
@@ -49,7 +77,6 @@ const normalizeAccountCodeParams = <
   params: T,
 ) => {
   const {
-    email: _email,
     enterpriseCode: _enterpriseCode,
     invitationCode: _invitationCode,
     verifyCode: rawVerifyCode,
@@ -57,13 +84,16 @@ const normalizeAccountCodeParams = <
   } = params as T & { verifyCode?: string };
 
   const verifyCode = normalizeOptionalAuthText(rawVerifyCode);
+  const email = normalizeOptionalAuthText(params.email);
+  const phoneNumber = normalizeAuthText(params.phoneNumber);
 
   return {
     ...restParams,
     enterpriseCode: normalizeEnterpriseCodeText(params.enterpriseCode),
     areaCode: getAreaCode(params.areaCode),
-    phoneNumber: normalizeAuthText(params.phoneNumber),
-    telephone: normalizeAuthText(params.phoneNumber),
+    ...(email ? { email } : {}),
+    phoneNumber,
+    telephone: phoneNumber,
     ...(verifyCode ? { verifyCode } : {}),
   };
 };
@@ -90,14 +120,16 @@ const normalizeRegisterParams = (params: API.Login.DemoRegisterType) => {
   const {
     enterpriseCode: _enterpriseCode,
     invitationCode: _invitationCode,
-    verifyCode: _verifyCode,
+    verifyCode: rawVerifyCode,
     ...restParams
   } = params;
   const phoneNumber = normalizeAuthText(params.user.phoneNumber);
+  const verifyCode = normalizeOptionalAuthText(rawVerifyCode);
 
   return {
     ...restParams,
     enterpriseCode: normalizeEnterpriseCodeText(params.enterpriseCode),
+    ...(verifyCode ? { verifyCode } : {}),
     user: {
       ...params.user,
       nickname: normalizeAuthText(params.user.nickname),
@@ -192,6 +224,55 @@ export interface LoginSuccessData {
   };
 }
 
+export interface RegistrationConfig {
+  registrationVerificationRequired: boolean;
+  registrationMethods: string[];
+  passwordRegistrationAllowed: boolean;
+}
+
+const normalizeRegistrationConfig = (response: unknown): RegistrationConfig => {
+  const payload = unwrapBusinessPayload(response);
+  const record = isBusinessRecord(payload) ? payload : {};
+
+  return {
+    registrationVerificationRequired: normalizeBoolean(
+      record.registrationVerificationRequired,
+      false,
+    ),
+    registrationMethods: normalizeRegistrationMethods(record.registrationMethods),
+    passwordRegistrationAllowed: normalizeBoolean(
+      record.passwordRegistrationAllowed,
+      true,
+    ),
+  };
+};
+
+export const getRegistrationConfig = async (enterpriseCode?: string) => {
+  const normalizedEnterpriseCode = normalizeOptionalAuthText(enterpriseCode);
+  const response = await businessRequest.get("/config", {
+    params: normalizedEnterpriseCode
+      ? {
+          enterpriseCode: normalizedEnterpriseCode,
+        }
+      : undefined,
+  });
+
+  return normalizeRegistrationConfig(response);
+};
+
+export const useRegistrationConfig = (enterpriseCode?: string) => {
+  const normalizedEnterpriseCode = normalizeOptionalAuthText(enterpriseCode);
+
+  return useQuery(
+    ["registrationConfig", normalizedEnterpriseCode],
+    () => getRegistrationConfig(normalizedEnterpriseCode),
+    {
+      retry: false,
+      staleTime: 30000,
+    },
+  );
+};
+
 export const normalizeIMProfile = (data: LoginSuccessData) => {
   const restrictionMessage = getAuthRestrictionMessage(data);
   if (restrictionMessage) {
@@ -251,7 +332,7 @@ export const useSendSms = () => {
   return useMutation(
     (params: API.Login.SendSmsParams) => {
       const normalizedParams = normalizeAccountCodeParams(params);
-      if (!normalizedParams.phoneNumber) {
+      if (!normalizedParams.phoneNumber && !normalizedParams.email) {
         return Promise.reject(new Error(t("toast.inputPhoneNumber")));
       }
 
@@ -273,7 +354,7 @@ export const useVerifyCode = () => {
   return useMutation(
     (params: API.Login.VerifyCodeParams) => {
       const normalizedParams = normalizeAccountCodeParams(params);
-      if (!normalizedParams.phoneNumber) {
+      if (!normalizedParams.phoneNumber && !normalizedParams.email) {
         return Promise.reject(new Error(t("toast.inputPhoneNumber")));
       }
       if (!normalizedParams.verifyCode) {
