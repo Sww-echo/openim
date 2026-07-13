@@ -14,6 +14,7 @@
     "dev": "vite --force --host",
     "dev:web": "vite --config vite.web.config.ts --host 127.0.0.1 --port 7777",
     "build": "vite build",
+    "build:web": "vite build --config vite.web.config.ts",
     "preview": "vite preview",
     "pree2e": "vite build --mode=test",
     "e2e": "playwright test",
