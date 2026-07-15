@@ -214,7 +214,7 @@ addCheck(
 addCheck(
   "ui e2e checks saved-account switch state",
   [
-    "OPENIM_E2E_ACCOUNT2_PHONE",
+    "OPENIM_E2E_ACCOUNT2_ACCOUNT",
     "OPENIM_E2E_ACCOUNT2_PASSWORD",
     'getByTestId("profile-menu-trigger")',
     '[data-testid="saved-account-switch"][data-account-key="${account1Profile?.userID}"]',
@@ -230,11 +230,11 @@ addCheck(
   "remote e2e dry-run lists saved-account UI env",
   [
     "Optional data for Web UI login and saved-account checks",
-    "OPENIM_E2E_ACCOUNT1_PHONE",
+    "OPENIM_E2E_ACCOUNT1_ACCOUNT",
     "OPENIM_E2E_ACCOUNT1_PASSWORD",
-    "OPENIM_E2E_ACCOUNT2_PHONE",
+    "OPENIM_E2E_ACCOUNT2_ACCOUNT",
     "OPENIM_E2E_ACCOUNT2_PASSWORD",
-    "Run npm run verify:web-api-ui with OPENIM_E2E_ACCOUNT2_PHONE",
+    "Run npm run verify:web-api-ui with OPENIM_E2E_ACCOUNT2_ACCOUNT",
   ].every((snippet) => contains(source.remoteE2e, snippet)),
   files.remoteE2e,
 );

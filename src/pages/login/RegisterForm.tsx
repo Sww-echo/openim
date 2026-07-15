@@ -1,128 +1,46 @@
 import { LeftOutlined } from "@ant-design/icons";
-import { App, Button, Form, Input, Select, Space } from "antd";
+import { App, Button, Form, Input } from "antd";
 import clsx from "clsx";
 import { t } from "i18next";
 import md5 from "md5";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import {
-  DEFAULT_ENTERPRISE_CODE,
-  normalizeIMProfile,
-  useRegister,
-  useRegistrationConfig,
-  useSendSms,
-} from "@/api/login";
-import { setAreaCode, setIMProfile, setPhoneNumber } from "@/utils/storage";
+import { DEFAULT_ENTERPRISE_CODE, normalizeIMProfile, useRegister } from "@/api/login";
+import { setAccount, setIMProfile } from "@/utils/storage";
 
-import { areaCode } from "./areaCode";
-import { normalizeEnterpriseCode, validateEnterpriseCodeInput } from "./enterpriseCode";
+import { validateEnterpriseCodeInput } from "./enterpriseCode";
 import type { FormType } from "./index";
-import { getPhoneNumberRules } from "./rules";
 
 type RegisterFormProps = {
   setFormType: (type: FormType) => void;
 };
 
-type RegisterMethod = "phone" | "email";
-
 type FormFields = {
-  phoneNumber?: string;
-  email?: string;
-  areaCode: string;
+  account: string;
   nickname: string;
   password: string;
   password2: string;
-  verifyCode?: string;
   enterpriseCode?: string;
-  registerMethod: RegisterMethod;
 };
-
-const phoneRegistrationMethods = new Set([
-  "phone",
-  "phone_number",
-  "phonenumber",
-  "telephone",
-  "mobile",
-  "sms",
-]);
-
-const emailRegistrationMethods = new Set(["email", "mail"]);
-
-const supportsPhoneRegistration = (methods: string[]) =>
-  methods.length === 0 ||
-  methods.some((method) => phoneRegistrationMethods.has(method.trim().toLowerCase()));
-
-const supportsEmailRegistration = (methods: string[]) =>
-  methods.length === 0 ||
-  methods.some((method) => emailRegistrationMethods.has(method.trim().toLowerCase()));
 
 const RegisterForm = ({ setFormType }: RegisterFormProps) => {
   const { message } = App.useApp();
   const [form] = Form.useForm<FormFields>();
-  const enterpriseCodeValue = Form.useWatch("enterpriseCode", form);
-  const registerMethod = Form.useWatch("registerMethod", form) ?? "phone";
-  const [countdown, setCountdown] = useState(0);
   const navigate = useNavigate();
-  const { mutate: register } = useRegister();
-  const { mutate: sendSms, isLoading: sendSmsLoading } = useSendSms();
-  const { data: registrationConfig, isLoading: registrationConfigLoading } =
-    useRegistrationConfig(normalizeEnterpriseCode(enterpriseCodeValue));
-
-  const registrationMethods = registrationConfig?.registrationMethods ?? ["phone"];
-  const passwordRegistrationAllowed =
-    registrationConfig?.passwordRegistrationAllowed ?? true;
-  const verificationRegistrationRequired = !passwordRegistrationAllowed;
-  const phoneRegistrationAllowed = supportsPhoneRegistration(registrationMethods);
-  const emailRegistrationAllowed = supportsEmailRegistration(registrationMethods);
-  const selectedRegisterMethod =
-    verificationRegistrationRequired &&
-    !phoneRegistrationAllowed &&
-    emailRegistrationAllowed
-      ? "email"
-      : registerMethod;
-  const availableRegisterMethods = [
-    ...(phoneRegistrationAllowed
-      ? [{ label: t("placeholder.phoneNumber"), value: "phone" }]
-      : []),
-    ...(emailRegistrationAllowed
-      ? [{ label: t("placeholder.email"), value: "email" }]
-      : []),
-  ];
-
-  useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => {
-        setCountdown((prevCountdown) => prevCountdown - 1);
-      }, 1000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [countdown]);
+  const { mutate: register, isLoading: registerLoading } = useRegister();
 
   const onFinish = async (fields: FormFields) => {
-    if (fields.phoneNumber) {
-      setAreaCode(fields.areaCode);
-      setPhoneNumber(fields.phoneNumber);
-    }
-
-    if (!availableRegisterMethods.length) {
-      return message.error(t("toast.verificationRegistrationUnsupported"));
-    }
-    if (selectedRegisterMethod === "phone" && !phoneRegistrationAllowed) {
-      return message.error(t("toast.phoneRegistrationUnsupported"));
-    }
-    if (selectedRegisterMethod === "email" && !emailRegistrationAllowed) {
-      return message.error(t("toast.emailRegistrationUnsupported"));
-    }
-    if (verificationRegistrationRequired && !fields.verifyCode?.trim()) {
-      return message.error(t("toast.inputVerifyCode"));
+    const account = fields.account.trim();
+    if (account) {
+      setAccount(account);
     }
 
     let enterpriseCode: string | undefined;
     let enterpriseName: string | undefined;
     try {
-      const enterpriseContext = await validateEnterpriseCodeInput(fields.enterpriseCode);
+      const enterpriseContext = await validateEnterpriseCodeInput(
+        fields.enterpriseCode,
+      );
       enterpriseCode = enterpriseContext?.enterpriseCode;
       enterpriseName = enterpriseContext?.enterpriseName;
     } catch (error) {
@@ -135,16 +53,10 @@ const RegisterForm = ({ setFormType }: RegisterFormProps) => {
       {
         autoLogin: true,
         enterpriseCode,
-        verifyCode: verificationRegistrationRequired ? fields.verifyCode : undefined,
         user: {
+          account,
           nickname: fields.nickname,
           faceURL: "",
-          account:
-            selectedRegisterMethod === "email" ? fields.email : fields.phoneNumber,
-          areaCode: fields.areaCode,
-          email: selectedRegisterMethod === "email" ? fields.email : undefined,
-          phoneNumber:
-            selectedRegisterMethod === "phone" ? fields.phoneNumber : undefined,
           password: md5(fields.password),
         },
       },
@@ -153,15 +65,11 @@ const RegisterForm = ({ setFormType }: RegisterFormProps) => {
           try {
             await setIMProfile({
               ...normalizeIMProfile(res.data),
-              account:
-                selectedRegisterMethod === "email" ? fields.email : fields.phoneNumber,
-              areaCode: fields.areaCode,
+              account,
               enterpriseCode,
               enterpriseName,
               faceURL: "",
               nickname: fields.nickname,
-              email: fields.email,
-              phoneNumber: fields.phoneNumber,
             });
             message.success(t("toast.registerSuccess"));
             navigate("/chat");
@@ -175,56 +83,8 @@ const RegisterForm = ({ setFormType }: RegisterFormProps) => {
     );
   };
 
-  const sendSmsHandle = () => {
-    if (countdown > 0 || sendSmsLoading) {
-      return;
-    }
-
-    const verifyFields =
-      selectedRegisterMethod === "email"
-        ? ["email", "enterpriseCode"]
-        : ["areaCode", "phoneNumber", "enterpriseCode"];
-
-    form
-      .validateFields(verifyFields)
-      .then(
-        async ({
-          areaCode,
-          email,
-          phoneNumber,
-          enterpriseCode,
-        }: Pick<
-          FormFields,
-          "areaCode" | "email" | "phoneNumber" | "enterpriseCode"
-        >) => {
-          const enterpriseContext = await validateEnterpriseCodeInput(enterpriseCode);
-
-          sendSms(
-            {
-              areaCode: selectedRegisterMethod === "phone" ? areaCode : "",
-              email: selectedRegisterMethod === "email" ? email : undefined,
-              enterpriseCode: enterpriseContext?.enterpriseCode,
-              phoneNumber: selectedRegisterMethod === "phone" ? phoneNumber : undefined,
-              usedFor: 1,
-            },
-            {
-              onSuccess() {
-                setCountdown(60);
-              },
-            },
-          );
-        },
-      )
-      .catch((error) => {
-        if (error instanceof Error) {
-          message.error(error.message);
-        }
-      });
-  };
-
   const back = () => {
     setFormType(0);
-    setCountdown(0);
     form.resetFields();
   };
 
@@ -244,43 +104,15 @@ const RegisterForm = ({ setFormType }: RegisterFormProps) => {
         onFinish={(fields) => void onFinish(fields)}
         autoComplete="off"
         className="mt-4"
-        initialValues={{
-          areaCode: "+86",
-          enterpriseCode: DEFAULT_ENTERPRISE_CODE,
-          registerMethod: "phone",
-        }}
+        initialValues={{ enterpriseCode: DEFAULT_ENTERPRISE_CODE }}
       >
-        {availableRegisterMethods.length > 1 && (
-          <Form.Item label={t("placeholder.register")} name="registerMethod">
-            <Select options={availableRegisterMethods} />
-          </Form.Item>
-        )}
-
-        {selectedRegisterMethod === "phone" && (
-          <Form.Item label={t("placeholder.phoneNumber")}>
-            <Space.Compact className="w-full">
-              <Form.Item name="areaCode" noStyle>
-                <Select options={areaCode} className="!w-28" />
-              </Form.Item>
-              <Form.Item name="phoneNumber" noStyle rules={getPhoneNumberRules()}>
-                <Input allowClear placeholder={t("toast.inputPhoneNumber")} />
-              </Form.Item>
-            </Space.Compact>
-          </Form.Item>
-        )}
-
-        {selectedRegisterMethod === "email" && (
-          <Form.Item
-            label={t("placeholder.email")}
-            name="email"
-            rules={[
-              { required: true, message: t("toast.inputEmail") },
-              { type: "email", message: t("toast.inputCorrectEmail") },
-            ]}
-          >
-            <Input allowClear spellCheck={false} placeholder={t("toast.inputEmail")} />
-          </Form.Item>
-        )}
+        <Form.Item
+          label={t("placeholder.account")}
+          name="account"
+          rules={[{ required: true, message: t("toast.inputAccount") }]}
+        >
+          <Input allowClear spellCheck={false} placeholder={t("toast.inputAccount")} />
+        </Form.Item>
 
         <Form.Item label={t("placeholder.enterpriseCode")} name="enterpriseCode">
           <Input
@@ -290,48 +122,10 @@ const RegisterForm = ({ setFormType }: RegisterFormProps) => {
           />
         </Form.Item>
 
-        {verificationRegistrationRequired && (
-          <Form.Item label={t("placeholder.verifyCode")} required>
-            <Space.Compact className="w-full">
-              <Form.Item
-                name="verifyCode"
-                noStyle
-                rules={[
-                  {
-                    required: true,
-                    message: t("toast.inputVerifyCode"),
-                  },
-                ]}
-              >
-                <Input
-                  allowClear
-                  placeholder={t("toast.inputVerifyCode")}
-                  className="w-full"
-                />
-              </Form.Item>
-              <Button
-                type="primary"
-                onClick={sendSmsHandle}
-                loading={sendSmsLoading || countdown > 0}
-                disabled={countdown > 0}
-              >
-                {countdown > 0
-                  ? t("date.second", { num: countdown })
-                  : t("placeholder.sendVerifyCode")}
-              </Button>
-            </Space.Compact>
-          </Form.Item>
-        )}
-
         <Form.Item
           label={t("placeholder.nickName")}
           name="nickname"
-          rules={[
-            {
-              required: true,
-              message: t("toast.inputNickName"),
-            },
-          ]}
+          rules={[{ required: true, message: t("toast.inputNickName") }]}
         >
           <Input allowClear spellCheck={false} placeholder={t("toast.inputNickName")} />
         </Form.Item>
@@ -355,10 +149,7 @@ const RegisterForm = ({ setFormType }: RegisterFormProps) => {
           name="password2"
           dependencies={["password"]}
           rules={[
-            {
-              required: true,
-              message: t("toast.reconfirmPassword"),
-            },
+            { required: true, message: t("toast.reconfirmPassword") },
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (!value || getFieldValue("password") === value) {
@@ -374,12 +165,7 @@ const RegisterForm = ({ setFormType }: RegisterFormProps) => {
         </Form.Item>
 
         <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            block
-            loading={registrationConfigLoading}
-          >
+          <Button type="primary" htmlType="submit" block loading={registerLoading}>
             {t("confirm")}
           </Button>
         </Form.Item>

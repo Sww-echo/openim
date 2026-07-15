@@ -55,23 +55,23 @@ const controlEnv = [
 ];
 
 const requiredRemoteEnv = [
-  "OPENIM_E2E_ACCOUNT1_PHONE",
+  "OPENIM_E2E_ACCOUNT1_ACCOUNT",
   "OPENIM_E2E_ACCOUNT1_PASSWORD or OPENIM_E2E_ACCOUNT1_PASSWORD_MD5",
 ];
 
 const uiEnv = [
   "OPENIM_E2E_RUN_UI",
   "OPENIM_E2E_WEB_URL",
-  "OPENIM_E2E_ACCOUNT1_PHONE",
+  "OPENIM_E2E_ACCOUNT1_ACCOUNT",
   "OPENIM_E2E_ACCOUNT1_PASSWORD",
-  "OPENIM_E2E_ACCOUNT2_PHONE",
+  "OPENIM_E2E_ACCOUNT2_ACCOUNT",
   "OPENIM_E2E_ACCOUNT2_PASSWORD",
   "OPENIM_E2E_FRIEND_SEARCH_KEYWORD",
   "OPENIM_E2E_FRIEND_SEARCH_EXPECTED_USER_ID",
 ];
 
 const optionalRemoteEnv = [
-  "OPENIM_E2E_ACCOUNT2_PHONE",
+  "OPENIM_E2E_ACCOUNT2_ACCOUNT",
   "OPENIM_E2E_ACCOUNT2_PASSWORD or OPENIM_E2E_ACCOUNT2_PASSWORD_MD5",
   "OPENIM_E2E_FRIEND_SEARCH_KEYWORD",
   "OPENIM_E2E_FRIEND_SEARCH_EXPECTED_USER_ID",
@@ -120,7 +120,7 @@ const optionalMutationEnv = [
 
 const manualEvidence = [
   "Web login redirects from /login to the chat page. Run npm run verify:web-api-ui with OPENIM_E2E_RUN_UI=1.",
-  "Saved accounts switch without mixing business token, OpenIM token, or userID. Run npm run verify:web-api-ui with OPENIM_E2E_ACCOUNT2_PHONE and OPENIM_E2E_ACCOUNT2_PASSWORD.",
+  "Saved accounts switch without mixing business token, OpenIM token, or userID. Run npm run verify:web-api-ui with OPENIM_E2E_ACCOUNT2_ACCOUNT and OPENIM_E2E_ACCOUNT2_PASSWORD.",
   "Rejected friend/group send-before responses block SDK sendMessage and show backend text.",
   "File upload creates a business fileId, then preview/download renders through signed URLs or blobs. Run this script with OPENIM_E2E_RUN_MUTATION=1 and OPENIM_E2E_UPLOAD_FILE_PATH.",
   "Group notice/member remark/special role/mute/top/clear-message/join-request/read-detail/online-member entries work in the Web UI. This script can verify selected message, file, and group backend endpoints when matching env vars are set.",
@@ -175,8 +175,8 @@ const printPlan = () => {
 const collectMissingRemoteEnv = () => {
   const missing = [];
 
-  if (!getEnv("OPENIM_E2E_ACCOUNT1_PHONE")) {
-    missing.push("OPENIM_E2E_ACCOUNT1_PHONE");
+  if (!getEnv("OPENIM_E2E_ACCOUNT1_ACCOUNT")) {
+    missing.push("OPENIM_E2E_ACCOUNT1_ACCOUNT");
   }
   if (
     !getEnv("OPENIM_E2E_ACCOUNT1_PASSWORD") &&
@@ -598,21 +598,19 @@ const normalizeLoginProfile = (body) => {
 };
 
 const loginAccount = async (prefix) => {
-  const areaCode = getEnv(`${prefix}_AREA_CODE`, "+86");
-  const phoneNumber = getEnv(`${prefix}_PHONE`);
+  const account = getEnv(`${prefix}_ACCOUNT`);
   const password = getEnv(`${prefix}_PASSWORD_MD5`) ?? getEnv(`${prefix}_PASSWORD`);
   const platform = Number(getEnv("OPENIM_E2E_PLATFORM", "5"));
 
-  if (!phoneNumber || !password) {
+  if (!account || !password) {
     return undefined;
   }
 
   const response = await requestApi("/account/login", {
     body: {
-      areaCode,
+      account,
       enterpriseCode: defaultEnterpriseCode,
       invitationCode: defaultEnterpriseCode,
-      phoneNumber,
       password,
       platform,
     },

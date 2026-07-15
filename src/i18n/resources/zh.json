@@ -103,6 +103,7 @@
     "beyondSelectionLimit": "超出选择限制！",
     "sendJoinGroupRequestSuccess": "发送入群请求成功！",
     "inputNickName": "请输入昵称",
+    "inputAccount": "请输入账号",
     "inputPhoneNumber": "请输入手机号",
     "inputCorrectPhoneNumber": "请输入正确的手机号！",
     "inputEmail": "请输入邮箱账号",
@@ -130,6 +131,7 @@
     "fileTypeError": "不支持的文件类型或文件夹！"
   },
   "placeholder": {
+    "account": "账号",
     "conversation": "会话",
     "leaveMessage": "留言",
     "recover": "点击恢复",

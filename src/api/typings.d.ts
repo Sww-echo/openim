@@ -10,10 +10,7 @@ declare namespace API {
       faceURL: string;
       birth?: number;
       gender?: number;
-      email?: string;
-      account?: string;
-      areaCode: string;
-      phoneNumber?: string;
+      account: string;
       password: string;
     };
     type DemoRegisterType = {
@@ -26,9 +23,7 @@ declare namespace API {
     };
     type LoginParams = {
       deviceID?: string;
-      phoneNumber: string;
-      areaCode: string;
-      account?: string;
+      account: string;
       password: string;
       enterpriseCode?: string;
       invitationCode?: string;

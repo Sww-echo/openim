@@ -4,9 +4,9 @@ import { expect, test } from "@playwright/test";
 const runUI = process.env.OPENIM_E2E_RUN_UI === "1";
 const webURL =
   process.env.OPENIM_E2E_WEB_URL ?? "http://127.0.0.1:7777/index.html#/login";
-const phoneNumber = process.env.OPENIM_E2E_ACCOUNT1_PHONE;
+const account = process.env.OPENIM_E2E_ACCOUNT1_ACCOUNT;
 const password = process.env.OPENIM_E2E_ACCOUNT1_PASSWORD;
-const account2PhoneNumber = process.env.OPENIM_E2E_ACCOUNT2_PHONE;
+const account2 = process.env.OPENIM_E2E_ACCOUNT2_ACCOUNT;
 const account2Password = process.env.OPENIM_E2E_ACCOUNT2_PASSWORD;
 const friendSearchKeyword = process.env.OPENIM_E2E_FRIEND_SEARCH_KEYWORD;
 const expectedFriendSearchUserId =
@@ -14,7 +14,7 @@ const expectedFriendSearchUserId =
 const enterpriseCode = "LOCALTEST001";
 
 const missingEnv = [
-  ["OPENIM_E2E_ACCOUNT1_PHONE", phoneNumber],
+  ["OPENIM_E2E_ACCOUNT1_ACCOUNT", account],
   ["OPENIM_E2E_ACCOUNT1_PASSWORD", password],
 ]
   .filter(([, value]) => !value)
@@ -24,7 +24,7 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
 type LoginCredentials = {
-  phoneNumber?: string;
+  account?: string;
   password?: string;
 };
 
@@ -205,11 +205,11 @@ const clearCurrentLoginState = async (page: Page) => {
 
 const loginAndExpectChat = async (
   page: Page,
-  credentials: LoginCredentials = { phoneNumber, password },
+  credentials: LoginCredentials = { account, password },
 ) => {
   await page.goto(webURL);
 
-  await page.locator("input#phoneNumber").fill(credentials.phoneNumber ?? "");
+  await page.locator("input#account").fill(credentials.account ?? "");
   await page.locator("input#password").fill(credentials.password ?? "");
 
   await expect(page.locator("input#invitationCode")).toHaveValue(enterpriseCode);
@@ -277,8 +277,8 @@ test.describe("Web business API UI e2e", () => {
 
   test("switching saved accounts rewrites tokens and user id", async ({ page }) => {
     test.skip(
-      !account2PhoneNumber || !account2Password,
-      "Set OPENIM_E2E_ACCOUNT2_PHONE and OPENIM_E2E_ACCOUNT2_PASSWORD to run saved-account switch UI check.",
+      !account2 || !account2Password,
+      "Set OPENIM_E2E_ACCOUNT2_ACCOUNT and OPENIM_E2E_ACCOUNT2_PASSWORD to run saved-account switch UI check.",
     );
 
     const account1Profile = await loginAndExpectChat(page);
@@ -286,7 +286,7 @@ test.describe("Web business API UI e2e", () => {
 
     const account2Profile = await loginAndExpectChat(page, {
       password: account2Password,
-      phoneNumber: account2PhoneNumber,
+      account: account2,
     });
 
     expect(account2Profile?.userID).not.toBe(account1Profile?.userID);

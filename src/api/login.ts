@@ -104,31 +104,45 @@ const normalizeAccountCodeParams = <
 };
 
 const normalizeLoginParams = (params: API.Login.LoginParams) => {
+  const rawParams = params as API.Login.LoginParams & {
+    phoneNumber?: string;
+    areaCode?: string;
+  };
   const {
     enterpriseCode: _enterpriseCode,
     invitationCode: _invitationCode,
+    phoneNumber: _phoneNumber,
+    areaCode: _areaCode,
     ...restParams
-  } = params;
+  } = rawParams;
 
   return {
     ...restParams,
-    phoneNumber: normalizeAuthText(params.phoneNumber),
-    account: normalizeOptionalAuthText(params.account),
+    account: normalizeAuthText(params.account),
     password: normalizePasswordText(params.password),
     enterpriseCode: normalizeEnterpriseCodeText(params.enterpriseCode),
     platform,
-    areaCode: getAreaCode(params.areaCode),
   };
 };
 
 const normalizeRegisterParams = (params: API.Login.DemoRegisterType) => {
+  const rawUser = params.user as API.Login.RegisterUserInfo & {
+    email?: string;
+    areaCode?: string;
+    phoneNumber?: string;
+  };
   const {
     enterpriseCode: _enterpriseCode,
     invitationCode: _invitationCode,
     verifyCode: rawVerifyCode,
     ...restParams
   } = params;
-  const phoneNumber = normalizeAuthText(params.user.phoneNumber);
+  const {
+    email: _email,
+    areaCode: _areaCode,
+    phoneNumber: _phoneNumber,
+    ...registerUser
+  } = rawUser;
   const verifyCode = normalizeOptionalAuthText(rawVerifyCode);
 
   return {
@@ -136,15 +150,11 @@ const normalizeRegisterParams = (params: API.Login.DemoRegisterType) => {
     enterpriseCode: normalizeEnterpriseCodeText(params.enterpriseCode),
     ...(verifyCode ? { verifyCode } : {}),
     user: {
-      ...params.user,
-      nickname: normalizeAuthText(params.user.nickname),
-      faceURL: normalizeAuthText(params.user.faceURL),
-      email: normalizeOptionalAuthText(params.user.email),
-      account: normalizeOptionalAuthText(params.user.account) ?? phoneNumber,
-      areaCode: getAreaCode(params.user.areaCode),
-      phoneNumber,
-      telephone: phoneNumber,
-      password: normalizePasswordText(params.user.password),
+      ...registerUser,
+      account: normalizeAuthText(registerUser.account),
+      nickname: normalizeAuthText(registerUser.nickname),
+      faceURL: normalizeAuthText(registerUser.faceURL),
+      password: normalizePasswordText(registerUser.password),
     },
     platform,
   };
@@ -387,8 +397,8 @@ export const useRegister = () => {
   return useMutation(
     (params: API.Login.DemoRegisterType) => {
       const normalizedParams = normalizeRegisterParams(params);
-      if (!normalizedParams.user.phoneNumber) {
-        return Promise.reject(new Error(t("toast.inputPhoneNumber")));
+      if (!normalizedParams.user.account) {
+        return Promise.reject(new Error(t("toast.inputAccount")));
       }
       if (!normalizedParams.user.nickname) {
         return Promise.reject(new Error(t("toast.inputNickName")));
@@ -442,8 +452,8 @@ export const useLogin = () => {
   return useMutation(
     (params: API.Login.LoginParams) => {
       const normalizedParams = normalizeLoginParams(params);
-      if (!normalizedParams.phoneNumber) {
-        return Promise.reject(new Error(t("toast.inputPhoneNumber")));
+      if (!normalizedParams.account) {
+        return Promise.reject(new Error(t("toast.inputAccount")));
       }
       if (!normalizedParams.password) {
         return Promise.reject(new Error(t("toast.inputPassword")));
@@ -530,10 +540,10 @@ export type { BusinessUserInfo } from "./friend";
 export {
   BusinessAllowType,
   getBusinessUserBindInfo,
-  getCurrentBusinessUserCardInfo,
   getBusinessUserByAccount,
   getBusinessUserInfo,
   getBusinessUserInfoV1,
+  getCurrentBusinessUserCardInfo,
   getCurrentBusinessUserInfo,
   searchBusinessUserInfo,
   updateBusinessUserInfo,

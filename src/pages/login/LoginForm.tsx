@@ -1,21 +1,14 @@
-import { Button, Form, Input, Select, Space } from "antd";
+import { Button, Form, Input } from "antd";
 import { t } from "i18next";
 import md5 from "md5";
 import { useNavigate } from "react-router-dom";
 
 import { DEFAULT_ENTERPRISE_CODE, normalizeIMProfile, useLogin } from "@/api/login";
 import { feedbackToast } from "@/utils/common";
-import {
-  getPhoneNumber,
-  setAreaCode,
-  setIMProfile,
-  setPhoneNumber,
-} from "@/utils/storage";
+import { getAccount, setAccount, setIMProfile } from "@/utils/storage";
 
-import { areaCode } from "./areaCode";
 import { validateEnterpriseCodeInput } from "./enterpriseCode";
 import type { FormType } from "./index";
-import { getPhoneNumberRules } from "./rules";
 
 type LoginFormProps = {
   setFormType: (type: FormType) => void;
@@ -27,15 +20,17 @@ const LoginForm = ({ setFormType }: LoginFormProps) => {
   const { mutate: login, isLoading: loginLoading } = useLogin();
 
   const onFinish = async (params: API.Login.LoginParams) => {
-    if (params.phoneNumber) {
-      setAreaCode(params.areaCode);
-      setPhoneNumber(params.phoneNumber);
+    const account = params.account.trim();
+    if (account) {
+      setAccount(account);
     }
 
     let enterpriseCode: string | undefined;
     let enterpriseName: string | undefined;
     try {
-      const enterpriseContext = await validateEnterpriseCodeInput(params.enterpriseCode);
+      const enterpriseContext = await validateEnterpriseCodeInput(
+        params.enterpriseCode,
+      );
       enterpriseCode = enterpriseContext.enterpriseCode;
       enterpriseName = enterpriseContext.enterpriseName;
     } catch (error) {
@@ -45,7 +40,7 @@ const LoginForm = ({ setFormType }: LoginFormProps) => {
 
     login(
       {
-        ...params,
+        account,
         password: md5(params.password ?? ""),
         enterpriseCode,
       },
@@ -54,13 +49,11 @@ const LoginForm = ({ setFormType }: LoginFormProps) => {
           try {
             await setIMProfile({
               ...normalizeIMProfile(data.data),
-              account: params.account ?? params.phoneNumber,
-              areaCode: params.areaCode,
+              account,
               enterpriseCode,
               enterpriseName,
               faceURL: data.data.faceURL,
               nickname: data.data.nickname,
-              phoneNumber: params.phoneNumber,
             });
             navigate("/chat");
           } catch (error) {
@@ -83,20 +76,16 @@ const LoginForm = ({ setFormType }: LoginFormProps) => {
         autoComplete="off"
         labelCol={{ prefixCls: "custom-form-item" }}
         initialValues={{
-          areaCode: "+86",
-          phoneNumber: getPhoneNumber() ?? "",
+          account: getAccount() ?? "",
           enterpriseCode: DEFAULT_ENTERPRISE_CODE,
         }}
       >
-        <Form.Item label={t("placeholder.phoneNumber")}>
-          <Space.Compact className="w-full">
-            <Form.Item name="areaCode" noStyle>
-              <Select options={areaCode} className="!w-28" />
-            </Form.Item>
-            <Form.Item name="phoneNumber" noStyle rules={getPhoneNumberRules()}>
-              <Input allowClear placeholder={t("toast.inputPhoneNumber")} />
-            </Form.Item>
-          </Space.Compact>
+        <Form.Item
+          label={t("placeholder.account")}
+          name="account"
+          rules={[{ required: true, message: t("toast.inputAccount") }]}
+        >
+          <Input allowClear spellCheck={false} placeholder={t("toast.inputAccount")} />
         </Form.Item>
 
         <Form.Item

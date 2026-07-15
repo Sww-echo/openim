@@ -449,17 +449,17 @@ expectSnippet(
 expectSnippet(
   "e2e dry-run lists UI account1 phone env",
   "e2e",
-  "OPENIM_E2E_ACCOUNT1_PHONE",
+  "OPENIM_E2E_ACCOUNT1_ACCOUNT",
 );
 expectSnippet(
   "e2e dry-run lists UI account2 phone env",
   "e2e",
-  "OPENIM_E2E_ACCOUNT2_PHONE",
+  "OPENIM_E2E_ACCOUNT2_ACCOUNT",
 );
 expectSnippet(
   "ui e2e lists account2 phone env",
   "uiE2e",
-  "const account2PhoneNumber = process.env.OPENIM_E2E_ACCOUNT2_PHONE;",
+  "const account2 = process.env.OPENIM_E2E_ACCOUNT2_ACCOUNT;",
 );
 expectSnippet(
   "ui e2e lists account2 password env",

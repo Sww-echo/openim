@@ -103,6 +103,7 @@
     "beyondSelectionLimit": "Selection limit exceeded!",
     "sendJoinGroupRequestSuccess": "Sent group join request successfully!",
     "inputNickName": "Please enter a nickname",
+    "inputAccount": "Please enter account",
     "inputPhoneNumber": "Please enter phone number",
     "inputCorrectPhoneNumber": "Please enter a valid phone number!",
     "inputEmail": "Please enter email address",
@@ -129,6 +130,7 @@
     "fileTypeError": "Unsupported file type or folder!"
   },
   "placeholder": {
+    "account": "Account",
     "conversation": "Conversation",
     "leaveMessage": "Leave a message",
     "recover": "Click to recover",

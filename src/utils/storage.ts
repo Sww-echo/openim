@@ -48,6 +48,8 @@ export const setAreaCode = (areaCode: string) =>
   localStorage.setItem("IM_AREA_CODE", areaCode);
 export const setPhoneNumber = (account: string) =>
   localStorage.setItem("IM_PHONE_NUM", account);
+export const setAccount = (account: string) =>
+  localStorage.setItem("IM_ACCOUNT", account);
 export const setEmail = (email: string) => localStorage.setItem("IM_EMAIL", email);
 export const setLoginMethod = (method: string) =>
   localStorage.setItem("IM_LOGIN_METHOD", method);
@@ -77,6 +79,7 @@ export const clearIMProfile = async () => {
 
 export const getAreaCode = () => localStorage.getItem("IM_AREA_CODE");
 export const getPhoneNumber = () => localStorage.getItem("IM_PHONE_NUM");
+export const getAccount = () => localStorage.getItem("IM_ACCOUNT");
 export const getEmail = () => localStorage.getItem("IM_EMAIL");
 export const getLoginMethod = () =>
   (localStorage.getItem("IM_LOGIN_METHOD") ?? "phone") as "phone" | "email";
