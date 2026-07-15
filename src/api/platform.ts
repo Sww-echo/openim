@@ -1,6 +1,10 @@
 import createAxiosInstance from "@/utils/request";
 
-const platformRequest = createAxiosInstance("/api/platform", false, {
+const platformApiBaseURL = import.meta.env.DEV
+  ? "/api/platform"
+  : "https://platform.yuxinim.com/api/platform";
+
+const platformRequest = createAxiosInstance(platformApiBaseURL, false, {
   auth: false,
 });
 
