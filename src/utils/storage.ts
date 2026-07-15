@@ -1,6 +1,8 @@
 import { LocaleString } from "@/store/type";
 import * as localForage from "localforage";
 
+import { setCurrentEnterpriseCode } from "./enterpriseContext";
+
 localForage.config({
   name: "OpenCorp-Config",
 });
@@ -16,6 +18,8 @@ export interface IMProfile {
 
 export interface WebSavedAccount extends IMProfile {
   accountKey: string;
+  enterpriseCode?: string;
+  enterpriseName?: string;
   account?: string;
   phoneNumber?: string;
   areaCode?: string;
@@ -29,7 +33,14 @@ export type WebAccountProfile = IMProfile &
   Partial<
     Pick<
       WebSavedAccount,
-      "account" | "phoneNumber" | "areaCode" | "email" | "nickname" | "faceURL"
+      | "enterpriseCode"
+      | "enterpriseName"
+      | "account"
+      | "phoneNumber"
+      | "areaCode"
+      | "email"
+      | "nickname"
+      | "faceURL"
     >
   >;
 
@@ -99,7 +110,9 @@ export const removeAccountScopedItem = async (key: string, accountKey?: string) 
   localForage.removeItem(await getAccountScopedKey(key, accountKey));
 
 export const saveWebAccount = async (profile: WebAccountProfile) => {
-  const accountKey = profile.userID;
+  const accountKey = profile.enterpriseCode
+    ? `${profile.enterpriseCode}:${profile.userID}`
+    : profile.userID;
   const savedAccounts = await getSavedAccounts();
   const nextAccount: WebSavedAccount = {
     accountKey,
@@ -115,6 +128,9 @@ export const saveWebAccount = async (profile: WebAccountProfile) => {
     localForage.setItem(SAVED_ACCOUNTS_KEY, nextAccounts),
     localForage.setItem(CURRENT_ACCOUNT_KEY, accountKey),
   ]);
+  if (profile.enterpriseCode) {
+    setCurrentEnterpriseCode(profile.enterpriseCode);
+  }
 
   return nextAccount;
 };
@@ -133,6 +149,9 @@ export const switchIMProfile = async (accountKey: string) => {
     setTMUserID(targetAccount.userID),
     localForage.setItem(CURRENT_ACCOUNT_KEY, targetAccount.accountKey),
   ]);
+  if (targetAccount.enterpriseCode) {
+    setCurrentEnterpriseCode(targetAccount.enterpriseCode);
+  }
 
   return targetAccount;
 };

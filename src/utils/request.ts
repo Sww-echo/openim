@@ -13,6 +13,25 @@ type AuthAwareRequestConfig = {
   skipAuthLogout?: boolean;
 };
 
+type RequestInstanceOptions = {
+  auth?: boolean;
+  resolveBaseURL?: () =>
+    | string
+    | undefined
+    | {
+        baseURL?: string;
+        headers?: Record<string, string>;
+      }
+    | Promise<
+        | string
+        | undefined
+        | {
+            baseURL?: string;
+            headers?: Record<string, string>;
+          }
+      >;
+};
+
 const businessPublicPaths = new Set([
   "/account/code/send",
   "/account/code/verify",
@@ -64,7 +83,11 @@ const withAccessTokenParam = (params: unknown, token: string) => {
   };
 };
 
-const createAxiosInstance = (baseURL: string, imToken = false) => {
+const createAxiosInstance = (
+  baseURL: string,
+  imToken = false,
+  options: RequestInstanceOptions = {},
+) => {
   const serves = axios.create({
     baseURL,
     timeout: 25000,
@@ -72,13 +95,27 @@ const createAxiosInstance = (baseURL: string, imToken = false) => {
 
   serves.interceptors.request.use(
     async (config) => {
-      const storedToken = imToken ? await getIMToken() : await getChatToken();
-      const token = typeof storedToken === "string" ? storedToken : undefined;
-      if (token) {
-        config.headers.token = config.headers.token ?? token;
-        const requestPath = getRequestPath(config.url);
-        if (!imToken && !businessPublicPaths.has(requestPath)) {
-          config.params = withAccessTokenParam(config.params, token);
+      const dynamicBaseURL = await options.resolveBaseURL?.();
+      if (typeof dynamicBaseURL === "string") {
+        config.baseURL = dynamicBaseURL;
+      } else if (dynamicBaseURL) {
+        if (dynamicBaseURL.baseURL) {
+          config.baseURL = dynamicBaseURL.baseURL;
+        }
+        Object.entries(dynamicBaseURL.headers ?? {}).forEach(([key, value]) => {
+          config.headers.set(key, value);
+        });
+      }
+
+      if (options.auth !== false) {
+        const storedToken = imToken ? await getIMToken() : await getChatToken();
+        const token = typeof storedToken === "string" ? storedToken : undefined;
+        if (token) {
+          config.headers.token = config.headers.token ?? token;
+          const requestPath = getRequestPath(config.url);
+          if (!imToken && !businessPublicPaths.has(requestPath)) {
+            config.params = withAccessTokenParam(config.params, token);
+          }
         }
       }
       config.headers.operationID = config.headers.operationID ?? uuidv4();

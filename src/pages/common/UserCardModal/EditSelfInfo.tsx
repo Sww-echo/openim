@@ -72,8 +72,8 @@ const parseCustomFields = (value: unknown): CustomProfileFields => {
 
 const EditSelfInfo: ForwardRefRenderFunction<
   OverlayVisibleHandle,
-  { refreshSelfInfo: () => void }
-> = ({ refreshSelfInfo }, ref) => {
+  { refreshSelfInfo: () => void; phoneNumber?: string }
+> = ({ refreshSelfInfo, phoneNumber }, ref) => {
   const [form] = Form.useForm();
   const [profileMetas, setProfileMetas] = useState<ProfileMeta[]>([]);
   const selfInfo = useUserStore((state) => state.selfInfo);
@@ -178,6 +178,7 @@ const EditSelfInfo: ForwardRefRenderFunction<
             autoComplete="off"
             initialValues={{
               ...selfInfo,
+              phoneNumber: phoneNumber || selfInfo.phoneNumber,
               description: selfInfo.description,
               customFields: parseCustomFields(selfInfo.customFields),
               birth: dayjs(selfInfo.birth),

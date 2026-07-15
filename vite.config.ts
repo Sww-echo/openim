@@ -7,7 +7,7 @@ import { customStart, loadViteEnv } from "vite-electron-plugin/plugin";
 import pkg from "./package.json";
 import legacy from "@vitejs/plugin-legacy";
 import { createRequire } from "node:module";
-import { createBusinessApiProxy } from "./vite.proxy";
+import { createBusinessApiProxy, createEnterpriseApiProxyPlugin } from "./vite.proxy";
 
 const require = createRequire(import.meta.url);
 // import visualizer from "rollup-plugin-visualizer";
@@ -42,6 +42,7 @@ export default defineConfig(({ command, mode }) => {
     },
     plugins: [
       react(),
+      createEnterpriseApiProxyPlugin(),
       electron({
         include: ["electron"],
         transformOptions: {

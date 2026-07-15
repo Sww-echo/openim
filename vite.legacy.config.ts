@@ -6,7 +6,7 @@ import electron from "vite-electron-plugin";
 import { customStart, loadViteEnv } from "vite-electron-plugin/plugin";
 import preload from "vite-plugin-electron";
 import pkg from "./package.json";
-import { createBusinessApiProxy } from "./vite.proxy";
+import { createBusinessApiProxy, createEnterpriseApiProxyPlugin } from "./vite.proxy";
 
 let preloadHasReady = false;
 
@@ -33,6 +33,7 @@ export default defineConfig(({ command, mode }) => {
     },
     plugins: [
       react(),
+      createEnterpriseApiProxyPlugin(),
       electron({
         include: ["electron/main"],
         transformOptions: {

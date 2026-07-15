@@ -2,7 +2,7 @@ import path from "node:path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-import { createBusinessApiProxy } from "./vite.proxy";
+import { createBusinessApiProxy, createEnterpriseApiProxyPlugin } from "./vite.proxy";
 
 export default defineConfig(({ mode }) => {
   return {
@@ -18,7 +18,7 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    plugins: [react()],
+    plugins: [react(), createEnterpriseApiProxyPlugin()],
     server: {
       proxy: createBusinessApiProxy(mode),
     },

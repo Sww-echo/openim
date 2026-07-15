@@ -120,8 +120,11 @@ const RegisterForm = ({ setFormType }: RegisterFormProps) => {
     }
 
     let enterpriseCode: string | undefined;
+    let enterpriseName: string | undefined;
     try {
-      enterpriseCode = await validateEnterpriseCodeInput(fields.enterpriseCode);
+      const enterpriseContext = await validateEnterpriseCodeInput(fields.enterpriseCode);
+      enterpriseCode = enterpriseContext?.enterpriseCode;
+      enterpriseName = enterpriseContext?.enterpriseName;
     } catch (error) {
       return message.error(
         error instanceof Error ? error.message : t("errCode.enterpriseCodeInvalid"),
@@ -153,6 +156,8 @@ const RegisterForm = ({ setFormType }: RegisterFormProps) => {
               account:
                 selectedRegisterMethod === "email" ? fields.email : fields.phoneNumber,
               areaCode: fields.areaCode,
+              enterpriseCode,
+              enterpriseName,
               faceURL: "",
               nickname: fields.nickname,
               email: fields.email,
@@ -192,15 +197,13 @@ const RegisterForm = ({ setFormType }: RegisterFormProps) => {
           FormFields,
           "areaCode" | "email" | "phoneNumber" | "enterpriseCode"
         >) => {
-          const normalizedEnterpriseCode = await validateEnterpriseCodeInput(
-            enterpriseCode,
-          );
+          const enterpriseContext = await validateEnterpriseCodeInput(enterpriseCode);
 
           sendSms(
             {
-              areaCode: selectedRegisterMethod === "phone" ? areaCode : undefined,
+              areaCode: selectedRegisterMethod === "phone" ? areaCode : "",
               email: selectedRegisterMethod === "email" ? email : undefined,
-              enterpriseCode: normalizedEnterpriseCode,
+              enterpriseCode: enterpriseContext?.enterpriseCode,
               phoneNumber: selectedRegisterMethod === "phone" ? phoneNumber : undefined,
               usedFor: 1,
             },

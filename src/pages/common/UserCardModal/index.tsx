@@ -34,10 +34,9 @@ import { getLegacyGroupMember, getLegacyGroupMemberInviterInfo } from "@/api/gro
 import {
   BusinessAllowType,
   BusinessUserInfo,
-  getBusinessUserBindInfo,
+  getCurrentBusinessUserCardInfo,
   getBusinessUserInfo,
   getBusinessUserInfoV1,
-  getCurrentBusinessUserInfo,
 } from "@/api/login";
 import { reportBusinessTarget, ReportTargetType } from "@/api/report";
 import DraggableModalWrap from "@/components/DraggableModalWrap";
@@ -117,6 +116,41 @@ const unwrapFriendInfo = (response: unknown) => {
   };
 };
 
+const getProfileAccount = (info: CardInfo) => {
+  if (!Array.isArray(info.profileCards)) {
+    return "";
+  }
+
+  const card = info.profileCards.find(
+    (item): item is Record<string, unknown> =>
+      isBusinessRecord(item) && pickBusinessText(item, ["type"]) === "account",
+  );
+
+  return card ? pickBusinessText(card, ["value"]) : "";
+};
+
+const getPhoneNumberText = (info: CardInfo) => getProfileAccount(info);
+
+const mergeCardInfo = (...infos: Array<CardInfo | undefined>): CardInfo =>
+  infos.reduce<CardInfo>((merged, info) => {
+    if (!info) {
+      return merged;
+    }
+
+    Object.entries(info).forEach(([key, value]) => {
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== "" &&
+        !(Array.isArray(value) && value.length === 0)
+      ) {
+        merged[key] = value;
+      }
+    });
+
+    return merged;
+  }, {});
+
 const getGroupInviterText = (response: unknown) => {
   const info = unwrapFriendInfo(response);
 
@@ -179,22 +213,14 @@ const UserCardModal: ForwardRefRenderFunction<
     memberInfo?: GroupMemberItem | null;
   }> => {
     if (isSelf) {
-      let nextSelfInfo: CardInfo = { ...selfInfo };
+      let nextSelfInfo: CardInfo = mergeCardInfo(selfInfo);
       try {
-        nextSelfInfo = {
-          ...nextSelfInfo,
-          ...unwrapFriendInfo(await getCurrentBusinessUserInfo()),
-        };
+        nextSelfInfo = mergeCardInfo(
+          nextSelfInfo,
+          await getCurrentBusinessUserCardInfo(),
+        );
       } catch (error) {
-        console.debug("get current business user info failed", selfInfo.userID, error);
-      }
-      try {
-        nextSelfInfo = {
-          ...nextSelfInfo,
-          ...unwrapFriendInfo(await getBusinessUserBindInfo()),
-        };
-      } catch (error) {
-        console.debug("get business user bind info failed", selfInfo.userID, error);
+        console.debug("get business user info failed", selfInfo.userID, error);
       }
       try {
         const onlineStatus = await getBusinessUserOnlineStatus(selfInfo.userID);
@@ -389,7 +415,7 @@ const UserCardModal: ForwardRefRenderFunction<
           },
           {
             title: t("placeholder.phoneNumber"),
-            value: info.phoneNumber || "-",
+            value: getPhoneNumberText(info) || "-",
           },
           ...(isFriend
             ? [
@@ -596,7 +622,11 @@ const UserCardModal: ForwardRefRenderFunction<
           </div>
         )}
       </Spin>
-      <EditSelfInfo ref={editInfoRef} refreshSelfInfo={refreshSelfInfo} />
+      <EditSelfInfo
+        ref={editInfoRef}
+        refreshSelfInfo={refreshSelfInfo}
+        phoneNumber={getPhoneNumberText(cardInfo ?? selfInfo)}
+      />
     </DraggableModalWrap>
   );
 };

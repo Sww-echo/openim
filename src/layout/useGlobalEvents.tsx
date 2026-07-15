@@ -31,6 +31,7 @@ import {
 import { useConversationStore, useUserStore } from "@/store";
 import { useContactStore } from "@/store/contact";
 import { feedbackToast, isSameID } from "@/utils/common";
+import { getCurrentEnterpriseContext } from "@/utils/enterpriseContext";
 import { initStore } from "@/utils/imCommon";
 import {
   clearIMProfile,
@@ -59,6 +60,22 @@ const resolveOpenIMSDKConfig = async () => {
     wsAddr: import.meta.env.VITE_WS_URL,
     platformID: window.electronAPI?.getPlatform() ?? 5,
   };
+
+  const enterpriseContext = await getCurrentEnterpriseContext();
+  const enterpriseApiAddr = normalizeSDKConfigText(
+    enterpriseContext?.endpoints.openIMApi,
+  );
+  const enterpriseWsAddr = normalizeSDKConfigText(
+    enterpriseContext?.endpoints.openIMWs,
+  );
+
+  if (enterpriseApiAddr && enterpriseWsAddr) {
+    return {
+      apiAddr: enterpriseApiAddr,
+      wsAddr: enterpriseWsAddr,
+      platformID: fallback.platformID,
+    };
+  }
 
   try {
     const response = await getOpenIMConfigStatus();

@@ -356,15 +356,11 @@ export const getBusinessUserInfo = async (
 
   const users = await Promise.all(
     normalizedUserIDs.map(async (userID) => {
-      const response = await businessRequest.post<BusinessUserInfo>(
-        "/user/get",
-        undefined,
-        {
-          params: {
-            userId: userID,
-          },
+      const response = await businessRequest.get<BusinessUserInfo>("/user/get", {
+        params: {
+          userId: userID,
         },
-      );
+      });
       return withBusinessAvatarFallback(
         normalizeUserInfo(unwrapData(response), userID),
       );
@@ -376,6 +372,16 @@ export const getBusinessUserInfo = async (
       users,
     },
   };
+};
+
+export const getCurrentBusinessUserCardInfo = async () => {
+  const response = await businessRequest.get<BusinessUserInfo>("/user/get");
+  const payload = unwrapData(response);
+  const currentUserID = await getIMUserID();
+  return normalizeUserInfo(
+    payload,
+    typeof currentUserID === "string" ? currentUserID : undefined,
+  );
 };
 
 export const getBusinessUserBySearchKey = async (keyword: string) => {

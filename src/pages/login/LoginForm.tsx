@@ -33,8 +33,11 @@ const LoginForm = ({ setFormType }: LoginFormProps) => {
     }
 
     let enterpriseCode: string | undefined;
+    let enterpriseName: string | undefined;
     try {
-      enterpriseCode = await validateEnterpriseCodeInput(params.enterpriseCode);
+      const enterpriseContext = await validateEnterpriseCodeInput(params.enterpriseCode);
+      enterpriseCode = enterpriseContext.enterpriseCode;
+      enterpriseName = enterpriseContext.enterpriseName;
     } catch (error) {
       feedbackToast({ error });
       return;
@@ -53,6 +56,8 @@ const LoginForm = ({ setFormType }: LoginFormProps) => {
               ...normalizeIMProfile(data.data),
               account: params.account ?? params.phoneNumber,
               areaCode: params.areaCode,
+              enterpriseCode,
+              enterpriseName,
               faceURL: data.data.faceURL,
               nickname: data.data.nickname,
               phoneNumber: params.phoneNumber,

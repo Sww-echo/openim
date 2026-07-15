@@ -7,13 +7,18 @@ import {
   pickBusinessText,
   unwrapBusinessPayload,
 } from "@/utils/businessPayload";
+import {
+  normalizeEnterpriseResolveResponse,
+  saveEnterpriseContext,
+} from "@/utils/enterpriseContext";
 
 import businessRequest from "./business";
 import { errorHandle } from "./errorHandle";
+import platformRequest from "./platform";
 
 const platform = window.electronAPI?.getPlatform() ?? 5;
 
-export const DEFAULT_ENTERPRISE_CODE = "ENT-619057BE";
+export const DEFAULT_ENTERPRISE_CODE = "TEST";
 
 const normalizeAuthText = (value: unknown) =>
   typeof value === "string" || typeof value === "number" ? String(value).trim() : "";
@@ -249,6 +254,9 @@ const normalizeRegistrationConfig = (response: unknown): RegistrationConfig => {
 
 export const getRegistrationConfig = async (enterpriseCode?: string) => {
   const normalizedEnterpriseCode = normalizeOptionalAuthText(enterpriseCode);
+  if (normalizedEnterpriseCode) {
+    await resolveEnterprise(normalizedEnterpriseCode);
+  }
   const response = await businessRequest.get("/config", {
     params: normalizedEnterpriseCode
       ? {
@@ -457,20 +465,25 @@ export const useLogin = () => {
   );
 };
 
-export const validateEnterpriseCode = async (code: string) => {
+export const resolveEnterprise = async (code: string) => {
   const normalizedCode = normalizeAuthText(code);
   if (!normalizedCode) {
     return Promise.reject(new Error(t("toast.inputEnterpriseCode")));
   }
 
-  return businessRequest.get<EnterpriseCodeValidateResult>(
-    "/enterprise/code/validate",
-    {
-      params: {
-        code: normalizedCode,
-      },
-    },
-  );
+  const response = await platformRequest.post("/public/enterprise/resolve", {
+    enterpriseCode: normalizedCode,
+  });
+  const context = normalizeEnterpriseResolveResponse(response);
+  return saveEnterpriseContext(context);
+};
+
+export const validateEnterpriseCode = resolveEnterprise;
+
+export const useResolveEnterprise = () => {
+  return useMutation((code: string) => resolveEnterprise(code), {
+    onError: errorHandle,
+  });
 };
 
 export const useValidateEnterpriseCode = () => {
@@ -480,9 +493,12 @@ export const useValidateEnterpriseCode = () => {
 };
 
 export const refreshOpenIMToken = async (options?: { skipAuthLogout?: boolean }) => {
-  const config = options?.skipAuthLogout
-    ? ({ skipAuthLogout: true } as Parameters<typeof businessRequest.get>[1])
-    : undefined;
+  const config = {
+    params: {
+      platform,
+    },
+    ...(options?.skipAuthLogout ? { skipAuthLogout: true } : {}),
+  } as Parameters<typeof businessRequest.get>[1];
 
   return businessRequest.get<LoginSuccessData>("/user/openim/token", config);
 };
@@ -514,6 +530,7 @@ export type { BusinessUserInfo } from "./friend";
 export {
   BusinessAllowType,
   getBusinessUserBindInfo,
+  getCurrentBusinessUserCardInfo,
   getBusinessUserByAccount,
   getBusinessUserInfo,
   getBusinessUserInfoV1,
